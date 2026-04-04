@@ -635,7 +635,7 @@ canvas{display:none;}
 // ══════════════════════════════════════════
 // CONFIG — غيّر هذي القيم
 // ══════════════════════════════════════════
-const ANTHROPIC_KEY = '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'; // ← مفتاح Claude API
+const ANTHROPIC_KEY = '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'; // ← مفتاح Claude API
 const ADMIN_PIN     = '1234';                    // ← كود المشرف
 
 // ══════════════════════════════════════════
@@ -746,12 +746,10 @@ async function capture(){
 // AI ANALYSIS
 // ══════════════════════════════════════════
 async function analyze(b64){
-  const res = await fetch('https://api.anthropic.com/v1/messages',{
+  const res = await fetch('https://dry-glade-3ab4.e-8mohm.workers.dev/',{
     method:'POST',
     headers:{
       'Content-Type':'application/json',
-      'x-api-key': ANTHROPIC_KEY,
-      'anthropic-version':'2023-06-01'
     },
     body:JSON.stringify({
       model:'claude-haiku-4-5-20251001',
