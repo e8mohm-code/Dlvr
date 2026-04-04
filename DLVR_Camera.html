@@ -263,7 +263,8 @@ async function capture(){
   const ctx = cv.getContext('2d');
   ctx.drawImage(vid, 0, 0, cv.width, cv.height);
 
-  const b64 = cv.toDataURL('image/jpeg', 0.5).split(',')[1];
+  const b64      = cv.toDataURL('image/jpeg', 0.5).split(',')[1]; // للتحليل (صغير)
+  const b64Upload = cv.toDataURL('image/jpeg', 0.85).split(',')[1]; // للرفع (جودة أعلى)
 
   document.getElementById('analyzing').classList.add('on');
   document.getElementById('shutter').disabled = true;
@@ -271,7 +272,7 @@ async function capture(){
   try{
     const result = await analyze(b64);
     // رفع الصورة على ImgBB
-    const imageUrl = await uploadImage(b64);
+    const imageUrl = await uploadImage(b64Upload);
     result.imageUrl = imageUrl;
     let saved = false;
     if(sheetUrl) saved = await saveSheet(result);
@@ -322,11 +323,15 @@ async function uploadImage(b64){
     const form = new FormData();
     form.append('key', IMGBB_KEY);
     form.append('image', b64);
-    const res = await fetch('https://api.imgbb.com/1/upload', {method:'POST', body:form});
+    const res = await fetch('https://api.imgbb.com/1/upload', {
+      method:'POST',
+      body: form
+    });
+    if(!res.ok) return '';
     const data = await res.json();
-    if(data.success) return data.data.url;
+    if(data && data.success && data.data && data.data.url) return data.data.url;
     return '';
-  }catch{ return ''; }
+  }catch(e){ return ''; }
 }
 
 async function saveSheet(r){
