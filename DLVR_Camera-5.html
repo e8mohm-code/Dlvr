@@ -16,7 +16,7 @@
   html,body{height:100%;font-family:'IBM Plex Sans Arabic',sans-serif;background:#000;overflow:hidden;}
 
   /* FULLSCREEN CAMERA */
-  #vid{position:fixed;inset:0;width:100%;height:100%;object-fit:cover;transform:scaleX(-1);display:none;}
+  #vid{position:fixed;inset:0;width:100%;height:100%;object-fit:cover;display:none;}
 
   /* NO CAM */
   .no-cam{position:fixed;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;background:#0a0a0f;color:var(--muted);}
@@ -366,7 +366,7 @@ async function capture() {
   const cv  = document.getElementById('cv');
   cv.width = vid.videoWidth; cv.height = vid.videoHeight;
   const ctx = cv.getContext('2d');
-  ctx.save(); ctx.scale(-1,1); ctx.drawImage(vid,-cv.width,0); ctx.restore();
+  ctx.drawImage(vid,0,0);
   const b64 = cv.toDataURL('image/jpeg',0.92).split(',')[1];
 
   document.getElementById('analyzing').classList.add('on');
@@ -453,36 +453,4 @@ function showResult(r, saved) {
 
   const rows=[
     {k:'رقم الطلب',v:r.orderNumber||'—',c:'big'},
-    {k:'المنصة',   v:r.platform   ||'—',c:''},
-    {k:'الأصناف',  v:r.items      ||'—',c:''},
-  ];
-  if(r.notes?.trim()) rows.push({k:'ملاحظات',v:r.notes,c:'warn'});
-
-  document.getElementById('rrows').innerHTML = rows.map(x=>
-    `<div class="rrow"><span class="rkey">${x.k}</span><span class="rval ${x.c}">${x.v}</span></div>`
-  ).join('');
-
-  document.getElementById('resultBg').classList.add('on');
-  toast(saved?'✓ تم التحليل والحفظ':'✓ تم التحليل', saved?'ok':'info');
-}
-
-function closeResult() { document.getElementById('resultBg').classList.remove('on'); }
-
-// ── TOAST ─────────────────────────────────────────────
-function toast(msg,type='ok'){
-  const el=document.getElementById('toast');
-  el.textContent=msg; el.className=`toast ${type} show`;
-  setTimeout(()=>el.classList.remove('show'),2600);
-}
-
-document.addEventListener('touchstart',()=>{
-  if(!audioCtx) audioCtx=new(window.AudioContext||window.webkitAudioContext)();
-  if(audioCtx.state==='suspended') audioCtx.resume();
-},{once:true});
-
-document.addEventListener('keydown',e=>{
-  if(e.code==='Space'&&!document.getElementById('shutter').disabled){e.preventDefault();capture();}
-});
-</script>
-</body>
-</html>
+    {k:'المنصة',   v:r.platform   ||'—
