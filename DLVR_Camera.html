@@ -257,12 +257,12 @@ async function capture(){
 
   const vid = document.getElementById('vid');
   const cv  = document.getElementById('cv');
-  const maxW=800;const ratio=Math.min(maxW/(vid.videoWidth||1280),1);cv.width=Math.round((vid.videoWidth||1280)*ratio);
+  const maxW=480;const ratio=Math.min(maxW/(vid.videoWidth||1280),1);cv.width=Math.round((vid.videoWidth||1280)*ratio);
   cv.height=Math.round((vid.videoHeight||720)*ratio);
   const ctx = cv.getContext('2d');
   ctx.drawImage(vid, 0, 0, cv.width, cv.height);
 
-  const b64 = cv.toDataURL('image/jpeg', 0.7).split(',')[1];
+  const b64 = cv.toDataURL('image/jpeg', 0.5).split(',')[1];
 
   document.getElementById('analyzing').classList.add('on');
   document.getElementById('shutter').disabled = true;
@@ -304,8 +304,9 @@ async function analyze(b64){
       }]
     })
   });
-  if(!res.ok){ const e=await res.json(); throw new Error(e.error?.message||'خطأ في الاتصال'); }
-  const data  = await res.json();
+  const data = await res.json();
+  if(data.error) throw new Error(data.error.message || JSON.stringify(data.error));
+  if(!data.content || !data.content[0]) throw new Error('رد غير متوقع: ' + JSON.stringify(data));
   const text  = data.content[0].text.trim();
   const match = text.match(/\{[\s\S]*\}/);
   if(!match) throw new Error('لم يتمكن AI من قراءة الطلب');
