@@ -27,9 +27,9 @@ html,body{
   user-select:none;
 }
 
-/* \u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550
+/* ═══════════════════════════════
    LAYOUT
-\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550 */
+═══════════════════════════════ */
 .app{
   display:flex;
   flex-direction:column;
@@ -39,9 +39,9 @@ html,body{
   position:relative;
 }
 
-/* \u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550
+/* ═══════════════════════════════
    HEADER
-\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550 */
+═══════════════════════════════ */
 .header{
   flex-shrink:0;
   display:flex;
@@ -100,9 +100,9 @@ html,body{
 .today-n{font-size:20px;font-weight:900;color:var(--g);line-height:1;}
 .today-l{font-size:9px;color:var(--muted);font-weight:500;letter-spacing:1px;}
 
-/* \u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550
+/* ═══════════════════════════════
    CAMERA ZONE
-\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550 */
+═══════════════════════════════ */
 .cam-zone{
   flex:1;
   position:relative;
@@ -115,8 +115,619 @@ video#vid{
   inset:0;
   width:100%;height:100%;
   object-fit:cover;
-  /* NO transform \u2014 camera NOT mirrored */
+  /* NO transform — camera NOT mirrored */
   display:none;
 }
 
-/* Dark v
+/* Dark vignette around edges */
+.vignette{
+  position:absolute;inset:0;
+  background:radial-gradient(ellipse at center, transparent 55%, rgba(0,0,0,.7) 100%);
+  pointer-events:none;
+  z-index:2;
+}
+
+/* ── SCAN BOX ── */
+.scan-box{
+  position:absolute;
+  top:50%;left:50%;
+  transform:translate(-50%,-50%);
+  width:75%;
+  aspect-ratio:1.6/1;
+  z-index:3;
+  pointer-events:none;
+}
+
+/* Animated corners */
+.sc{
+  position:absolute;
+  width:22px;height:22px;
+  border-color:var(--g);
+  border-style:solid;
+  transition:border-color .3s;
+}
+.sc.tl{top:0;right:0;border-width:3px 0 0 3px;border-radius:3px 0 0 0;}
+.sc.tr{top:0;left:0; border-width:3px 3px 0 0;border-radius:0 3px 0 0;}
+.sc.bl{bottom:0;right:0;border-width:0 0 3px 3px;border-radius:0 0 0 3px;}
+.sc.br{bottom:0;left:0; border-width:0 3px 3px 0;border-radius:0 0 3px 0;}
+
+.scan-box.unclear .sc{border-color:var(--warn);}
+.scan-box.captured .sc{border-color:#fff;}
+
+/* Scan line inside box */
+.scan-line{
+  position:absolute;
+  left:4px;right:4px;height:1.5px;
+  background:linear-gradient(90deg,transparent,var(--g),transparent);
+  top:0;
+  opacity:0;
+}
+.scanning .scan-line{
+  animation:scanMove 2s ease-in-out infinite;
+  opacity:1;
+}
+@keyframes scanMove{
+  0%{top:4px;}
+  50%{top:calc(100% - 4px);}
+  100%{top:4px;}
+}
+
+/* Box label */
+.box-label{
+  position:absolute;
+  bottom:-26px;
+  right:50%;transform:translateX(50%);
+  font-size:11px;font-weight:700;
+  color:var(--g);
+  letter-spacing:1.5px;
+  opacity:.8;
+  white-space:nowrap;
+}
+
+/* ── FLASH ── */
+.flash{
+  position:absolute;inset:0;
+  background:#fff;opacity:0;
+  pointer-events:none;z-index:10;
+  transition:opacity .06s;
+}
+.flash.go{opacity:1;transition:none;}
+
+/* ── NO CAM ── */
+.no-cam{
+  position:absolute;inset:0;
+  display:flex;flex-direction:column;
+  align-items:center;justify-content:center;
+  gap:18px;
+  background:var(--dark);
+  z-index:5;
+}
+.no-cam-icon{
+  width:70px;height:70px;
+  border-radius:50%;
+  border:2px solid var(--border);
+  display:flex;align-items:center;justify-content:center;
+  color:var(--muted);
+}
+.no-cam p{font-size:14px;color:var(--muted);font-weight:500;}
+.start-btn{
+  padding:13px 32px;
+  border-radius:50px;
+  border:2px solid var(--g);
+  background:transparent;
+  color:var(--g);
+  font-family:'Tajawal',sans-serif;
+  font-size:15px;font-weight:700;
+  cursor:pointer;
+  transition:all .2s;
+  letter-spacing:.5px;
+}
+.start-btn:active{background:rgba(0,255,179,.12);}
+
+/* ── STATUS CHIP ── */
+.status-chip{
+  position:absolute;
+  top:14px;
+  right:50%;transform:translateX(50%);
+  display:flex;align-items:center;gap:6px;
+  background:rgba(8,12,16,.75);
+  border:1px solid rgba(255,255,255,.08);
+  border-radius:20px;
+  padding:5px 14px;
+  font-size:11px;font-weight:700;
+  backdrop-filter:blur(8px);
+  color:var(--muted);
+  z-index:4;
+  transition:all .3s;
+  letter-spacing:.5px;
+  display:none;
+}
+.sdot{
+  width:6px;height:6px;border-radius:50%;
+  background:var(--muted);
+}
+
+/* ═══════════════════════════════
+   BOTTOM BAR
+═══════════════════════════════ */
+.bottom{
+  flex-shrink:0;
+  background:var(--card);
+  border-top:1px solid var(--border);
+  padding:16px 24px 30px;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  gap:12px;
+  position:relative;
+  z-index:20;
+}
+
+/* Connection indicator */
+.conn{
+  display:flex;align-items:center;gap:6px;
+  font-size:11px;font-weight:600;
+  color:var(--muted);
+  letter-spacing:.5px;
+}
+.conn-dot{
+  width:7px;height:7px;border-radius:50%;
+  background:var(--muted);
+  transition:background .3s;
+}
+.conn.ok .conn-dot{background:var(--g);box-shadow:0 0 6px var(--g);}
+.conn.ok{color:var(--g);}
+
+/* ── SHUTTER ── */
+.shutter-ring{
+  width:80px;height:80px;
+  border-radius:50%;
+  border:2px solid rgba(255,255,255,.2);
+  display:flex;align-items:center;justify-content:center;
+  transition:border-color .2s;
+}
+.shutter{
+  width:66px;height:66px;
+  border-radius:50%;
+  border:none;
+  background:linear-gradient(135deg,var(--g),var(--b));
+  cursor:pointer;
+  display:flex;align-items:center;justify-content:center;
+  transition:transform .12s,box-shadow .2s;
+  box-shadow:0 4px 20px rgba(0,255,179,.25);
+  position:relative;
+  overflow:hidden;
+}
+.shutter::after{
+  content:'';
+  position:absolute;inset:0;
+  background:linear-gradient(135deg,rgba(255,255,255,.2),transparent);
+  border-radius:50%;
+}
+.shutter:active{transform:scale(.9);}
+.shutter:disabled{opacity:.3;cursor:not-allowed;box-shadow:none;}
+.shutter svg{position:relative;z-index:1;}
+
+canvas{display:none;}
+
+/* ═══════════════════════════════
+   ADMIN MODAL
+═══════════════════════════════ */
+.overlay{
+  display:none;
+  position:fixed;inset:0;
+  background:rgba(0,0,0,.8);
+  z-index:50;
+  backdrop-filter:blur(10px);
+  align-items:flex-end;
+  justify-content:center;
+}
+.overlay.on{display:flex;}
+
+.sheet{
+  width:100%;max-width:480px;
+  background:var(--card);
+  border-top:1px solid var(--border);
+  border-radius:24px 24px 0 0;
+  padding:20px 20px 36px;
+  animation:up .3s cubic-bezier(.22,1,.36,1);
+}
+@keyframes up{from{transform:translateY(100%)}to{transform:translateY(0)}}
+
+.sheet-handle{
+  width:36px;height:3px;
+  background:var(--border);
+  border-radius:2px;
+  margin:0 auto 18px;
+}
+
+.sheet-head{
+  display:flex;align-items:center;gap:8px;
+  margin-bottom:6px;
+}
+.sheet-title{font-size:15px;font-weight:700;}
+.sheet-badge{
+  font-size:10px;font-weight:700;
+  background:rgba(255,179,0,.12);
+  color:var(--warn);
+  border-radius:20px;padding:2px 9px;
+  letter-spacing:.5px;
+}
+.sheet-sub{font-size:12px;color:var(--muted);margin-bottom:18px;}
+
+/* PIN */
+.pin-wrap{margin-bottom:4px;}
+.pin-in{
+  width:100%;
+  background:var(--dark);
+  border:1.5px solid var(--border);
+  border-radius:12px;
+  padding:13px;
+  font-family:'Tajawal',sans-serif;
+  font-size:20px;font-weight:700;
+  color:var(--text);
+  outline:none;
+  text-align:center;
+  letter-spacing:8px;
+  transition:border-color .2s;
+}
+.pin-in:focus{border-color:var(--warn);}
+.pin-err{
+  font-size:12px;color:var(--red);
+  text-align:center;
+  padding:6px 0;
+  display:none;
+}
+
+/* Settings */
+.settings{display:none;}
+.field-label{font-size:11px;color:var(--muted);margin-bottom:7px;font-weight:600;letter-spacing:.5px;}
+.url-row{display:flex;gap:8px;margin-bottom:6px;}
+.url-in{
+  flex:1;
+  background:var(--dark);
+  border:1.5px solid var(--border);
+  border-radius:12px;
+  padding:11px 13px;
+  font-family:'Tajawal',sans-serif;
+  font-size:12px;color:var(--text);
+  outline:none;direction:ltr;text-align:left;
+  transition:border-color .2s;
+}
+.url-in:focus{border-color:var(--b);}
+.url-in::placeholder{color:var(--muted);}
+.save-btn{
+  padding:11px 16px;
+  border-radius:12px;border:none;
+  background:var(--b);color:#000;
+  font-family:'Tajawal',sans-serif;
+  font-size:12px;font-weight:700;
+  cursor:pointer;white-space:nowrap;
+  transition:opacity .2s;
+}
+.save-btn:active{opacity:.8;}
+.field-hint{font-size:10px;color:var(--muted);margin-bottom:18px;}
+
+.close-btn{
+  width:100%;padding:13px;
+  border-radius:12px;
+  border:1.5px solid var(--border);
+  background:transparent;
+  color:var(--muted);
+  font-family:'Tajawal',sans-serif;
+  font-size:14px;font-weight:600;
+  cursor:pointer;
+  transition:all .2s;
+}
+.close-btn:active{border-color:var(--text);color:var(--text);}
+
+/* ═══════════════════════════════
+   ANALYZING
+═══════════════════════════════ */
+.analyzing{
+  display:none;
+  position:fixed;inset:0;
+  background:rgba(8,12,16,.92);
+  z-index:60;
+  flex-direction:column;
+  align-items:center;justify-content:center;
+  gap:18px;
+  backdrop-filter:blur(12px);
+}
+.analyzing.on{display:flex;}
+
+.spin-ring{
+  width:58px;height:58px;
+  border-radius:50%;
+  border:3px solid rgba(0,255,179,.12);
+  border-top-color:var(--g);
+  animation:spin .7s linear infinite;
+}
+@keyframes spin{to{transform:rotate(360deg)}}
+.an-t{font-size:16px;font-weight:700;color:var(--g);}
+.an-s{font-size:12px;color:var(--muted);}
+
+/* ═══════════════════════════════
+   RESULT SHEET
+═══════════════════════════════ */
+.result-overlay{
+  display:none;
+  position:fixed;inset:0;
+  z-index:55;
+  align-items:flex-end;
+  justify-content:center;
+  background:rgba(0,0,0,.5);
+  backdrop-filter:blur(4px);
+}
+.result-overlay.on{display:flex;}
+
+.result-sheet{
+  width:100%;max-width:480px;
+  background:var(--card);
+  border-top:1px solid var(--border);
+  border-radius:24px 24px 0 0;
+  padding:18px 20px 34px;
+  animation:up .3s cubic-bezier(.22,1,.36,1);
+}
+.r-handle{width:36px;height:3px;background:var(--border);border-radius:2px;margin:0 auto 14px;}
+.r-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;}
+.r-title{font-size:14px;font-weight:700;color:var(--g);}
+.r-badge{font-size:11px;font-weight:700;padding:3px 10px;border-radius:20px;}
+.r-badge.ok{background:rgba(0,255,179,.1);color:var(--g);}
+.r-badge.err{background:rgba(255,61,87,.1);color:var(--red);}
+
+.r-rows{display:flex;flex-direction:column;gap:10px;margin-bottom:16px;}
+.r-row{display:flex;gap:10px;align-items:flex-start;}
+.r-key{font-size:11px;color:var(--muted);min-width:70px;padding-top:3px;font-weight:600;letter-spacing:.3px;}
+.r-val{font-size:13px;color:var(--text);font-weight:500;flex:1;line-height:1.55;}
+.r-val.big{font-size:18px;font-weight:900;color:var(--g);}
+.r-val.warn{color:var(--warn);}
+
+.r-close{
+  width:100%;padding:13px;border-radius:12px;
+  border:1.5px solid var(--border);background:transparent;
+  color:var(--muted);font-family:'Tajawal',sans-serif;
+  font-size:14px;font-weight:600;cursor:pointer;
+}
+
+/* ═══════════════════════════════
+   TOAST
+═══════════════════════════════ */
+.toast{
+  position:fixed;bottom:110px;left:50%;
+  transform:translateX(-50%) translateY(60px);
+  padding:10px 22px;border-radius:50px;
+  font-size:13px;font-weight:700;
+  z-index:200;
+  transition:transform .3s cubic-bezier(.34,1.56,.64,1);
+  white-space:nowrap;pointer-events:none;
+  font-family:'Tajawal',sans-serif;
+}
+.toast.show{transform:translateX(-50%) translateY(0);}
+.toast.ok{background:var(--g);color:#000;}
+.toast.bad{background:var(--red);color:#fff;}
+.toast.info{background:#1a2530;color:var(--text);border:1px solid var(--border);}
+</style>
+</head>
+<body>
+<div class="app">
+
+  <!-- HEADER -->
+  <div class="header">
+    <div class="brand" id="brand" onclick="onBrandTap()">
+      <div class="brand-icon" id="brandIcon">DL</div>
+      <div>
+        <div class="brand-name">DLVR</div>
+        <div class="tap-row" id="tapRow">
+          <div class="tdot" id="t0"></div>
+          <div class="tdot" id="t1"></div>
+          <div class="tdot" id="t2"></div>
+          <div class="tdot" id="t3"></div>
+          <div class="tdot" id="t4"></div>
+        </div>
+      </div>
+    </div>
+    <div class="today-box">
+      <div class="today-n" id="cnt">0</div>
+      <div class="today-l">اليوم</div>
+    </div>
+  </div>
+
+  <!-- CAMERA -->
+  <div class="cam-zone" id="camZone">
+    <video id="vid" autoplay playsinline muted></video>
+    <div class="vignette"></div>
+    <div class="flash" id="flash"></div>
+
+    <!-- SCAN BOX -->
+    <div class="scan-box" id="scanBox">
+      <div class="sc tl"></div>
+      <div class="sc tr"></div>
+      <div class="sc bl"></div>
+      <div class="sc br"></div>
+      <div class="scan-line"></div>
+      <div class="box-label" id="boxLabel">ضع الطلب داخل الإطار</div>
+    </div>
+
+    <!-- NO CAM -->
+    <div class="no-cam" id="noCam">
+      <div class="no-cam-icon">
+        <svg width="32" height="32" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"/>
+          <path stroke-linecap="round" stroke-linejoin="round" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z"/>
+        </svg>
+      </div>
+      <p>الكاميرا غير مفعّلة</p>
+      <button class="start-btn" onclick="startCam()">تشغيل الكاميرا</button>
+    </div>
+  </div>
+
+  <canvas id="cv"></canvas>
+
+  <!-- BOTTOM -->
+  <div class="bottom">
+    <div class="conn" id="conn">
+      <div class="conn-dot"></div>
+      <span id="connTxt">غير مرتبط بـ Sheets</span>
+    </div>
+    <div class="shutter-ring">
+      <button class="shutter" id="shutter" onclick="capture()" disabled>
+        <svg width="26" height="26" fill="none" viewBox="0 0 24 24" stroke="#000" stroke-width="2.5">
+          <circle cx="12" cy="12" r="4"/>
+          <path stroke-linecap="round" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"/>
+        </svg>
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- ADMIN OVERLAY -->
+<div class="overlay" id="adminOverlay" onclick="closeAdmin()">
+  <div class="sheet" onclick="event.stopPropagation()">
+    <div class="sheet-handle"></div>
+    <div class="sheet-head">
+      <div class="sheet-title">إعدادات المشرف</div>
+      <div class="sheet-badge">🔒 محمي</div>
+    </div>
+    <div class="sheet-sub">أدخل كود الدخول</div>
+
+    <div class="pin-wrap" id="pinWrap">
+      <input class="pin-in" id="pinIn" type="password" inputmode="numeric" maxlength="4" placeholder="••••" oninput="checkPin()">
+      <div class="pin-err" id="pinErr">❌ كود خاطئ</div>
+    </div>
+
+    <div class="settings" id="settingsDiv">
+      <div class="field-label">رابط Google Sheets</div>
+      <div class="url-row">
+        <input class="url-in" id="urlIn" placeholder="https://script.google.com/macros/s/.../exec">
+        <button class="save-btn" onclick="saveUrl()">حفظ</button>
+      </div>
+      <div class="field-hint">يُحفظ على الجهاز فقط ولا يظهر للموظفين</div>
+    </div>
+
+    <button class="close-btn" onclick="closeAdmin()">إغلاق</button>
+  </div>
+</div>
+
+<!-- ANALYZING -->
+<div class="analyzing" id="analyzing">
+  <div class="spin-ring"></div>
+  <div class="an-t">AI يحلل الطلب...</div>
+  <div class="an-s">يقرأ رقم الطلب والمنصة والأصناف</div>
+</div>
+
+<!-- RESULT -->
+<div class="result-overlay" id="resultOverlay">
+  <div class="result-sheet">
+    <div class="r-handle"></div>
+    <div class="r-head">
+      <span class="r-title">نتيجة التحليل</span>
+      <span class="r-badge ok" id="rBadge">✓ تم الحفظ</span>
+    </div>
+    <div class="r-rows" id="rRows"></div>
+    <button class="r-close" onclick="closeResult()">إغلاق</button>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ══════════════════════════════════════════
+// CONFIG — غيّر هذي القيم
+// ══════════════════════════════════════════
+const ANTHROPIC_KEY = 'YOUR_ANTHROPIC_API_KEY'; // ← مفتاح Claude API
+const ADMIN_PIN     = '1234';                    // ← كود المشرف
+
+// ══════════════════════════════════════════
+// STATE
+// ══════════════════════════════════════════
+let stream   = null;
+let sheetUrl = localStorage.getItem('dlvr_url') || '';
+let count    = parseInt(localStorage.getItem('dlvr_count') || '0');
+let busy     = false;
+let tapN     = 0;
+let tapTimer = null;
+let audioCtx = null;
+
+// ══════════════════════════════════════════
+// INIT
+// ══════════════════════════════════════════
+document.getElementById('cnt').textContent = count;
+if(sheetUrl){
+  document.getElementById('urlIn').value = sheetUrl;
+  setConn(true);
+}
+
+// ══════════════════════════════════════════
+// CAMERA
+// ══════════════════════════════════════════
+async function startCam(){
+  try{
+    // Try back camera first (environment)
+    stream = await navigator.mediaDevices.getUserMedia({
+      video:{
+        facingMode:{ideal:'environment'},
+        width:{ideal:1920},
+        height:{ideal:1080}
+      },
+      audio:false
+    });
+  }catch{
+    try{
+      stream = await navigator.mediaDevices.getUserMedia({video:true,audio:false});
+    }catch{
+      toast('⚠️ تعذّر الوصول للكاميرا','bad');
+      return;
+    }
+  }
+
+  const v = document.getElementById('vid');
+  v.srcObject = stream;
+  v.style.display = 'block';
+  document.getElementById('noCam').style.display = 'none';
+  document.getElementById('shutter').disabled = false;
+
+  // Start scan animation
+  document.getElementById('camZone').classList.add('scanning');
+}
+
+// ══════════════════════════════════════════
+// CAPTURE
+// ══════════════════════════════════════════
+async function capture(){
+  if(!stream || busy) return;
+  busy = true;
+
+  // Flash
+  const fl = document.getElementById('flash');
+  fl.classList.add('go');
+  setTimeout(()=>fl.classList.remove('go'), 100);
+
+  // Beep
+  beep();
+
+  // Grab frame — NO mirror, straight from camera
+  const vid = document.getElementById('vid');
+  const cv  = document.getElementById('cv');
+  cv.width  = vid.videoWidth  || 1280;
+  cv.height = vid.videoHeight || 720;
+  const ctx = cv.getContext('2d');
+  ctx.drawImage(vid, 0, 0); // straight, no flip
+
+  const b64 = cv.toDataURL('image/jpeg', 0.93).split(',')[1];
+
+  // Show analyzing
+  document.getElementById('analyzing').classList.add('on');
+  document.getElementById('shutter').disabled = true;
+
+  try{
+    const result = await analyze(b64);
+    let saved = false;
+    if(sheetUrl) saved = await saveSheet(result);
+    showResult(result, saved);
+    count++;
+    localStorage.setItem('dlvr_count', count);
+    document.getElementById('cnt').textContent = count;
+
+    // Flash corners green briefly
+    document.getElementById('scanBox').cl
