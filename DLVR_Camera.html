@@ -215,6 +215,7 @@ canvas{display:none;}
 
 <script>
 const WORKER_URL = 'https://dry-glade-3ab4.e-8mohm.workers.dev/';
+const IMGBB_KEY  = '7cf15082b41afb536fe73aa393d6dfb4';
 const ADMIN_PIN  = '1234';
 
 let stream   = null;
@@ -269,6 +270,9 @@ async function capture(){
 
   try{
     const result = await analyze(b64);
+    // رفع الصورة على ImgBB
+    const imageUrl = await uploadImage(b64);
+    result.imageUrl = imageUrl;
     let saved = false;
     if(sheetUrl) saved = await saveSheet(result);
     showResult(result, saved);
@@ -313,10 +317,22 @@ async function analyze(b64){
   return JSON.parse(match[0]);
 }
 
+async function uploadImage(b64){
+  try{
+    const form = new FormData();
+    form.append('key', IMGBB_KEY);
+    form.append('image', b64);
+    const res = await fetch('https://api.imgbb.com/1/upload', {method:'POST', body:form});
+    const data = await res.json();
+    if(data.success) return data.data.url;
+    return '';
+  }catch{ return ''; }
+}
+
 async function saveSheet(r){
   try{
     await fetch(sheetUrl,{method:'POST',mode:'no-cors',headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({orderNumber:r.orderNumber,platform:r.platform,items:r.items,notes:r.notes})});
+      body:JSON.stringify({orderNumber:r.orderNumber,platform:r.platform,items:r.items,notes:r.notes,imageUrl:r.imageUrl||''})});
     return true;
   }catch{ return false; }
 }
@@ -371,7 +387,7 @@ function setConn(ok){
 
 function showResult(r,saved){
   const badge=document.getElementById('rBadge');
-  badge.textContent=saved?'✓ تم الحفظ في الشيت':(sheetUrl?'⚠️ فشل الحفظ':'⬡ غير مرتبط');
+  badge.textContent=saved?'✓ تم الارسال':(sheetUrl?'⚠️ فشل الحفظ':'⬡ غير مرتبط');
   badge.className='r-badge '+(saved?'ok':'err');
   const rows=[
     {k:'رقم الطلب',v:r.orderNumber||'—',c:'big'},
