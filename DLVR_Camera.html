@@ -257,12 +257,12 @@ async function capture(){
 
   const vid = document.getElementById('vid');
   const cv  = document.getElementById('cv');
-  cv.width  = vid.videoWidth  || 1280;
-  cv.height = vid.videoHeight || 720;
+  const maxW=800;const ratio=Math.min(maxW/(vid.videoWidth||1280),1);cv.width=Math.round((vid.videoWidth||1280)*ratio);
+  cv.height=Math.round((vid.videoHeight||720)*ratio);
   const ctx = cv.getContext('2d');
-  ctx.drawImage(vid, 0, 0);
+  ctx.drawImage(vid, 0, 0, cv.width, cv.height);
 
-  const b64 = cv.toDataURL('image/jpeg', 0.93).split(',')[1];
+  const b64 = cv.toDataURL('image/jpeg', 0.7).split(',')[1];
 
   document.getElementById('analyzing').classList.add('on');
   document.getElementById('shutter').disabled = true;
