@@ -229,7 +229,7 @@ video#vid{
   position:absolute;
   top:14px;
   right:50%;transform:translateX(50%);
-  display:flex;align-items:center;gap:6px;
+  align-items:center;gap:6px;
   background:rgba(8,12,16,.75);
   border:1px solid rgba(255,255,255,.08);
   border-radius:20px;
@@ -730,4 +730,227 @@ async function capture(){
     document.getElementById('cnt').textContent = count;
 
     // Flash corners green briefly
-    document.getElementById('scanBox').cl
+    document.getElementById('scanBox').classList.add('captured');
+    setTimeout(()=>document.getElementById('scanBox').classList.remove('captured'), 800);
+
+  }catch(err){
+    toast('❌ '+err.message,'bad');
+  }finally{
+    document.getElementById('analyzing').classList.remove('on');
+    document.getElementById('shutter').disabled = false;
+    busy = false;
+  }
+}
+
+// ══════════════════════════════════════════
+// AI ANALYSIS
+// ══════════════════════════════════════════
+async function analyze(b64){
+  const res = await fetch('https://api.anthropic.com/v1/messages',{
+    method:'POST',
+    headers:{
+      'Content-Type':'application/json',
+      'x-api-key': ANTHROPIC_KEY,
+      'anthropic-version':'2023-06-01'
+    },
+    body:JSON.stringify({
+      model:'claude-haiku-4-5-20251001',
+      max_tokens:400,
+      messages:[{
+        role:'user',
+        content:[
+          {type:'image',source:{type:'base64',media_type:'image/jpeg',data:b64}},
+          {type:'text',text:`أنت نظام توثيق طلبات مطاعم. حلّل صورة طلب التيك أواي وأعطني JSON فقط بدون أي نص إضافي:
+{
+  "orderNumber": "رقم الطلب أو الكود",
+  "platform": "HungerStation أو Keeta أو Jahez أو Ninja أو ToYou أو Marsool أو غير واضح",
+  "items": "الأصناف مفصولة بفاصلة",
+  "notes": "ملاحظة مهمة إن وجدت وإلا اتركها فارغة"
+}
+إذا لم تجد معلومة اكتب: غير واضح. لا تكتب أي شيء خارج JSON.`}
+        ]
+      }]
+    })
+  });
+
+  if(!res.ok){
+    const e = await res.json();
+    throw new Error(e.error?.message || 'خطأ في الاتصال بـ AI');
+  }
+
+  const data  = await res.json();
+  const text  = data.content[0].text.trim();
+  const match = text.match(/\{[\s\S]*\}/);
+  if(!match) throw new Error('لم يتمكن AI من قراءة الطلب');
+  return JSON.parse(match[0]);
+}
+
+// ══════════════════════════════════════════
+// GOOGLE SHEETS
+// ══════════════════════════════════════════
+async function saveSheet(r){
+  try{
+    await fetch(sheetUrl,{
+      method:'POST',
+      mode:'no-cors',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({
+        orderNumber: r.orderNumber,
+        platform:    r.platform,
+        items:       r.items,
+        notes:       r.notes
+      })
+    });
+    return true;
+  }catch{ return false; }
+}
+
+// ══════════════════════════════════════════
+// BRAND TAP (secret 5x)
+// ══════════════════════════════════════════
+function onBrandTap(){
+  const icon = document.getElementById('brandIcon');
+  icon.classList.add('tap');
+  setTimeout(()=>icon.classList.remove('tap'), 120);
+
+  tapN++;
+  for(let i=0;i<5;i++)
+    document.getElementById('t'+i).classList.toggle('on', i<tapN);
+
+  clearTimeout(tapTimer);
+  tapTimer = setTimeout(()=>{
+    tapN = 0;
+    for(let i=0;i<5;i++) document.getElementById('t'+i).classList.remove('on');
+  }, 2500);
+
+  if(tapN >= 5){
+    tapN = 0;
+    clearTimeout(tapTimer);
+    for(let i=0;i<5;i++) document.getElementById('t'+i).classList.remove('on');
+    openAdmin();
+  }
+}
+
+// ══════════════════════════════════════════
+// ADMIN
+// ══════════════════════════════════════════
+function openAdmin(){
+  document.getElementById('pinIn').value = '';
+  document.getElementById('pinErr').style.display = 'none';
+  document.getElementById('pinWrap').style.display = 'block';
+  document.getElementById('settingsDiv').style.display = 'none';
+  document.getElementById('adminOverlay').classList.add('on');
+  setTimeout(()=>document.getElementById('pinIn').focus(), 350);
+}
+
+function closeAdmin(){
+  document.getElementById('adminOverlay').classList.remove('on');
+}
+
+function checkPin(){
+  const v = document.getElementById('pinIn').value;
+  if(v.length < 4) return;
+  if(v === ADMIN_PIN){
+    document.getElementById('pinWrap').style.display = 'none';
+    document.getElementById('settingsDiv').style.display = 'block';
+    if(sheetUrl) document.getElementById('urlIn').value = sheetUrl;
+  }else{
+    document.getElementById('pinErr').style.display = 'block';
+    document.getElementById('pinIn').value = '';
+    setTimeout(()=>document.getElementById('pinErr').style.display='none', 2000);
+  }
+}
+
+function saveUrl(){
+  const v = document.getElementById('urlIn').value.trim();
+  if(!v.startsWith('https://script.google.com')){
+    toast('رابط غير صحيح','bad'); return;
+  }
+  sheetUrl = v;
+  localStorage.setItem('dlvr_url', sheetUrl);
+  setConn(true);
+  closeAdmin();
+  toast('✓ تم الربط بـ Google Sheets','ok');
+}
+
+function setConn(ok){
+  const el  = document.getElementById('conn');
+  const txt = document.getElementById('connTxt');
+  el.className  = 'conn'+(ok?' ok':'');
+  txt.textContent = ok ? 'مرتبط بـ Google Sheets' : 'غير مرتبط بـ Sheets';
+}
+
+// ══════════════════════════════════════════
+// RESULT
+// ══════════════════════════════════════════
+function showResult(r, saved){
+  const badge = document.getElementById('rBadge');
+  badge.textContent = saved ? '✓ تم الحفظ في الشيت' : (sheetUrl?'⚠️ فشل الحفظ':'⬡ غير مرتبط');
+  badge.className   = 'r-badge '+(saved?'ok':'err');
+
+  const rows = [
+    {k:'رقم الطلب', v: r.orderNumber||'—', c:'big'},
+    {k:'المنصة',    v: r.platform   ||'—', c:''},
+    {k:'الأصناف',   v: r.items      ||'—', c:''},
+  ];
+  if(r.notes && r.notes.trim() && r.notes !== 'غير واضح')
+    rows.push({k:'ملاحظات', v:r.notes, c:'warn'});
+
+  document.getElementById('rRows').innerHTML = rows.map(x=>
+    `<div class="r-row">
+      <span class="r-key">${x.k}</span>
+      <span class="r-val ${x.c}">${x.v}</span>
+    </div>`
+  ).join('');
+
+  document.getElementById('resultOverlay').classList.add('on');
+  toast(saved?'✓ تم التحليل والحفظ':'✓ تم التحليل', saved?'ok':'info');
+}
+
+function closeResult(){
+  document.getElementById('resultOverlay').classList.remove('on');
+}
+
+// ══════════════════════════════════════════
+// BEEP
+// ══════════════════════════════════════════
+function beep(){
+  try{
+    if(!audioCtx) audioCtx = new(window.AudioContext||window.webkitAudioContext)();
+    const o=audioCtx.createOscillator();
+    const g=audioCtx.createGain();
+    o.connect(g); g.connect(audioCtx.destination);
+    o.type='sine';
+    o.frequency.setValueAtTime(900, audioCtx.currentTime);
+    o.frequency.exponentialRampToValueAtTime(1300, audioCtx.currentTime+0.1);
+    g.gain.setValueAtTime(0.35, audioCtx.currentTime);
+    g.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime+0.18);
+    o.start(); o.stop(audioCtx.currentTime+0.18);
+  }catch{}
+}
+
+// ══════════════════════════════════════════
+// TOAST
+// ══════════════════════════════════════════
+function toast(msg, type='ok'){
+  const el = document.getElementById('toast');
+  el.textContent = msg;
+  el.className = `toast ${type} show`;
+  setTimeout(()=>el.classList.remove('show'), 2800);
+}
+
+// Unlock audio on first touch
+document.addEventListener('touchstart',()=>{
+  if(!audioCtx) audioCtx=new(window.AudioContext||window.webkitAudioContext)();
+  if(audioCtx.state==='suspended') audioCtx.resume();
+},{once:true});
+
+// Space = capture
+document.addEventListener('keydown',e=>{
+  if(e.code==='Space' && !document.getElementById('shutter').disabled){
+    e.preventDefault(); capture();
+  }
+});
+</script>
+</body>
+</html>
