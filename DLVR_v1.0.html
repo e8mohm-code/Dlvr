@@ -150,6 +150,32 @@ canvas{display:none;}
 .toast.ok{background:var(--org);color:#000;}
 .toast.bad{background:var(--red);color:#fff;}
 .toast.info{background:#1a1a1a;color:var(--text);border:1px solid var(--border);}
+
+/* SUCCESS OVERLAY */
+.success-overlay{
+  display:none;position:fixed;inset:0;z-index:100;
+  align-items:center;justify-content:center;
+  background:rgba(0,0,0,.75);backdrop-filter:blur(8px);
+  flex-direction:column;gap:16px;
+}
+.success-overlay.on{display:flex;}
+.success-circle{
+  width:110px;height:110px;border-radius:50%;
+  background:rgba(0,200,83,.12);
+  border:3px solid var(--org);
+  display:flex;align-items:center;justify-content:center;
+  animation:popIn .4s cubic-bezier(.34,1.56,.64,1);
+}
+@keyframes popIn{from{transform:scale(0);opacity:0}to{transform:scale(1);opacity:1}}
+.success-check{
+  animation:drawCheck .4s .2s cubic-bezier(.34,1.56,.64,1) both;
+}
+@keyframes drawCheck{from{transform:scale(0) rotate(-20deg);opacity:0}to{transform:scale(1) rotate(0);opacity:1}}
+.success-txt{
+  font-size:18px;font-weight:700;color:var(--text);
+  animation:fadeUp .4s .3s both;
+}
+@keyframes fadeUp{from{transform:translateY(10px);opacity:0}to{transform:translateY(0);opacity:1}}
 </style>
 </head>
 <body>
@@ -282,6 +308,16 @@ canvas{display:none;}
 </div>
 
 <div class="toast" id="toast"></div>
+
+<!-- SUCCESS OVERLAY -->
+<div class="success-overlay" id="successOverlay">
+  <div class="success-circle">
+    <svg class="success-check" width="56" height="56" viewBox="0 0 56 56" fill="none">
+      <path d="M12 28L24 40L44 18" stroke="#00C853" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+  </div>
+  <div class="success-txt">تم الإرسال</div>
+</div>
 
 <script>
 // ══ CONFIG ═══════════════════════════════════════════
@@ -441,6 +477,7 @@ async function saveSheet(r, b64Upload){
       body:JSON.stringify({
         branchCode:   r.branchCode   || '',
         branchLabel:  r.branchLabel  || '',
+        branchName:   (r.branchCode ? (r.branchLabel || '') + ' - ' + r.branchCode : ''),
         orderNumber:  r.orderNumber  || '',
         platform:     r.platform     || '',
         invoiceDate:  r.invoiceDate  || '',
@@ -573,7 +610,14 @@ function showResult(r, saved){
   ).join('');
 
   document.getElementById('resultOverlay').classList.add('on');
-  toast(saved?'✓ تم التحليل والحفظ':'✓ تم التحليل', saved?'ok':'info');
+  if(saved) showSuccess();
+  else toast('✓ تم التحليل','info');
+}
+
+function showSuccess(){
+  const el = document.getElementById('successOverlay');
+  el.classList.add('on');
+  setTimeout(()=>el.classList.remove('on'), 3000);
 }
 
 function closeResult(){
