@@ -23,7 +23,7 @@ html,body{height:100%;font-family:'Tajawal',sans-serif;background:var(--dark);co
 .app{display:flex;flex-direction:column;height:100dvh;max-width:480px;margin:0 auto;position:relative;}
 
 /* HEADER */
-.header{flex-shrink:0;display:flex;align-items:center;justify-content:space-between;padding:12px 16px 10px;background:var(--card);border-bottom:2px solid var(--org);position:relative;z-index:20;}
+.header{flex-shrink:0;display:flex;align-items:center;justify-content:space-between;padding:10px 14px 8px;background:var(--card);border-bottom:2px solid var(--org);position:relative;z-index:20;}
 .brand{display:flex;align-items:center;gap:10px;cursor:pointer;}
 
 /* SVG Logo */
@@ -34,13 +34,10 @@ html,body{height:100%;font-family:'Tajawal',sans-serif;background:var(--dark);co
 .tap-row{display:flex;gap:3px;margin-top:2px;}
 .tdot{width:4px;height:4px;border-radius:50%;background:var(--border);transition:background .15s;}
 .tdot.on{background:var(--org);}
-.lang-btn{background:var(--org-dim);border:1px solid var(--org);border-radius:8px;color:var(--org);font-family:'Tajawal',sans-serif;font-size:11px;font-weight:700;padding:4px 10px;cursor:pointer;transition:all .15s;}
 
 .today-box{background:var(--org-dim);border:1px solid var(--org);border-radius:12px;padding:5px 14px;text-align:center;}
 .today-n{font-size:20px;font-weight:900;color:var(--org);line-height:1;}
 .today-l{font-size:9px;color:var(--muted);font-weight:500;letter-spacing:1px;}
-.today-branch{font-size:9px;color:var(--org);font-weight:700;margin-top:1px;opacity:.9;}
-.today-date{font-size:8px;color:var(--muted);font-weight:500;margin-top:1px;}
 
 /* CAM */
 .cam-zone{flex:1;position:relative;background:#000;overflow:hidden;min-height:0;}
@@ -72,19 +69,17 @@ video#vid{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;disp
 .start-btn:active{background:var(--org-dim);}
 
 /* BOTTOM */
-.bottom{flex-shrink:0;background:var(--card);border-top:2px solid var(--org);padding:14px 24px 28px;display:flex;flex-direction:column;align-items:center;gap:10px;position:relative;z-index:20;}
+.bottom{flex-shrink:0;background:var(--card);border-top:2px solid var(--org);padding:10px 20px 20px;display:flex;flex-direction:column;align-items:center;gap:10px;position:relative;z-index:20;}
 
 /* Branch info bar */
 .branch-bar{display:flex;align-items:center;gap:8px;width:100%;}
 .branch-info{flex:1;font-size:11px;font-weight:600;color:var(--muted);text-align:center;letter-spacing:.5px;}
 .branch-info span{color:var(--org);font-weight:700;}
 
-.status-bar{position:absolute;top:0;left:0;right:0;z-index:10;display:flex;justify-content:center;padding:6px 12px;pointer-events:none;}
-.conn{display:flex;align-items:center;gap:5px;font-size:11px;font-weight:700;background:rgba(0,0,0,.6);border-radius:20px;padding:4px 13px;backdrop-filter:blur(6px);}
-.conn-dot{width:7px;height:7px;border-radius:50%;background:var(--red);flex-shrink:0;transition:background .3s;}
-.conn.ok .conn-dot{background:var(--org);box-shadow:0 0 5px var(--org);}
-.conn-txt{color:var(--red);font-size:11px;font-weight:700;}
-.conn.ok .conn-txt{color:var(--org);}
+.conn{display:flex;align-items:center;gap:6px;font-size:11px;font-weight:600;color:var(--muted);letter-spacing:.5px;}
+.conn-dot{width:7px;height:7px;border-radius:50%;background:var(--muted);transition:background .3s;}
+.conn.ok .conn-dot{background:var(--org);box-shadow:0 0 6px var(--org);}
+.conn.ok{color:var(--org);}
 
 /* SHUTTER */
 .shutter-ring{width:80px;height:80px;border-radius:50%;border:2px solid rgba(0,200,83,.3);display:flex;align-items:center;justify-content:center;}
@@ -204,20 +199,14 @@ canvas{display:none;}
         </div>
       </div>
     </div>
-    <div style="display:flex;align-items:center;gap:8px;">
-      <button class="lang-btn" id="langBtn" onclick="toggleLang()">EN</button>
-      <div class="today-box">
-        <div class="today-n" id="cnt">0</div>
-        <div class="today-l" id="lblToday">طلبات اليوم</div>
-        <div class="today-branch" id="todayBranch"></div>
-        <div class="today-date" id="todayDate"></div>
-      </div>
+    <div class="today-box">
+      <div class="today-n" id="cnt">0</div>
+      <div class="today-l">طلبات اليوم</div>
     </div>
   </div>
 
   <!-- CAMERA -->
   <div class="cam-zone" id="camZone">
-    <div class="status-bar"><div class="conn" id="conn"><div class="conn-dot"></div><span class="conn-txt" id="connTxt">غير متصل</span></div></div>
     <video id="vid" autoplay playsinline muted></video>
     <div class="vignette"></div>
     <div class="flash" id="flash"></div>
@@ -245,6 +234,10 @@ canvas{display:none;}
   <div class="bottom">
     <div class="branch-bar">
       <div class="branch-info" id="branchInfo">⚠️ يجب تحديد رقم المنشأة</div>
+    </div>
+    <div class="conn" id="conn">
+      <div class="conn-dot"></div>
+      <span id="connTxt">غير متصل</span>
     </div>
     <div class="shutter-ring">
       <button class="shutter" id="shutter" onclick="capture()" disabled>
@@ -310,7 +303,12 @@ canvas{display:none;}
       <span class="r-badge ok" id="rBadge">✓ تم الإرسال</span>
     </div>
     <div class="r-rows" id="rRows"></div>
-    
+    <div id="sentRow" style="display:none;flex-direction:column;align-items:center;padding:14px 0 2px;gap:10px;">
+      <div style="width:72px;height:72px;border-radius:50%;background:rgba(0,200,83,.12);border:3px solid var(--org);display:flex;align-items:center;justify-content:center;">
+        <svg width="34" height="34" viewBox="0 0 56 56" fill="none"><path d="M12 28L24 40L44 18" stroke="#00C853" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </div>
+      <div style="font-size:16px;font-weight:700;color:var(--text);">تم الإرسال</div>
+    </div>
   </div>
 </div>
 
@@ -330,27 +328,26 @@ canvas{display:none;}
 // ══ CONFIG ═══════════════════════════════════════════
 const WORKER_URL = 'https://dry-glade-3ab4.e-8mohm.workers.dev/';
 const ADMIN_PIN  = '1234';
-const IMGBB_KEY  = '7cf15082b41afb536fe73aa393d6dfb4';
 
 // ══ أرقام المنشآت المعتمدة (رقم → اسم الفرع) ════════
 const BRANCHES = {
-  '3847': 'فرع 3847', '5921': 'فرع 5921', '7364': 'فرع 7364',
-  '1589': 'فرع 1589', '4203': 'فرع 4203', '8716': 'فرع 8716',
-  '2945': 'فرع 2945', '6138': 'فرع 6138', '9472': 'فرع 9472',
-  '3061': 'فرع 3061', '7854': 'فرع 7854', '1427': 'فرع 1427',
-  '5693': 'فرع 5693', '8310': 'فرع 8310', '2786': 'فرع 2786',
-  '4519': 'فرع 4519', '9063': 'فرع 9063', '6742': 'فرع 6742',
-  '1358': 'فرع 1358', '8927': 'فرع 8927', '3614': 'فرع 3614',
-  '7081': 'فرع 7081', '5439': 'فرع 5439', '2197': 'فرع 2197',
-  '9845': 'فرع 9845', '4672': 'فرع 4672', '1036': 'فرع 1036',
-  '8253': 'فرع 8253', '6480': 'فرع 6480', '3729': 'فرع 3729',
-  '7195': 'فرع 7195', '5068': 'فرع 5068', '2841': 'فرع 2841',
-  '9317': 'فرع 9317', '4953': 'فرع 4953', '1624': 'فرع 1624',
-  '8490': 'فرع 8490', '6207': 'فرع 6207', '3578': 'فرع 3578',
-  '7843': 'فرع 7843', '2465': 'فرع 2465', '5130': 'فرع 5130',
-  '9786': 'فرع 9786', '1902': 'فرع 1902', '6354': 'فرع 6354',
-  '4817': 'فرع 4817', '8629': 'فرع 8629', '3041': 'فرع 3041',
-  '7568': 'فرع 7568', '2394': 'فرع 2394'
+  '3847': 'تست',         '5921': 'النسيم',      '7364': 'الحمدانية',
+  '1589': 'الاجاويد',   '4203': 'الصفا',        '8716': 'السامر',
+  '2945': 'الزهرة',     '6138': 'ابحر',         '9472': 'فرع 9472',
+  '3061': 'فرع 3061',   '7854': 'فرع 7854',     '1427': 'فرع 1427',
+  '5693': 'فرع 5693',   '8310': 'فرع 8310',     '2786': 'فرع 2786',
+  '4519': 'فرع 4519',   '9063': 'فرع 9063',     '6742': 'فرع 6742',
+  '1358': 'فرع 1358',   '8927': 'فرع 8927',     '3614': 'فرع 3614',
+  '7081': 'فرع 7081',   '5439': 'فرع 5439',     '2197': 'فرع 2197',
+  '9845': 'فرع 9845',   '4672': 'فرع 4672',     '1036': 'فرع 1036',
+  '8253': 'فرع 8253',   '6480': 'فرع 6480',     '3729': 'فرع 3729',
+  '7195': 'فرع 7195',   '5068': 'فرع 5068',     '2841': 'فرع 2841',
+  '9317': 'فرع 9317',   '4953': 'فرع 4953',     '1624': 'فرع 1624',
+  '8490': 'فرع 8490',   '6207': 'فرع 6207',     '3578': 'فرع 3578',
+  '7843': 'فرع 7843',   '2465': 'فرع 2465',     '5130': 'فرع 5130',
+  '9786': 'فرع 9786',   '1902': 'فرع 1902',     '6354': 'فرع 6354',
+  '4817': 'فرع 4817',   '8629': 'فرع 8629',     '3041': 'فرع 3041',
+  '7568': 'فرع 7568',   '2394': 'فرع 2394'
 };
 
 // ══ STATE ════════════════════════════════════════════
@@ -359,9 +356,315 @@ let busy     = false;
 let tapN     = 0;
 let tapTimer = null;
 let audioCtx = null;
-let lang     = localStorage.getItem('dlvr_lang') || 'ar';
 
 // ══ PERSISTENT STORAGE (لا تُمسح) ══════════════════
 // نستخدم localStorage مع prefix ثابت
 const KEY_URL    = 'dlvr_v2_url';
-const KEY_BRANCH = 'dlvr_v2_bran
+const KEY_BRANCH = 'dlvr_v2_branch';
+const KEY_COUNT  = 'dlvr_v2_count';
+
+let sheetUrl   = localStorage.getItem(KEY_URL)    || '';
+let branchName = localStorage.getItem(KEY_BRANCH) || '';
+let count      = parseInt(localStorage.getItem(KEY_COUNT) || '0');
+
+// ══ INIT ═════════════════════════════════════════════
+document.getElementById('cnt').textContent = count;
+if(sheetUrl)   setConn(true);
+updateBranchBar(); // always call to show warning if not set
+if(sheetUrl)   document.getElementById('urlIn').value    = sheetUrl;
+if(branchName) document.getElementById('branchIn').value = branchName;
+
+// ══ CAMERA ═══════════════════════════════════════════
+async function startCam(){
+  try{
+    stream = await navigator.mediaDevices.getUserMedia({
+      video:{facingMode:{ideal:'environment'},width:{ideal:1920},height:{ideal:1080}},
+      audio:false
+    });
+  }catch{
+    try{ stream = await navigator.mediaDevices.getUserMedia({video:true,audio:false}); }
+    catch{ toast('⚠️ تعذّر الوصول للكاميرا','bad'); return; }
+  }
+  const v = document.getElementById('vid');
+  v.srcObject = stream;
+  v.style.display = 'block';
+  document.getElementById('noCam').style.display = 'none';
+  document.getElementById('shutter').disabled = false;
+  document.getElementById('camZone').classList.add('scanning');
+}
+
+// ══ CAPTURE ══════════════════════════════════════════
+async function capture(){
+  if(!stream || busy) return;
+  if(!branchName || !BRANCHES[branchName]){
+    toast('⚠️ أدخل رقم المنشأة أولاً','bad');
+    setTimeout(()=>openAdmin(), 800);
+    return;
+  }
+  busy = true;
+
+  const fl = document.getElementById('flash');
+  fl.classList.add('go');
+  setTimeout(()=>fl.classList.remove('go'), 100);
+  beep();
+
+  const vid = document.getElementById('vid');
+  const cv  = document.getElementById('cv');
+  const maxW = 600;
+  const ratio = Math.min(maxW/(vid.videoWidth||1280),1);
+  cv.width  = Math.round((vid.videoWidth||1280)*ratio);
+  cv.height = Math.round((vid.videoHeight||720)*ratio);
+  const ctx = cv.getContext('2d');
+  ctx.drawImage(vid, 0, 0, cv.width, cv.height);
+
+  const b64       = cv.toDataURL('image/jpeg', 0.5).split(',')[1];
+  const b64Upload = cv.toDataURL('image/jpeg', 0.85).split(',')[1];
+
+  document.getElementById('analyzing').classList.add('on');
+  document.getElementById('shutter').disabled = true;
+
+  try{
+    const result = await analyze(b64);
+    result.branchCode = branchName; // branchName holds the code
+    result.branchLabel = BRANCHES[branchName] || branchName;
+    let saved = false;
+    if(sheetUrl) saved = await saveSheet(result, b64Upload);
+    showResult(result, saved);
+    count++;
+    localStorage.setItem(KEY_COUNT, count);
+    document.getElementById('cnt').textContent = count;
+    document.getElementById('scanBox').classList.add('captured');
+    setTimeout(()=>document.getElementById('scanBox').classList.remove('captured'), 800);
+  }catch(err){
+    toast('❌ '+err.message,'bad');
+  }finally{
+    document.getElementById('analyzing').classList.remove('on');
+    document.getElementById('shutter').disabled = false;
+    busy = false;
+  }
+}
+
+// ══ AI ANALYSIS ══════════════════════════════════════
+async function analyze(b64){
+  const res = await fetch(WORKER_URL,{
+    method:'POST',
+    headers:{'Content-Type':'application/json'},
+    body:JSON.stringify({
+      model:'claude-haiku-4-5-20251001',
+      max_tokens:400,
+      messages:[{
+        role:'user',
+        content:[
+          {type:'image',source:{type:'base64',media_type:'image/jpeg',data:b64}},
+          {type:'text',text:`أنت نظام توثيق طلبات مطاعم. حلّل صورة طلب التيك أواي وأعطني JSON فقط بدون أي نص إضافي:
+{"orderNumber":"رقم الطلب أو الكود","platform":"HungerStation أو Keeta أو Jahez أو Ninja أو ToYou أو Marsool أو غير واضح","invoiceDate":"تاريخ الفاتورة كما يظهر في الصورة أو غير واضح","invoiceTime":"وقت الفاتورة كما يظهر في الصورة أو غير واضح","notes":"ملاحظة مهمة إن وجدت وإلا فارغة"}
+لا تكتب أي شيء خارج JSON.`}
+        ]
+      }]
+    })
+  });
+  const data = await res.json();
+  if(data.error) throw new Error(data.error.message || JSON.stringify(data.error));
+  if(!data.content || !data.content[0]) throw new Error('رد غير متوقع');
+  const text  = data.content[0].text.trim();
+  const match = text.match(/\{[\s\S]*\}/);
+  if(!match) throw new Error('لم يتمكن AI من قراءة الطلب');
+  return JSON.parse(match[0]);
+}
+
+// ══ SAVE TO SHEET ════════════════════════════════════
+async function saveSheet(r, b64Upload){
+  try{
+    await fetch(sheetUrl,{
+      method:'POST',
+      mode:'no-cors',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({
+        branchCode:   r.branchCode   || '',
+        branchLabel:  r.branchLabel  || '',
+        branchName:   (r.branchCode ? (r.branchLabel || '') + ' - ' + r.branchCode : ''),
+        orderNumber:  r.orderNumber  || '',
+        platform:     r.platform     || '',
+        invoiceDate:  r.invoiceDate  || '',
+        invoiceTime:  r.invoiceTime  || '',
+        notes:        r.notes        || '',
+        imageBase64:  b64Upload      || ''
+      })
+    });
+    return true;
+  }catch{ return false; }
+}
+
+// ══ BRAND TAP (5x secret) ════════════════════════════
+function onBrandTap(){
+  const icon = document.getElementById('brandIcon') || document.querySelector('.logo-svg');
+  tapN++;
+  for(let i=0;i<5;i++) document.getElementById('t'+i).classList.toggle('on',i<tapN);
+  clearTimeout(tapTimer);
+  tapTimer = setTimeout(()=>{
+    tapN=0;
+    for(let i=0;i<5;i++) document.getElementById('t'+i).classList.remove('on');
+  },2500);
+  if(tapN>=5){
+    tapN=0; clearTimeout(tapTimer);
+    for(let i=0;i<5;i++) document.getElementById('t'+i).classList.remove('on');
+    openAdmin();
+  }
+}
+
+// ══ ADMIN ════════════════════════════════════════════
+function openAdmin(){
+  document.getElementById('pinIn').value='';
+  document.getElementById('pinErr').style.display='none';
+  document.getElementById('pinWrap').style.display='block';
+  document.getElementById('settingsDiv').style.display='none';
+  document.getElementById('adminOverlay').classList.add('on');
+  setTimeout(()=>document.getElementById('pinIn').focus(),350);
+}
+
+function closeAdmin(){
+  document.getElementById('adminOverlay').classList.remove('on');
+}
+
+function checkPin(){
+  const v=document.getElementById('pinIn').value;
+  if(v.length<4) return;
+  if(v===ADMIN_PIN){
+    document.getElementById('pinWrap').style.display='none';
+    document.getElementById('settingsDiv').style.display='block';
+    // عبّي الحقول بالقيم المحفوظة
+    document.getElementById('urlIn').value    = sheetUrl;
+    document.getElementById('branchIn').value = branchName; // code
+  }else{
+    document.getElementById('pinErr').style.display='block';
+    document.getElementById('pinIn').value='';
+    setTimeout(()=>document.getElementById('pinErr').style.display='none',2000);
+  }
+}
+
+function saveSettings(){
+  const url    = document.getElementById('urlIn').value.trim();
+  const branch = document.getElementById('branchIn').value.trim();
+
+  // التحقق من رقم المنشأة
+  if(!branch){
+    toast('⚠️ أدخل رقم المنشأة','bad'); return;
+  }
+  if(!BRANCHES[branch]){
+    toast('❌ رقم المنشأة غير صحيح','bad');
+    document.getElementById('branchIn').style.borderColor='var(--red)';
+    setTimeout(()=>document.getElementById('branchIn').style.borderColor='',2000);
+    return;
+  }
+
+  if(url && !url.startsWith('https://script.google.com')){
+    toast('رابط الشيت غير صحيح','bad'); return;
+  }
+
+  if(url){
+    sheetUrl = url;
+    localStorage.setItem(KEY_URL, sheetUrl);
+    setConn(true);
+  }
+
+  branchName = branch;
+  localStorage.setItem(KEY_BRANCH, branchName);
+  updateBranchBar();
+
+  closeAdmin();
+  toast('✓ تم الحفظ بنجاح','ok');
+}
+
+function setConn(ok){
+  document.getElementById('conn').className='conn'+(ok?' ok':'');
+  document.getElementById('connTxt').textContent=ok?'متصل':'غير متصل';
+}
+
+function updateBranchBar(){
+  const el = document.getElementById('branchInfo');
+  if(branchName && BRANCHES[branchName]){
+    el.innerHTML = BRANCHES[branchName] + ' · <span>' + branchName + '</span>';
+    el.style.color = '';
+  } else {
+    el.innerHTML = '⚠️ يجب تحديد رمز المنشأة';
+    el.style.color = 'var(--warn)';
+  }
+}
+
+// ══ RESULT ═══════════════════════════════════════════
+function showResult(r, saved){
+  const badge = document.getElementById('rBadge');
+  badge.textContent = saved ? '✓ تم الإرسال' : (sheetUrl?'⚠️ فشل الحفظ':'⬡ غير مرتبط');
+  badge.className   = 'r-badge '+(saved?'ok':'err');
+
+  const rows = [
+    {k:'رقم الطلب',  v:r.orderNumber ||'—', c:'big'},
+    {k:'المنصة',     v:r.platform    ||'—', c:''},
+    {k:'تاريخ الفاتورة', v:r.invoiceDate ||'—', c:''},
+    {k:'وقت الفاتورة',   v:r.invoiceTime ||'—', c:''},
+  ];
+  if(r.branchCode){
+    const bname = BRANCHES[r.branchCode] || r.branchCode;
+    rows.splice(1,0,{k:'الفرع', v:bname + ' · ' + r.branchCode, c:''});
+  }
+  if(r.notes&&r.notes.trim()&&r.notes!=='غير واضح')
+    rows.push({k:'ملاحظات',v:r.notes,c:'warn'});
+
+  document.getElementById('rRows').innerHTML = rows.map(x=>
+    `<div class="r-row"><span class="r-key">${x.k}</span><span class="r-val ${x.c}">${x.v}</span></div>`
+  ).join('');
+
+  const sentRow = document.getElementById('sentRow');
+  sentRow.style.display = saved ? 'flex' : 'none';
+  document.getElementById('resultOverlay').classList.add('on');
+  setTimeout(()=>closeResult(), 3000);
+  if(!saved) toast('✓ تم التحليل','info');
+}
+
+function showSuccess(){
+  const el = document.getElementById('successOverlay');
+  el.classList.add('on');
+  setTimeout(()=>el.classList.remove('on'), 3000);
+}
+
+function closeResult(){
+  document.getElementById('resultOverlay').classList.remove('on');
+}
+
+// ══ BEEP ═════════════════════════════════════════════
+function beep(){
+  try{
+    if(!audioCtx) audioCtx=new(window.AudioContext||window.webkitAudioContext)();
+    const o=audioCtx.createOscillator(), g=audioCtx.createGain();
+    o.connect(g); g.connect(audioCtx.destination);
+    o.type='sine';
+    o.frequency.setValueAtTime(900,audioCtx.currentTime);
+    o.frequency.exponentialRampToValueAtTime(1300,audioCtx.currentTime+0.1);
+    g.gain.setValueAtTime(0.35,audioCtx.currentTime);
+    g.gain.exponentialRampToValueAtTime(0.001,audioCtx.currentTime+0.18);
+    o.start(); o.stop(audioCtx.currentTime+0.18);
+  }catch{}
+}
+
+// ══ TOAST ════════════════════════════════════════════
+function toast(msg,type='ok'){
+  const el=document.getElementById('toast');
+  el.textContent=msg; el.className=`toast ${type} show`;
+  setTimeout(()=>el.classList.remove('show'),2800);
+}
+
+// Unlock audio
+document.addEventListener('touchstart',()=>{
+  if(!audioCtx) audioCtx=new(window.AudioContext||window.webkitAudioContext)();
+  if(audioCtx.state==='suspended') audioCtx.resume();
+},{once:true});
+
+// Space shortcut
+document.addEventListener('keydown',e=>{
+  if(e.code==='Space'&&!document.getElementById('shutter').disabled){
+    e.preventDefault(); capture();
+  }
+});
+</script>
+</body>
+</html>
