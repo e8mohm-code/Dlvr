@@ -535,19 +535,6 @@ async function analyze(b64){
 }
 
 // ══ SAVE ════════════════════════════════
-const IMGBB_KEY = '7cf15082b41afb536fe73aa393d6dfb4';
-
-async function uploadToImgBB(b64){
-  try{
-    const form = new FormData();
-    form.append('key', IMGBB_KEY);
-    form.append('image', b64);
-    const res = await fetch('https://api.imgbb.com/1/upload', {method:'POST', body:form});
-    if(!res.ok) return '';
-    const data = await res.json();
-    return (data && data.success) ? data.data.url : '';
-  }catch{ return ''; }
-}
 
 async function uploadImage(b64){
   try{
@@ -563,9 +550,6 @@ async function uploadImage(b64){
 
 async function saveSheet(r, b64Upload){
   try{
-    // رفع الصورة على ImgBB أولاً للحصول على رابط
-    const imageUrl = await uploadToImgBB(b64Upload);
-
     await fetch(sheetUrl,{
       method:'POST', mode:'no-cors', headers:{'Content-Type':'application/json'},
       body:JSON.stringify({
@@ -577,7 +561,7 @@ async function saveSheet(r, b64Upload){
         invoiceDate: r.invoiceDate || '',
         invoiceTime: r.invoiceTime || '',
         notes:       r.notes       || '',
-        imageUrl:    imageUrl      || ''
+        imageUrl:    r.imageUrl    || ''
       })
     });
     return true;
