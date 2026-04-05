@@ -302,7 +302,6 @@ canvas{display:none;}
 // ══ CONFIG ═══════════════════════════════
 const WORKER_URL = 'https://dry-glade-3ab4.e-8mohm.workers.dev/';
 const ADMIN_PIN  = '1234';
-const IMGBB_KEY  = '7cf15082b41afb536fe73aa393d6dfb4';
 
 // ══ BRANCHES ═════════════════════════════
 const BRANCHES = {
@@ -493,8 +492,6 @@ async function capture(){
     const result = await analyze(b64);
     result.branchCode  = branchName;
     result.branchLabel = BRANCHES[branchName] || branchName;
-    // رفع الصورة على ImgBB
-    result.imageUrl = await uploadImage(b64Upload);
     let saved = false;
     if(sheetUrl) saved = await saveSheet(result, b64Upload);
     showResult(result, saved);
@@ -536,16 +533,6 @@ async function analyze(b64){
 
 // ══ SAVE ════════════════════════════════
 
-async function uploadImage(b64){
-  try{
-    const form = new FormData();
-    form.append('key', IMGBB_KEY);
-    form.append('image', b64);
-    const res = await fetch('https://api.imgbb.com/1/upload', {method:'POST', body:form});
-    if(!res.ok) return '';
-    const data = await res.json();
-    return (data && data.success && data.data && data.data.url) ? data.data.url : '';
-  }catch{ return ''; }
 }
 
 async function saveSheet(r, b64Upload){
@@ -561,7 +548,7 @@ async function saveSheet(r, b64Upload){
         invoiceDate: r.invoiceDate || '',
         invoiceTime: r.invoiceTime || '',
         notes:       r.notes       || '',
-        imageUrl:    r.imageUrl    || ''
+        imageBase64: b64Upload    || ''
       })
     });
     return true;
