@@ -8,55 +8,39 @@
 <style>
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
 :root{
-  --org:#00C853;
-  --org2:#69F0AE;
-  --org-dim:rgba(0,200,83,.15);
-  --dark:#0A0A0A;
-  --card:#111111;
-  --border:#222222;
-  --text:#F0F0F0;
-  --muted:#555555;
-  --red:#ff3d57;
-  --warn:#ffb300;
+  --org:#00C853;--org2:#69F0AE;--org-dim:rgba(0,200,83,.15);
+  --dark:#0A0A0A;--card:#111111;--border:#222222;
+  --text:#F0F0F0;--muted:#555555;--red:#ff3d57;--warn:#ffb300;
 }
 html,body{height:100%;font-family:'Tajawal',sans-serif;background:var(--dark);color:var(--text);overflow:hidden;user-select:none;}
 .app{display:flex;flex-direction:column;height:100dvh;max-width:480px;margin:0 auto;position:relative;}
 
 /* HEADER */
-.header{flex-shrink:0;display:flex;align-items:center;justify-content:space-between;padding:10px 14px 8px;background:var(--card);border-bottom:2px solid var(--org);position:relative;z-index:20;}
+.header{flex-shrink:0;display:flex;align-items:center;justify-content:space-between;padding:10px 14px 8px;background:var(--card);border-bottom:2px solid var(--org);z-index:20;}
 .brand{display:flex;align-items:center;gap:9px;cursor:pointer;}
 .logo-svg{width:34px;height:34px;flex-shrink:0;}
-.brand-text{display:flex;flex-direction:column;}
 .brand-name{font-size:18px;font-weight:900;color:var(--text);letter-spacing:3px;line-height:1;}
 .tap-row{display:flex;gap:3px;margin-top:2px;}
 .tdot{width:4px;height:4px;border-radius:50%;background:var(--border);transition:background .15s;}
 .tdot.on{background:var(--org);}
-
-/* TODAY BOX — bigger, with branch info */
-.today-box{background:var(--org-dim);border:1px solid var(--org);border-radius:12px;padding:5px 12px;text-align:center;min-width:110px;}
+.header-right{display:flex;align-items:center;gap:8px;}
+.lang-btn{background:var(--org-dim);border:1px solid var(--org);border-radius:8px;color:var(--org);font-family:'Tajawal',sans-serif;font-size:11px;font-weight:700;padding:4px 10px;cursor:pointer;}
+.today-box{background:var(--org-dim);border:1px solid var(--org);border-radius:12px;padding:5px 12px;text-align:center;min-width:100px;}
 .today-n{font-size:18px;font-weight:900;color:var(--org);line-height:1;}
 .today-label{font-size:9px;color:var(--muted);font-weight:600;letter-spacing:.5px;margin-top:1px;}
-.today-branch{font-size:9px;color:var(--org);font-weight:700;letter-spacing:.3px;margin-top:1px;opacity:.85;}
-.today-date{font-size:8px;color:var(--muted);font-weight:500;margin-top:1px;letter-spacing:.2px;}
+.today-branch{font-size:9px;color:var(--org);font-weight:700;margin-top:1px;opacity:.85;}
+.today-date{font-size:8px;color:var(--muted);font-weight:500;margin-top:1px;}
 
-/* STATUS BAR — top inside cam zone */
+/* CAM */
+.cam-zone{flex:1;position:relative;background:#000;overflow:hidden;min-height:0;}
+video#vid{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:none;}
+.vignette{position:absolute;inset:0;background:radial-gradient(ellipse at center,transparent 50%,rgba(0,0,0,.75)100%);pointer-events:none;z-index:2;}
 .status-bar{position:absolute;top:0;left:0;right:0;z-index:10;display:flex;justify-content:center;padding:6px 12px;}
 .conn{display:flex;align-items:center;gap:5px;font-size:11px;font-weight:700;background:rgba(0,0,0,.55);border-radius:20px;padding:4px 12px;backdrop-filter:blur(6px);}
 .conn-dot{width:7px;height:7px;border-radius:50%;background:var(--red);flex-shrink:0;}
 .conn.ok .conn-dot{background:var(--org);box-shadow:0 0 5px var(--org);}
 .conn-txt{color:var(--muted);}
 .conn.ok .conn-txt{color:var(--org);}
-
-/* LANG TOGGLE */
-.lang-btn{background:rgba(0,200,83,.12);border:1px solid var(--org);border-radius:8px;color:var(--org);font-family:'Tajawal',sans-serif;font-size:11px;font-weight:700;padding:3px 9px;cursor:pointer;letter-spacing:.5px;transition:all .2s;}
-.lang-btn:active{background:var(--org-dim);}
-
-/* CAM */
-.cam-zone{flex:1;position:relative;background:#000;overflow:hidden;min-height:0;}
-video#vid{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:none;}
-.vignette{position:absolute;inset:0;background:radial-gradient(ellipse at center,transparent 50%,rgba(0,0,0,.75) 100%);pointer-events:none;z-index:2;}
-
-/* SCAN BOX */
 .scan-box{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:78%;aspect-ratio:1.6/1;z-index:3;pointer-events:none;}
 .sc{position:absolute;width:24px;height:24px;border-color:var(--org);border-style:solid;transition:border-color .3s;}
 .sc.tl{top:0;right:0;border-width:3px 0 0 3px;border-radius:3px 0 0 0;}
@@ -68,20 +52,15 @@ video#vid{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;disp
 .scanning .scan-line{animation:scanMove 2s ease-in-out infinite;opacity:1;}
 @keyframes scanMove{0%{top:4px;}50%{top:calc(100% - 4px);}100%{top:4px;}}
 .box-label{position:absolute;bottom:-26px;right:50%;transform:translateX(50%);font-size:11px;font-weight:700;color:var(--org);letter-spacing:1.5px;opacity:.9;white-space:nowrap;}
-
-/* FLASH */
 .flash{position:absolute;inset:0;background:#fff;opacity:0;pointer-events:none;z-index:10;transition:opacity .06s;}
 .flash.go{opacity:1;transition:none;}
-
-/* NO CAM */
 .no-cam{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;background:var(--dark);z-index:5;}
 .no-cam-icon{width:60px;height:60px;border-radius:50%;border:2px solid var(--border);display:flex;align-items:center;justify-content:center;color:var(--muted);}
 .no-cam p{font-size:13px;color:var(--muted);font-weight:500;}
-.start-btn{padding:11px 28px;border-radius:50px;border:2px solid var(--org);background:transparent;color:var(--org);font-family:'Tajawal',sans-serif;font-size:14px;font-weight:700;cursor:pointer;transition:all .2s;}
-.start-btn:active{background:var(--org-dim);}
+.start-btn{padding:11px 28px;border-radius:50px;border:2px solid var(--org);background:transparent;color:var(--org);font-family:'Tajawal',sans-serif;font-size:14px;font-weight:700;cursor:pointer;}
 
 /* BOTTOM */
-.bottom{flex-shrink:0;background:var(--card);border-top:2px solid var(--org);padding:10px 20px 20px;display:flex;flex-direction:column;align-items:center;gap:8px;position:relative;z-index:20;}
+.bottom{flex-shrink:0;background:var(--card);border-top:2px solid var(--org);padding:10px 20px 20px;display:flex;flex-direction:column;align-items:center;gap:8px;z-index:20;}
 .shutter-ring{width:72px;height:72px;border-radius:50%;border:2px solid rgba(0,200,83,.3);display:flex;align-items:center;justify-content:center;}
 .shutter{width:60px;height:60px;border-radius:50%;border:none;background:linear-gradient(135deg,var(--org),var(--org2));cursor:pointer;display:flex;align-items:center;justify-content:center;transition:transform .12s,box-shadow .2s;box-shadow:0 4px 20px rgba(0,200,83,.4);position:relative;overflow:hidden;}
 .shutter::after{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(255,255,255,.25),transparent);border-radius:50%;}
@@ -90,7 +69,7 @@ video#vid{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;disp
 .shutter svg{position:relative;z-index:1;}
 canvas{display:none;}
 
-/* ADMIN OVERLAY */
+/* ADMIN */
 .overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.85);z-index:50;backdrop-filter:blur(10px);align-items:flex-end;justify-content:center;}
 .overlay.on{display:flex;}
 .sheet{width:100%;max-width:480px;background:var(--card);border-top:2px solid var(--org);border-radius:24px 24px 0 0;padding:18px 18px 28px;animation:up .3s cubic-bezier(.22,1,.36,1);max-height:90dvh;overflow-y:auto;}
@@ -110,10 +89,10 @@ canvas{display:none;}
 .url-in{flex:1;background:var(--dark);border:1.5px solid var(--border);border-radius:12px;padding:10px 12px;font-family:'Tajawal',sans-serif;font-size:12px;color:var(--text);outline:none;direction:ltr;text-align:left;transition:border-color .2s;}
 .url-in:focus{border-color:var(--org);}
 .url-in::placeholder{color:var(--muted);}
-.text-in{width:100%;background:var(--dark);border:1.5px solid var(--border);border-radius:12px;padding:10px 12px;font-family:'Tajawal',sans-serif;font-size:13px;color:var(--text);outline:none;text-align:right;transition:border-color .2s;margin-bottom:6px;}
+.text-in{width:100%;background:var(--dark);border:1.5px solid var(--border);border-radius:12px;padding:10px 12px;font-family:'Tajawal',sans-serif;font-size:14px;color:var(--text);outline:none;text-align:right;transition:border-color .2s;margin-bottom:6px;}
 .text-in:focus{border-color:var(--org);}
 .text-in::placeholder{color:var(--muted);}
-.save-btn{padding:10px 14px;border-radius:12px;border:none;background:var(--org);color:#000;font-family:'Tajawal',sans-serif;font-size:12px;font-weight:700;cursor:pointer;white-space:nowrap;}
+.save-btn{padding:10px 14px;border-radius:12px;border:none;background:var(--org);color:#000;font-family:'Tajawal',sans-serif;font-size:13px;font-weight:700;cursor:pointer;}
 .field-hint{font-size:10px;color:var(--muted);margin-bottom:12px;}
 .close-btn{width:100%;padding:12px;border-radius:12px;border:1.5px solid var(--border);background:transparent;color:var(--muted);font-family:'Tajawal',sans-serif;font-size:13px;font-weight:600;cursor:pointer;margin-top:4px;}
 
@@ -149,7 +128,7 @@ canvas{display:none;}
 .toast.bad{background:var(--red);color:#fff;}
 .toast.info{background:#1a1a1a;color:var(--text);border:1px solid var(--border);}
 
-/* SUCCESS OVERLAY */
+/* SUCCESS */
 .success-overlay{display:none;position:fixed;inset:0;z-index:100;align-items:center;justify-content:center;background:rgba(0,0,0,.75);backdrop-filter:blur(8px);flex-direction:column;gap:14px;}
 .success-overlay.on{display:flex;}
 .success-circle{width:100px;height:100px;border-radius:50%;background:var(--org-dim);border:3px solid var(--org);display:flex;align-items:center;justify-content:center;animation:popIn .4s cubic-bezier(.34,1.56,.64,1);}
@@ -163,14 +142,13 @@ canvas{display:none;}
 <body>
 <div class="app">
 
-  <!-- HEADER -->
   <div class="header">
     <div class="brand" id="brand" onclick="onBrandTap()">
       <svg class="logo-svg" viewBox="0 0 38 38" fill="none" xmlns="http://www.w3.org/2000/svg">
         <rect width="38" height="38" rx="9" fill="#00C853"/>
         <path d="M24 5L10 20.5H19L13 33L28 17.5H19L24 5Z" fill="#0d0d0d"/>
       </svg>
-      <div class="brand-text">
+      <div>
         <div class="brand-name">DLVR</div>
         <div class="tap-row">
           <div class="tdot" id="t0"></div><div class="tdot" id="t1"></div>
@@ -179,8 +157,7 @@ canvas{display:none;}
         </div>
       </div>
     </div>
-
-    <div style="display:flex;align-items:center;gap:8px;">
+    <div class="header-right">
       <button class="lang-btn" id="langBtn" onclick="toggleLang()">EN</button>
       <div class="today-box">
         <div class="today-n" id="cnt">0</div>
@@ -191,16 +168,13 @@ canvas{display:none;}
     </div>
   </div>
 
-  <!-- CAMERA -->
   <div class="cam-zone" id="camZone">
-    <!-- STATUS BAR inside cam -->
     <div class="status-bar">
       <div class="conn" id="conn">
         <div class="conn-dot"></div>
-        <span class="conn-txt" id="connTxt" data-ar="غير متصل" data-en="Disconnected">غير متصل</span>
+        <span class="conn-txt" id="connTxt">غير متصل</span>
       </div>
     </div>
-
     <video id="vid" autoplay playsinline muted></video>
     <div class="vignette"></div>
     <div class="flash" id="flash"></div>
@@ -218,13 +192,12 @@ canvas{display:none;}
         </svg>
       </div>
       <p id="lbl_camoff">الكاميرا غير مفعّلة</p>
-      <button class="start-btn" onclick="startCam()" id="lbl_startcam">تشغيل الكاميرا</button>
+      <button class="start-btn" id="lbl_startcam" onclick="startCam()">تشغيل الكاميرا</button>
     </div>
   </div>
 
   <canvas id="cv"></canvas>
 
-  <!-- BOTTOM -->
   <div class="bottom">
     <div class="shutter-ring">
       <button class="shutter" id="shutter" onclick="capture()" disabled>
@@ -237,7 +210,7 @@ canvas{display:none;}
   </div>
 </div>
 
-<!-- ADMIN OVERLAY -->
+<!-- ADMIN -->
 <div class="overlay" id="adminOverlay" onclick="closeAdmin()">
   <div class="sheet" onclick="event.stopPropagation()">
     <div class="sheet-handle"></div>
@@ -248,22 +221,22 @@ canvas{display:none;}
     <div class="sheet-sub" id="lbl_enterpin">أدخل كود الدخول</div>
     <div class="pin-wrap" id="pinWrap">
       <input class="pin-in" id="pinIn" type="password" inputmode="numeric" maxlength="4" placeholder="••••" oninput="checkPin()">
-      <div class="pin-err" id="pinErr" data-ar="❌ كود خاطئ" data-en="❌ Wrong code">❌ كود خاطئ</div>
+      <div class="pin-err" id="pinErr">❌ كود خاطئ</div>
     </div>
     <div class="settings" id="settingsDiv">
       <div class="field-label" id="lbl_branchcode">رمز المنشأة (4 أرقام)</div>
-      <input class="text-in" id="branchIn" type="number" inputmode="numeric" maxlength="4"
-        placeholder="أدخل رمز المنشأة المكون من 4 أرقام"
-        oninput="if(this.value.length>4)this.value=this.value.slice(0,4)" />
+      <input class="text-in" id="branchIn" type="number" inputmode="numeric"
+        placeholder="أدخل رمز المنشأة"
+        oninput="if(this.value.length>4)this.value=this.value.slice(0,4)">
       <div class="field-hint" id="branchHint">أدخل الرمز الرباعي المخصص لمنشأتك</div>
       <div class="field-label" id="lbl_pasteurl">الصق الرابط</div>
       <div class="url-row">
         <input class="url-in" id="urlIn" placeholder="https://script.google.com/macros/s/.../exec">
-        <button class="save-btn" onclick="saveSettings()" id="lbl_save">حفظ</button>
+        <button class="save-btn" id="lbl_save" onclick="saveSettings()">حفظ</button>
       </div>
-      <div class="field-hint" id="lbl_savehint">يُحفظ على الجهاز دائماً ولا يظهر للموظفين</div>
+      <div class="field-hint" id="lbl_savehint">يُحفظ على الجهاز دائماً</div>
     </div>
-    <button class="close-btn" onclick="closeAdmin()" id="lbl_close">إغلاق</button>
+    <button class="close-btn" id="lbl_close" onclick="closeAdmin()">إغلاق</button>
   </div>
 </div>
 
@@ -286,7 +259,7 @@ canvas{display:none;}
   </div>
 </div>
 
-<!-- SUCCESS OVERLAY -->
+<!-- SUCCESS -->
 <div class="success-overlay" id="successOverlay">
   <div class="success-circle">
     <svg class="success-check" width="52" height="52" viewBox="0 0 56 56" fill="none">
@@ -299,11 +272,16 @@ canvas{display:none;}
 <div class="toast" id="toast"></div>
 
 <script>
-// ══ CONFIG ═══════════════════════════════
+// ══════════════════════════════════════════
+// CONFIG
+// ══════════════════════════════════════════
 const WORKER_URL = 'https://dry-glade-3ab4.e-8mohm.workers.dev/';
 const ADMIN_PIN  = '1234';
+const IMGBB_KEY  = '7cf15082b41afb536fe73aa393d6dfb4';
 
-// ══ BRANCHES ═════════════════════════════
+// ══════════════════════════════════════════
+// BRANCHES
+// ══════════════════════════════════════════
 const BRANCHES = {
   '3847':'فرع 3847','5921':'فرع 5921','7364':'فرع 7364','1589':'فرع 1589',
   '4203':'فرع 4203','8716':'فرع 8716','2945':'فرع 2945','6138':'فرع 6138',
@@ -320,383 +298,28 @@ const BRANCHES = {
   '7568':'فرع 7568','2394':'فرع 2394'
 };
 
-// ══ TRANSLATIONS ══════════════════════════
+// ══════════════════════════════════════════
+// TRANSLATIONS
+// ══════════════════════════════════════════
 const T = {
   ar:{
     today:'طلبات اليوم', connected:'متصل', disconnected:'غير متصل',
-    frame:'ضع الطلب داخل الإطار', camoff:'الكاميرا غير مفعّلة',
-    startcam:'تشغيل الكاميرا', settings:'إعدادات المشرف',
-    enterpin:'أدخل كود الدخول', wrongpin:'❌ كود خاطئ',
-    branchcode:'رمز المنشأة (4 أرقام)', branchph:'أدخل رمز المنشأة المكون من 4 أرقام',
-    branchhint:'أدخل الرمز الرباعي المخصص لمنشأتك',
-    pasteurl:'الصق الرابط', save:'حفظ',
-    savehint:'يُحفظ على الجهاز دائماً ولا يظهر للموظفين',
-    close:'إغلاق', sending:'جاري الإرسال...',
-    reading:'يقرأ رقم الطلب والمنصة والتاريخ',
+    frame:'ضع الطلب داخل الإطار', camoff:'الكاميرا غير مفعّلة', startcam:'تشغيل الكاميرا',
+    settings:'إعدادات المشرف', enterpin:'أدخل كود الدخول', wrongpin:'❌ كود خاطئ',
+    branchcode:'رمز المنشأة (4 أرقام)', branchph:'أدخل رمز المنشأة', branchhint:'أدخل الرمز الرباعي المخصص لمنشأتك',
+    pasteurl:'الصق الرابط', save:'حفظ', savehint:'يُحفظ على الجهاز دائماً',
+    close:'إغلاق', sending:'جاري الإرسال...', reading:'يقرأ رقم الطلب والمنصة والتاريخ',
     result:'نتيجة التحليل', sent:'تم الإرسال',
-    saved:'✓ تم الإرسال', failed:'⚠️ فشل الحفظ', noconn:'⬡ غير مرتبط',
-    order:'رقم الطلب', platform:'المنصة', date:'تاريخ الفاتورة',
-    time:'وقت الفاتورة', branch:'الفرع', notes:'ملاحظات',
-    nobranch:'⚠️ أدخل رمز المنشأة أولاً',
-    badbranch:'❌ رمز المنشأة غير صحيح',
-    badurl:'رابط الشيت غير صحيح',
-    saveok:'✓ تم الحفظ', analyzed:'✓ تم التحليل',
-    nocam:'⚠️ تعذّر الوصول للكاميرا'
+    done:'✓ تم الإرسال', failed:'⚠️ فشل الحفظ', noconn:'⬡ غير مرتبط',
+    order:'رقم الطلب', platform:'المنصة', date:'تاريخ الفاتورة', time:'وقت الفاتورة', notes:'ملاحظات',
+    nobranch:'⚠️ أدخل رمز المنشأة أولاً', badbranch:'❌ رمز المنشأة غير صحيح',
+    badurl:'رابط الشيت غير صحيح', analyzed:'✓ تم التحليل', nocam:'⚠️ تعذّر الوصول للكاميرا'
   },
   en:{
     today:'Orders Today', connected:'Connected', disconnected:'Disconnected',
-    frame:'Place order inside frame', camoff:'Camera not active',
-    startcam:'Start Camera', settings:'Admin Settings',
-    enterpin:'Enter access code', wrongpin:'❌ Wrong code',
-    branchcode:'Branch Code (4 digits)', branchph:'Enter 4-digit branch code',
-    branchhint:'Enter the 4-digit code assigned to your branch',
-    pasteurl:'Paste URL', save:'Save',
-    savehint:'Saved on device, hidden from staff',
-    close:'Close', sending:'Sending...',
-    reading:'Reading order number, platform & date',
-    result:'Analysis Result', sent:'Sent',
-    saved:'✓ Sent', failed:'⚠️ Save Failed', noconn:'⬡ Not Connected',
-    order:'Order No.', platform:'Platform', date:'Invoice Date',
-    time:'Invoice Time', branch:'Branch', notes:'Notes',
-    nobranch:'⚠️ Enter branch code first',
-    badbranch:'❌ Invalid branch code',
-    badurl:'Invalid sheet URL',
-    saveok:'✓ Saved', analyzed:'✓ Analyzed',
-    nocam:'⚠️ Camera access denied'
-  }
-};
-
-// ══ STATE ════════════════════════════════
-let stream   = null;
-let busy     = false;
-let tapN     = 0;
-let tapTimer = null;
-let audioCtx = null;
-let lang     = localStorage.getItem('dlvr_lang') || 'ar';
-
-const KEY_URL    = 'dlvr_v2_url';
-const KEY_BRANCH = 'dlvr_v2_branch';
-const KEY_COUNT  = 'dlvr_v2_count';
-
-let sheetUrl   = localStorage.getItem(KEY_URL)    || '';
-let branchName = localStorage.getItem(KEY_BRANCH) || '';
-let count      = parseInt(localStorage.getItem(KEY_COUNT) || '0');
-
-// ══ INIT ══════════════════════════════════
-document.getElementById('cnt').textContent = count;
-applyLang();
-updateTodayBox();
-if(sheetUrl) setConn(true);
-if(sheetUrl)   document.getElementById('urlIn').value    = sheetUrl;
-if(branchName) document.getElementById('branchIn').value = branchName;
-
-// ══ LANGUAGE ══════════════════════════════
-function toggleLang(){
-  lang = lang === 'ar' ? 'en' : 'ar';
-  localStorage.setItem('dlvr_lang', lang);
-  applyLang();
-  updateTodayBox();
-}
-
-function applyLang(){
-  const t = T[lang];
-  const isAr = lang === 'ar';
-  document.documentElement.lang = lang;
-  document.documentElement.dir  = isAr ? 'rtl' : 'ltr';
-  document.getElementById('langBtn').textContent   = isAr ? 'EN' : 'عر';
-  document.getElementById('lbl_today').textContent  = t.today;
-  document.getElementById('lbl_frame').textContent  = t.frame;
-  document.getElementById('lbl_camoff').textContent = t.camoff;
-  document.getElementById('lbl_startcam').textContent = t.startcam;
-  document.getElementById('lbl_settings').textContent = t.settings;
-  document.getElementById('lbl_enterpin').textContent = t.enterpin;
-  document.getElementById('pinErr').textContent       = t.wrongpin;
-  document.getElementById('lbl_branchcode').textContent = t.branchcode;
-  document.getElementById('branchIn').placeholder    = t.branchph;
-  document.getElementById('branchHint').textContent  = t.branchhint;
-  document.getElementById('lbl_pasteurl').textContent = t.pasteurl;
-  document.getElementById('lbl_save').textContent    = t.save;
-  document.getElementById('lbl_savehint').textContent = t.savehint;
-  document.getElementById('lbl_close').textContent   = t.close;
-  document.getElementById('lbl_sending').textContent = t.sending;
-  document.getElementById('lbl_reading').textContent = t.reading;
-  document.getElementById('lbl_result').textContent  = t.result;
-  document.getElementById('lbl_sent').textContent    = t.sent;
-  // update conn text
-  const isOk = document.getElementById('conn').classList.contains('ok');
-  document.getElementById('connTxt').textContent = isOk ? t.connected : t.disconnected;
-}
-
-// ══ TODAY BOX ════════════════════════════
-function updateTodayBox(){
-  const now = new Date();
-  const dateStr = now.toLocaleDateString(lang === 'ar' ? 'ar-SA' : 'en-US', {
-    weekday:'short', month:'short', day:'numeric'
-  });
-  document.getElementById('todayDate').textContent = dateStr;
-  const el = document.getElementById('todayBranch');
-  if(branchName && BRANCHES[branchName]){
-    el.textContent = BRANCHES[branchName] + ' · ' + branchName;
-  } else {
-    el.textContent = '';
-  }
-}
-
-// ══ CAMERA ═══════════════════════════════
-async function startCam(){
-  try{
-    stream = await navigator.mediaDevices.getUserMedia({
-      video:{facingMode:{ideal:'environment'},width:{ideal:1920},height:{ideal:1080}},audio:false
-    });
-  }catch{
-    try{ stream = await navigator.mediaDevices.getUserMedia({video:true,audio:false}); }
-    catch{ toast(T[lang].nocam,'bad'); return; }
-  }
-  const v = document.getElementById('vid');
-  v.srcObject = stream;
-  v.style.display = 'block';
-  document.getElementById('noCam').style.display = 'none';
-  document.getElementById('shutter').disabled = false;
-  document.getElementById('camZone').classList.add('scanning');
-}
-
-// ══ CAPTURE ══════════════════════════════
-async function capture(){
-  if(!stream || busy) return;
-  if(!branchName || !BRANCHES[branchName]){
-    toast(T[lang].nobranch,'bad');
-    setTimeout(()=>openAdmin(), 800);
-    return;
-  }
-  busy = true;
-  const fl = document.getElementById('flash');
-  fl.classList.add('go');
-  setTimeout(()=>fl.classList.remove('go'), 100);
-  beep();
-
-  const vid = document.getElementById('vid');
-  const cv  = document.getElementById('cv');
-  const maxW = 600;
-  const ratio = Math.min(maxW/(vid.videoWidth||1280),1);
-  cv.width  = Math.round((vid.videoWidth||1280)*ratio);
-  cv.height = Math.round((vid.videoHeight||720)*ratio);
-  cv.getContext('2d').drawImage(vid, 0, 0, cv.width, cv.height);
-
-  const b64       = cv.toDataURL('image/jpeg', 0.5).split(',')[1];
-  const b64Upload = cv.toDataURL('image/jpeg', 0.85).split(',')[1];
-
-  document.getElementById('analyzing').classList.add('on');
-  document.getElementById('shutter').disabled = true;
-
-  try{
-    const result = await analyze(b64);
-    result.branchCode  = branchName;
-    result.branchLabel = BRANCHES[branchName] || branchName;
-    let saved = false;
-    if(sheetUrl) saved = await saveSheet(result, b64Upload);
-    showResult(result, saved);
-    count++;
-    localStorage.setItem(KEY_COUNT, count);
-    document.getElementById('cnt').textContent = count;
-    document.getElementById('scanBox').classList.add('captured');
-    setTimeout(()=>document.getElementById('scanBox').classList.remove('captured'), 800);
-  }catch(err){
-    toast('❌ '+err.message,'bad');
-  }finally{
-    document.getElementById('analyzing').classList.remove('on');
-    document.getElementById('shutter').disabled = false;
-    busy = false;
-  }
-}
-
-// ══ AI ═══════════════════════════════════
-async function analyze(b64){
-  const res = await fetch(WORKER_URL,{
-    method:'POST', headers:{'Content-Type':'application/json'},
-    body:JSON.stringify({
-      model:'claude-haiku-4-5-20251001', max_tokens:400,
-      messages:[{role:'user',content:[
-        {type:'image',source:{type:'base64',media_type:'image/jpeg',data:b64}},
-        {type:'text',text:`أنت نظام توثيق طلبات مطاعم. حلّل صورة طلب التيك أواي وأعطني JSON فقط بدون أي نص إضافي:
-{"orderNumber":"رقم الطلب أو الكود","platform":"HungerStation أو Keeta أو Jahez أو Ninja أو ToYou أو Marsool أو غير واضح","invoiceDate":"تاريخ الفاتورة كما يظهر في الصورة أو غير واضح","invoiceTime":"وقت الفاتورة كما يظهر في الصورة أو غير واضح","notes":"ملاحظة مهمة إن وجدت وإلا فارغة"}
-لا تكتب أي شيء خارج JSON.`}
-      ]}]
-    })
-  });
-  const data = await res.json();
-  if(data.error) throw new Error(data.error.message || JSON.stringify(data.error));
-  if(!data.content||!data.content[0]) throw new Error('رد غير متوقع');
-  const match = data.content[0].text.trim().match(/\{[\s\S]*\}/);
-  if(!match) throw new Error('لم يتمكن AI من قراءة الطلب');
-  return JSON.parse(match[0]);
-}
-
-// ══ IMGBB UPLOAD ════════════════════════
-const IMGBB_KEY = '7cf15082b41afb536fe73aa393d6dfb4';
-
-async function uploadToImgBB(b64){
-  try{
-    const form = new FormData();
-    form.append('key',   IMGBB_KEY);
-    form.append('image', b64);
-    const res  = await fetch('https://api.imgbb.com/1/upload', {
-      method: 'POST',
-      body:   form
-    });
-    if(!res.ok) return '';
-    const data = await res.json();
-    if(data && data.success && data.data && data.data.url) return data.data.url;
-    return '';
-  } catch(e){ return ''; }
-}
-
-// ══ SAVE TO SHEET ════════════════════════
-async function saveSheet(r, b64Upload){
-  try{
-    // ارفع الصورة على ImgBB أولاً
-    const imageUrl = await uploadToImgBB(b64Upload);
-
-    await fetch(sheetUrl,{
-      method:'POST', mode:'no-cors', headers:{'Content-Type':'application/json'},
-      body: JSON.stringify({
-        branchCode:  r.branchCode  || '',
-        branchLabel: r.branchLabel || '',
-        branchName:  (r.branchCode ? (r.branchLabel||'')+' - '+r.branchCode : ''),
-        orderNumber: (r.orderNumber||'').replace(/^#+/,'').trim(),
-        platform:    r.platform    || '',
-        invoiceDate: r.invoiceDate || '',
-        invoiceTime: r.invoiceTime || '',
-        notes:       r.notes       || '',
-        imageUrl:    imageUrl
-      })
-    });
-    return true;
-  } catch(e){ return false; }
-}
-
-// ══ BRAND TAP ════════════════════════════
-function onBrandTap(){
-  tapN++;
-  for(let i=0;i<5;i++) document.getElementById('t'+i).classList.toggle('on',i<tapN);
-  clearTimeout(tapTimer);
-  tapTimer = setTimeout(()=>{tapN=0;for(let i=0;i<5;i++)document.getElementById('t'+i).classList.remove('on');},2500);
-  if(tapN>=5){tapN=0;clearTimeout(tapTimer);for(let i=0;i<5;i++)document.getElementById('t'+i).classList.remove('on');openAdmin();}
-}
-
-// ══ ADMIN ════════════════════════════════
-function openAdmin(){
-  document.getElementById('pinIn').value='';
-  document.getElementById('pinErr').style.display='none';
-  document.getElementById('pinWrap').style.display='block';
-  document.getElementById('settingsDiv').style.display='none';
-  document.getElementById('adminOverlay').classList.add('on');
-  setTimeout(()=>document.getElementById('pinIn').focus(),350);
-}
-function closeAdmin(){ document.getElementById('adminOverlay').classList.remove('on'); }
-
-function checkPin(){
-  const v=document.getElementById('pinIn').value;
-  if(v.length<4) return;
-  if(v===ADMIN_PIN){
-    document.getElementById('pinWrap').style.display='none';
-    document.getElementById('settingsDiv').style.display='block';
-    document.getElementById('urlIn').value    = sheetUrl;
-    document.getElementById('branchIn').value = branchName;
-  }else{
-    document.getElementById('pinErr').style.display='block';
-    document.getElementById('pinIn').value='';
-    setTimeout(()=>document.getElementById('pinErr').style.display='none',2000);
-  }
-}
-
-function saveSettings(){
-  const t = T[lang];
-  const url    = document.getElementById('urlIn').value.trim();
-  const branch = document.getElementById('branchIn').value.trim();
-  if(!branch){ toast('⚠️ '+t.branchcode,'bad'); return; }
-  if(!BRANCHES[branch]){
-    toast(t.badbranch,'bad');
-    document.getElementById('branchIn').style.borderColor='var(--red)';
-    setTimeout(()=>document.getElementById('branchIn').style.borderColor='',2000);
-    return;
-  }
-  if(url && !url.startsWith('https://script.google.com')){ toast(t.badurl,'bad'); return; }
-  if(url){ sheetUrl=url; localStorage.setItem(KEY_URL,sheetUrl); setConn(true); }
-  branchName=branch;
-  localStorage.setItem(KEY_BRANCH,branchName);
-  updateTodayBox();
-  closeAdmin();
-}
-
-function setConn(ok){
-  const t = T[lang];
-  document.getElementById('conn').className='conn'+(ok?' ok':'');
-  document.getElementById('connTxt').textContent = ok ? t.connected : t.disconnected;
-}
-
-// ══ RESULT ═══════════════════════════════
-function showResult(r, saved){
-  const t = T[lang];
-  const badge=document.getElementById('rBadge');
-  badge.textContent = saved?t.saved:(sheetUrl?t.failed:t.noconn);
-  badge.className='r-badge '+(saved?'ok':'err');
-
-  const rows=[
-    {k:t.order,    v:r.orderNumber||'—', c:'big'},
-    {k:t.platform, v:r.platform||'—',   c:''},
-    {k:t.date,     v:r.invoiceDate||'—',c:''},
-    {k:t.time,     v:r.invoiceTime||'—',c:''},
-  ];
-  if(r.notes&&r.notes.trim()&&r.notes!=='غير واضح')
-    rows.push({k:t.notes,v:r.notes,c:'warn'});
-
-  document.getElementById('rRows').innerHTML=rows.map(x=>
-    `<div class="r-row"><span class="r-key">${x.k}</span><span class="r-val ${x.c}">${x.v}</span></div>`
-  ).join('');
-
-  document.getElementById('resultOverlay').classList.add('on');
-  setTimeout(()=>closeResult(), 4000);
-  if(saved) showSuccess();
-  else toast(t.analyzed,'info');
-}
-
-function showSuccess(){
-  const el=document.getElementById('successOverlay');
-  el.classList.add('on');
-  setTimeout(()=>el.classList.remove('on'),3000);
-}
-function closeResult(){ document.getElementById('resultOverlay').classList.remove('on'); }
-
-// ══ BEEP ═════════════════════════════════
-function beep(){
-  try{
-    if(!audioCtx) audioCtx=new(window.AudioContext||window.webkitAudioContext)();
-    const o=audioCtx.createOscillator(),g=audioCtx.createGain();
-    o.connect(g);g.connect(audioCtx.destination);
-    o.type='sine';
-    o.frequency.setValueAtTime(900,audioCtx.currentTime);
-    o.frequency.exponentialRampToValueAtTime(1300,audioCtx.currentTime+0.1);
-    g.gain.setValueAtTime(0.35,audioCtx.currentTime);
-    g.gain.exponentialRampToValueAtTime(0.001,audioCtx.currentTime+0.18);
-    o.start();o.stop(audioCtx.currentTime+0.18);
-  }catch{}
-}
-
-// ══ TOAST ════════════════════════════════
-function toast(msg,type='ok'){
-  const el=document.getElementById('toast');
-  el.textContent=msg;el.className=`toast ${type} show`;
-  setTimeout(()=>el.classList.remove('show'),2800);
-}
-
-document.addEventListener('touchstart',()=>{
-  if(!audioCtx) audioCtx=new(window.AudioContext||window.webkitAudioContext)();
-  if(audioCtx.state==='suspended') audioCtx.resume();
-},{once:true});
-
-document.addEventListener('keydown',e=>{
-  if(e.code==='Space'&&!document.getElementById('shutter').disabled){e.preventDefault();capture();}
-});
-</script>
-</body>
-</html>
+    frame:'Place order inside frame', camoff:'Camera not active', startcam:'Start Camera',
+    settings:'Admin Settings', enterpin:'Enter access code', wrongpin:'❌ Wrong code',
+    branchcode:'Branch Code (4 digits)', branchph:'Enter branch code', branchhint:'Enter the 4-digit code assigned to your branch',
+    pasteurl:'Paste URL', save:'Save', savehint:'Saved on device permanently',
+    close:'Close', sending:'Sending...', reading:'Reading order, platform & date',
+    result:'Anal
