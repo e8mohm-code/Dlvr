@@ -8,9 +8,9 @@
 <style>
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
 :root{
-  --org:#FF5A00;
-  --org2:#FF8C42;
-  --org-dim:rgba(255,90,0,.15);
+  --org:#00C853;
+  --org2:#69F0AE;
+  --org-dim:rgba(0,200,83,.15);
   --dark:#0A0A0A;
   --card:#111111;
   --border:#222222;
@@ -82,8 +82,8 @@ video#vid{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;disp
 .conn.ok{color:var(--org);}
 
 /* SHUTTER */
-.shutter-ring{width:80px;height:80px;border-radius:50%;border:2px solid rgba(255,90,0,.3);display:flex;align-items:center;justify-content:center;}
-.shutter{width:66px;height:66px;border-radius:50%;border:none;background:linear-gradient(135deg,var(--org),var(--org2));cursor:pointer;display:flex;align-items:center;justify-content:center;transition:transform .12s,box-shadow .2s;box-shadow:0 4px 24px rgba(255,90,0,.4);position:relative;overflow:hidden;}
+.shutter-ring{width:80px;height:80px;border-radius:50%;border:2px solid rgba(0,200,83,.3);display:flex;align-items:center;justify-content:center;}
+.shutter{width:66px;height:66px;border-radius:50%;border:none;background:linear-gradient(135deg,var(--org),var(--org2));cursor:pointer;display:flex;align-items:center;justify-content:center;transition:transform .12s,box-shadow .2s;box-shadow:0 4px 24px rgba(0,200,83,.4);position:relative;overflow:hidden;}
 .shutter::after{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(255,255,255,.25),transparent);border-radius:50%;}
 .shutter:active{transform:scale(.9);}
 .shutter:disabled{opacity:.3;cursor:not-allowed;box-shadow:none;}
@@ -160,8 +160,9 @@ canvas{display:none;}
     <div class="brand" id="brand" onclick="onBrandTap()">
       <!-- DLVR Logo SVG -->
       <svg class="logo-svg" viewBox="0 0 38 38" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <rect width="38" height="38" rx="9" fill="#FF5A00"/>
-        <path d="M22 8L12 19.5H20L16 30L26 18.5H18L22 8Z" fill="#111" stroke="#111" stroke-width="0.5" stroke-linejoin="round"/>
+        <rect width="38" height="38" rx="9" fill="#00C853"/>
+        <!-- Lightning bolt matching DLVR logo: top-right diagonal, sharp middle, bottom-right diagonal -->
+        <path d="M24 5L10 20.5H19L13 33L28 17.5H19L24 5Z" fill="#0d0d0d"/>
       </svg>
       <div class="brand-text">
         <div class="brand-name">DLVR</div>
@@ -243,12 +244,12 @@ canvas{display:none;}
     <div class="settings" id="settingsDiv">
 
       <!-- رقم المنشأة -->
-      <div class="field-label">رقم المنشأة / اسم الفرع</div>
-      <input class="text-in" id="branchIn" placeholder="مثال: فرع الرياض - 001" />
-      <div class="field-hint">يظهر في التطبيق والداشبورد لتمييز الفرع</div>
+      <div class="field-label">رمز المنشأة (4 أرقام)</div>
+      <input class="text-in" id="branchIn" type="number" inputmode="numeric" maxlength="4" placeholder="أدخل رمز المنشأة المكون من 4 أرقام" oninput="if(this.value.length>4)this.value=this.value.slice(0,4)" />
+      <div class="field-hint" id="branchHint">أدخل الرمز الرباعي المخصص لمنشأتك</div>
 
       <!-- رابط الشيت -->
-      <div class="field-label">رابط Google Sheets</div>
+      <div class="field-label">الصق الرابط</div>
       <div class="url-row">
         <input class="url-in" id="urlIn" placeholder="https://script.google.com/macros/s/.../exec">
         <button class="save-btn" onclick="saveSettings()">حفظ</button>
@@ -287,14 +288,26 @@ canvas{display:none;}
 const WORKER_URL = 'https://dry-glade-3ab4.e-8mohm.workers.dev/';
 const ADMIN_PIN  = '1234';
 
-// ══ أرقام المنشآت المعتمدة ═══════════════════════════
-const VALID_BRANCHES = new Set([
-  '3847','5921','7364','1589','4203','8716','2945','6138','9472','3061',
-  '7854','1427','5693','8310','2786','4519','9063','6742','1358','8927',
-  '3614','7081','5439','2197','9845','4672','1036','8253','6480','3729',
-  '7195','5068','2841','9317','4953','1624','8490','6207','3578','7843',
-  '2465','5130','9786','1902','6354','4817','8629','3041','7568','2394'
-]);
+// ══ أرقام المنشآت المعتمدة (رقم → اسم الفرع) ════════
+const BRANCHES = {
+  '3847': 'فرع 3847', '5921': 'فرع 5921', '7364': 'فرع 7364',
+  '1589': 'فرع 1589', '4203': 'فرع 4203', '8716': 'فرع 8716',
+  '2945': 'فرع 2945', '6138': 'فرع 6138', '9472': 'فرع 9472',
+  '3061': 'فرع 3061', '7854': 'فرع 7854', '1427': 'فرع 1427',
+  '5693': 'فرع 5693', '8310': 'فرع 8310', '2786': 'فرع 2786',
+  '4519': 'فرع 4519', '9063': 'فرع 9063', '6742': 'فرع 6742',
+  '1358': 'فرع 1358', '8927': 'فرع 8927', '3614': 'فرع 3614',
+  '7081': 'فرع 7081', '5439': 'فرع 5439', '2197': 'فرع 2197',
+  '9845': 'فرع 9845', '4672': 'فرع 4672', '1036': 'فرع 1036',
+  '8253': 'فرع 8253', '6480': 'فرع 6480', '3729': 'فرع 3729',
+  '7195': 'فرع 7195', '5068': 'فرع 5068', '2841': 'فرع 2841',
+  '9317': 'فرع 9317', '4953': 'فرع 4953', '1624': 'فرع 1624',
+  '8490': 'فرع 8490', '6207': 'فرع 6207', '3578': 'فرع 3578',
+  '7843': 'فرع 7843', '2465': 'فرع 2465', '5130': 'فرع 5130',
+  '9786': 'فرع 9786', '1902': 'فرع 1902', '6354': 'فرع 6354',
+  '4817': 'فرع 4817', '8629': 'فرع 8629', '3041': 'فرع 3041',
+  '7568': 'فرع 7568', '2394': 'فرع 2394'
+};
 
 // ══ STATE ════════════════════════════════════════════
 let stream   = null;
@@ -342,7 +355,7 @@ async function startCam(){
 // ══ CAPTURE ══════════════════════════════════════════
 async function capture(){
   if(!stream || busy) return;
-  if(!branchName || !VALID_BRANCHES.has(branchName)){
+  if(!branchName || !BRANCHES[branchName]){
     toast('⚠️ أدخل رقم المنشأة أولاً','bad');
     setTimeout(()=>openAdmin(), 800);
     return;
@@ -371,7 +384,8 @@ async function capture(){
 
   try{
     const result = await analyze(b64);
-    result.branchName = branchName;
+    result.branchCode = branchName; // branchName holds the code
+    result.branchLabel = BRANCHES[branchName] || branchName;
     let saved = false;
     if(sheetUrl) saved = await saveSheet(result, b64Upload);
     showResult(result, saved);
@@ -425,7 +439,8 @@ async function saveSheet(r, b64Upload){
       mode:'no-cors',
       headers:{'Content-Type':'application/json'},
       body:JSON.stringify({
-        branchName:   r.branchName   || '',
+        branchCode:   r.branchCode   || '',
+        branchLabel:  r.branchLabel  || '',
         orderNumber:  r.orderNumber  || '',
         platform:     r.platform     || '',
         invoiceDate:  r.invoiceDate  || '',
@@ -477,7 +492,7 @@ function checkPin(){
     document.getElementById('settingsDiv').style.display='block';
     // عبّي الحقول بالقيم المحفوظة
     document.getElementById('urlIn').value    = sheetUrl;
-    document.getElementById('branchIn').value = branchName;
+    document.getElementById('branchIn').value = branchName; // code
   }else{
     document.getElementById('pinErr').style.display='block';
     document.getElementById('pinIn').value='';
@@ -493,7 +508,7 @@ function saveSettings(){
   if(!branch){
     toast('⚠️ أدخل رقم المنشأة','bad'); return;
   }
-  if(!VALID_BRANCHES.has(branch)){
+  if(!BRANCHES[branch]){
     toast('❌ رقم المنشأة غير صحيح','bad');
     document.getElementById('branchIn').style.borderColor='var(--red)';
     setTimeout(()=>document.getElementById('branchIn').style.borderColor='',2000);
@@ -525,11 +540,11 @@ function setConn(ok){
 
 function updateBranchBar(){
   const el = document.getElementById('branchInfo');
-  if(branchName && VALID_BRANCHES.has(branchName)){
-    el.innerHTML = 'الفرع: <span>' + branchName + '</span>';
+  if(branchName && BRANCHES[branchName]){
+    el.innerHTML = BRANCHES[branchName] + ' · <span>' + branchName + '</span>';
     el.style.color = '';
   } else {
-    el.innerHTML = '⚠️ يجب تحديد رقم المنشأة';
+    el.innerHTML = '⚠️ يجب تحديد رمز المنشأة';
     el.style.color = 'var(--warn)';
   }
 }
@@ -546,7 +561,10 @@ function showResult(r, saved){
     {k:'تاريخ الفاتورة', v:r.invoiceDate ||'—', c:''},
     {k:'وقت الفاتورة',   v:r.invoiceTime ||'—', c:''},
   ];
-  if(r.branchName) rows.splice(1,0,{k:'الفرع', v:r.branchName, c:''});
+  if(r.branchCode){
+    const bname = BRANCHES[r.branchCode] || r.branchCode;
+    rows.splice(1,0,{k:'الفرع', v:bname + ' · ' + r.branchCode, c:''});
+  }
   if(r.notes&&r.notes.trim()&&r.notes!=='غير واضح')
     rows.push({k:'ملاحظات',v:r.notes,c:'warn'});
 
