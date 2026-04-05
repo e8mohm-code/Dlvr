@@ -1,0 +1,1311 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DLVR – نظام الردود الآلية | هنقرستيشن</title>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0c10;
+    --surface: #111318;
+    --card: #161b24;
+    --border: #1e2530;
+    --border-hover: #2d3a4a;
+    --accent: #e8521a;
+    --accent2: #f97316;
+    --green: #22c55e;
+    --blue: #3b82f6;
+    --yellow: #eab308;
+    --red: #ef4444;
+    --text: #e8edf4;
+    --text-muted: #6b7b8d;
+    --text-dim: #3d4a57;
+    --mono: 'JetBrains Mono', monospace;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'IBM Plex Sans Arabic', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* Grid background */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(232,82,26,0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(232,82,26,0.03) 1px, transparent 1px);
+    background-size: 40px 40px;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .wrapper { position: relative; z-index: 1; }
+
+  /* ── Header ── */
+  header {
+    border-bottom: 1px solid var(--border);
+    padding: 0 28px;
+    height: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: rgba(10,12,16,0.95);
+    backdrop-filter: blur(12px);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+
+  .logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .logo-mark {
+    width: 32px; height: 32px;
+    background: var(--accent);
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: var(--mono);
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: -1px;
+  }
+
+  .logo-text {
+    font-size: 15px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+  }
+
+  .logo-sub {
+    font-size: 11px;
+    color: var(--text-muted);
+    font-weight: 400;
+  }
+
+  .header-right {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 11px;
+    padding: 4px 10px;
+    border-radius: 20px;
+    font-weight: 500;
+  }
+
+  .badge-green { background: rgba(34,197,94,0.1); color: var(--green); border: 1px solid rgba(34,197,94,0.2); }
+  .badge-orange { background: rgba(232,82,26,0.1); color: var(--accent2); border: 1px solid rgba(232,82,26,0.2); }
+  .badge-blue { background: rgba(59,130,246,0.1); color: var(--blue); border: 1px solid rgba(59,130,246,0.2); }
+  .badge-yellow { background: rgba(234,179,8,0.1); color: var(--yellow); border: 1px solid rgba(234,179,8,0.2); }
+  .badge-red { background: rgba(239,68,68,0.1); color: var(--red); border: 1px solid rgba(239,68,68,0.2); }
+
+  .dot { width: 6px; height: 6px; border-radius: 50%; background: currentColor; animation: pulse 2s infinite; }
+  @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.4} }
+
+  /* ── Layout ── */
+  .layout {
+    display: grid;
+    grid-template-columns: 260px 1fr;
+    min-height: calc(100vh - 60px);
+  }
+
+  /* ── Sidebar ── */
+  aside {
+    border-left: 1px solid var(--border);
+    padding: 20px 0;
+    background: var(--surface);
+  }
+
+  .sidebar-section {
+    padding: 0 16px 16px;
+  }
+
+  .sidebar-label {
+    font-size: 10px;
+    font-weight: 600;
+    color: var(--text-dim);
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    padding: 0 4px;
+    margin-bottom: 8px;
+  }
+
+  .sidebar-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 9px 12px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 13.5px;
+    color: var(--text-muted);
+    transition: all 0.15s;
+    margin-bottom: 2px;
+    border: 1px solid transparent;
+  }
+
+  .sidebar-item:hover {
+    background: var(--card);
+    color: var(--text);
+  }
+
+  .sidebar-item.active {
+    background: rgba(232,82,26,0.12);
+    color: var(--accent2);
+    border-color: rgba(232,82,26,0.2);
+  }
+
+  .sidebar-item .icon { font-size: 16px; }
+
+  .sidebar-count {
+    margin-right: auto;
+    font-size: 11px;
+    background: var(--border);
+    padding: 2px 7px;
+    border-radius: 10px;
+    color: var(--text-muted);
+  }
+
+  .sidebar-item.active .sidebar-count {
+    background: rgba(232,82,26,0.2);
+    color: var(--accent2);
+  }
+
+  .sidebar-divider {
+    height: 1px;
+    background: var(--border);
+    margin: 12px 16px;
+  }
+
+  /* ── Main ── */
+  main {
+    padding: 28px;
+    overflow-y: auto;
+  }
+
+  /* ── Stats Row ── */
+  .stats-row {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 14px;
+    margin-bottom: 28px;
+  }
+
+  .stat-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 18px 20px;
+    transition: border-color 0.2s;
+  }
+
+  .stat-card:hover { border-color: var(--border-hover); }
+
+  .stat-label { font-size: 11px; color: var(--text-muted); margin-bottom: 8px; font-weight: 500; }
+  .stat-value { font-size: 28px; font-weight: 700; font-family: var(--mono); line-height: 1; }
+  .stat-sub { font-size: 11px; color: var(--text-muted); margin-top: 6px; }
+  .stat-accent { color: var(--accent2); }
+  .stat-green { color: var(--green); }
+  .stat-blue { color: var(--blue); }
+  .stat-yellow { color: var(--yellow); }
+
+  /* ── Section Header ── */
+  .section-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 18px;
+  }
+
+  .section-title {
+    font-size: 15px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 16px;
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    border: none;
+    transition: all 0.15s;
+    font-family: 'IBM Plex Sans Arabic', sans-serif;
+  }
+
+  .btn-primary {
+    background: var(--accent);
+    color: white;
+  }
+  .btn-primary:hover { background: #d44a15; }
+
+  .btn-ghost {
+    background: transparent;
+    color: var(--text-muted);
+    border: 1px solid var(--border);
+  }
+  .btn-ghost:hover { background: var(--card); color: var(--text); border-color: var(--border-hover); }
+
+  .btn-copy {
+    background: rgba(59,130,246,0.1);
+    color: var(--blue);
+    border: 1px solid rgba(59,130,246,0.2);
+    padding: 5px 12px;
+    font-size: 12px;
+  }
+  .btn-copy:hover { background: rgba(59,130,246,0.2); }
+
+  .btn-copy.copied {
+    background: rgba(34,197,94,0.1);
+    color: var(--green);
+    border-color: rgba(34,197,94,0.2);
+  }
+
+  /* ── Case Cards ── */
+  .cases-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+
+  .case-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    overflow: hidden;
+    transition: border-color 0.2s;
+  }
+
+  .case-card:hover { border-color: var(--border-hover); }
+
+  .case-card.expanded { border-color: rgba(232,82,26,0.3); }
+
+  .case-header {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 16px 20px;
+    cursor: pointer;
+  }
+
+  .case-num {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--text-dim);
+    min-width: 28px;
+  }
+
+  .case-icon {
+    font-size: 22px;
+    min-width: 32px;
+    text-align: center;
+  }
+
+  .case-info { flex: 1; }
+
+  .case-title {
+    font-size: 14px;
+    font-weight: 600;
+    margin-bottom: 3px;
+  }
+
+  .case-desc {
+    font-size: 12px;
+    color: var(--text-muted);
+  }
+
+  .case-meta {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .expand-icon {
+    color: var(--text-dim);
+    font-size: 18px;
+    transition: transform 0.25s;
+    min-width: 20px;
+    text-align: center;
+  }
+
+  .case-card.expanded .expand-icon { transform: rotate(180deg); }
+
+  .case-body {
+    display: none;
+    border-top: 1px solid var(--border);
+    padding: 20px;
+  }
+
+  .case-card.expanded .case-body { display: block; }
+
+  .response-tabs {
+    display: flex;
+    gap: 6px;
+    margin-bottom: 16px;
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 12px;
+  }
+
+  .tab-btn {
+    padding: 6px 14px;
+    border-radius: 6px;
+    font-size: 12.5px;
+    cursor: pointer;
+    border: 1px solid transparent;
+    background: transparent;
+    color: var(--text-muted);
+    font-family: 'IBM Plex Sans Arabic', sans-serif;
+    transition: all 0.15s;
+  }
+
+  .tab-btn:hover { background: var(--surface); color: var(--text); }
+  .tab-btn.active {
+    background: rgba(232,82,26,0.12);
+    color: var(--accent2);
+    border-color: rgba(232,82,26,0.25);
+  }
+
+  .tab-pane { display: none; }
+  .tab-pane.active { display: block; }
+
+  .response-block {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 16px;
+    margin-bottom: 12px;
+  }
+
+  .response-block-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 10px;
+  }
+
+  .response-block-label {
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .response-text {
+    font-size: 13.5px;
+    line-height: 1.75;
+    color: var(--text);
+    white-space: pre-line;
+  }
+
+  .placeholders-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-top: 10px;
+  }
+
+  .placeholder-chip {
+    font-family: var(--mono);
+    font-size: 11px;
+    padding: 3px 8px;
+    background: rgba(234,179,8,0.08);
+    border: 1px solid rgba(234,179,8,0.2);
+    border-radius: 4px;
+    color: var(--yellow);
+  }
+
+  .objection-item {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-right: 3px solid var(--accent);
+    border-radius: 10px;
+    padding: 14px 16px;
+    margin-bottom: 10px;
+  }
+
+  .objection-q {
+    font-size: 12.5px;
+    font-weight: 600;
+    color: var(--text-muted);
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .objection-a {
+    font-size: 13px;
+    line-height: 1.7;
+    color: var(--text);
+    white-space: pre-line;
+  }
+
+  /* ── Search ── */
+  .search-wrap {
+    position: relative;
+    margin-bottom: 20px;
+  }
+
+  .search-input {
+    width: 100%;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 11px 16px 11px 40px;
+    color: var(--text);
+    font-size: 13.5px;
+    font-family: 'IBM Plex Sans Arabic', sans-serif;
+    outline: none;
+    transition: border-color 0.2s;
+    direction: rtl;
+  }
+
+  .search-input:focus { border-color: rgba(232,82,26,0.4); }
+  .search-input::placeholder { color: var(--text-dim); }
+
+  .search-icon {
+    position: absolute;
+    left: 14px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--text-dim);
+    font-size: 16px;
+  }
+
+  /* ── Flow Diagram ── */
+  .flow-section {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 24px;
+    margin-bottom: 28px;
+  }
+
+  .flow-title {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text-muted);
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .flow-steps {
+    display: flex;
+    align-items: center;
+    gap: 0;
+    overflow-x: auto;
+    padding-bottom: 4px;
+  }
+
+  .flow-step {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-width: 110px;
+    text-align: center;
+  }
+
+  .flow-node {
+    width: 44px; height: 44px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+    margin-bottom: 8px;
+    border: 1px solid;
+  }
+
+  .flow-node-1 { background: rgba(232,82,26,0.1); border-color: rgba(232,82,26,0.3); }
+  .flow-node-2 { background: rgba(59,130,246,0.1); border-color: rgba(59,130,246,0.3); }
+  .flow-node-3 { background: rgba(234,179,8,0.1); border-color: rgba(234,179,8,0.3); }
+  .flow-node-4 { background: rgba(34,197,94,0.1); border-color: rgba(34,197,94,0.3); }
+  .flow-node-5 { background: rgba(168,85,247,0.1); border-color: rgba(168,85,247,0.3); }
+
+  .flow-step-label {
+    font-size: 11px;
+    color: var(--text-muted);
+    font-weight: 500;
+    line-height: 1.4;
+  }
+
+  .flow-arrow {
+    color: var(--text-dim);
+    font-size: 18px;
+    padding: 0 6px;
+    margin-bottom: 28px;
+    flex-shrink: 0;
+  }
+
+  /* Toast */
+  .toast {
+    position: fixed;
+    bottom: 24px;
+    left: 50%;
+    transform: translateX(-50%) translateY(80px);
+    background: var(--green);
+    color: white;
+    padding: 10px 20px;
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: 500;
+    z-index: 999;
+    transition: transform 0.3s;
+  }
+  .toast.show { transform: translateX(-50%) translateY(0); }
+
+  /* Scrollbar */
+  ::-webkit-scrollbar { width: 5px; height: 5px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+</style>
+</head>
+<body>
+<div class="wrapper">
+
+<!-- Header -->
+<header>
+  <div class="logo">
+    <div class="logo-mark">DL</div>
+    <div>
+      <div class="logo-text">DLVR</div>
+      <div class="logo-sub">Restaurant Solutions</div>
+    </div>
+  </div>
+  <div class="header-right">
+    <span class="badge badge-orange">🍔 هنقرستيشن</span>
+    <span class="badge badge-green"><span class="dot"></span> نظام الردود الآلية</span>
+  </div>
+</header>
+
+<div class="layout">
+
+<!-- Sidebar -->
+<aside>
+  <div class="sidebar-section">
+    <div class="sidebar-label">الحالات</div>
+    <div class="sidebar-item active" onclick="filterCases('all')">
+      <span class="icon">📋</span> كل الحالات <span class="sidebar-count" id="count-all">0</span>
+    </div>
+    <div class="sidebar-item" onclick="filterCases('delivery')">
+      <span class="icon">🛵</span> تأخير التوصيل <span class="sidebar-count" id="count-delivery">0</span>
+    </div>
+    <div class="sidebar-item" onclick="filterCases('order')">
+      <span class="icon">📦</span> مشاكل الطلب <span class="sidebar-count" id="count-order">0</span>
+    </div>
+    <div class="sidebar-item" onclick="filterCases('quality')">
+      <span class="icon">⭐</span> جودة الطعام <span class="sidebar-count" id="count-quality">0</span>
+    </div>
+    <div class="sidebar-item" onclick="filterCases('compensation')">
+      <span class="icon">💰</span> التعويضات <span class="sidebar-count" id="count-compensation">0</span>
+    </div>
+    <div class="sidebar-item" onclick="filterCases('technical')">
+      <span class="icon">⚙️</span> مشاكل تقنية <span class="sidebar-count" id="count-technical">0</span>
+    </div>
+  </div>
+
+  <div class="sidebar-divider"></div>
+
+  <div class="sidebar-section">
+    <div class="sidebar-label">الأدوات</div>
+    <div class="sidebar-item" onclick="scrollToFlow()">
+      <span class="icon">🔄</span> مسار الأتمتة
+    </div>
+    <div class="sidebar-item" onclick="exportAll()">
+      <span class="icon">📤</span> تصدير الردود
+    </div>
+  </div>
+</aside>
+
+<!-- Main Content -->
+<main>
+
+  <!-- Stats -->
+  <div class="stats-row">
+    <div class="stat-card">
+      <div class="stat-label">إجمالي الحالات</div>
+      <div class="stat-value stat-accent" id="stat-total">12</div>
+      <div class="stat-sub">حالة مُدربة جاهزة</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">الاعتراضات</div>
+      <div class="stat-value stat-blue" id="stat-obj">36</div>
+      <div class="stat-sub">رد اعتراض مُعد</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">متوسط وقت الرد</div>
+      <div class="stat-value stat-green">< 2</div>
+      <div class="stat-sub">دقيقة بالأتمتة</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">منصات مدعومة</div>
+      <div class="stat-value stat-yellow">6</div>
+      <div class="stat-sub">قابل للتوسيع</div>
+    </div>
+  </div>
+
+  <!-- Flow -->
+  <div class="flow-section" id="flow-section">
+    <div class="flow-title">⚡ مسار الأتمتة — كيف يعمل النظام</div>
+    <div class="flow-steps">
+      <div class="flow-step">
+        <div class="flow-node flow-node-1">📥</div>
+        <div class="flow-step-label">تصل شكوى<br>من العميل</div>
+      </div>
+      <div class="flow-arrow">←</div>
+      <div class="flow-step">
+        <div class="flow-node flow-node-2">🔍</div>
+        <div class="flow-step-label">تصنيف تلقائي<br>للحالة</div>
+      </div>
+      <div class="flow-arrow">←</div>
+      <div class="flow-step">
+        <div class="flow-node flow-node-3">📝</div>
+        <div class="flow-step-label">اختيار الرد<br>المناسب</div>
+      </div>
+      <div class="flow-arrow">←</div>
+      <div class="flow-step">
+        <div class="flow-node flow-node-4">✅</div>
+        <div class="flow-step-label">مراجعة<br>وإرسال</div>
+      </div>
+      <div class="flow-arrow">←</div>
+      <div class="flow-step">
+        <div class="flow-node flow-node-5">📊</div>
+        <div class="flow-step-label">تسجيل في<br>لوحة DLVR</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Search -->
+  <div class="search-wrap">
+    <span class="search-icon">🔎</span>
+    <input type="text" class="search-input" placeholder="ابحث في الحالات والردود..." oninput="searchCases(this.value)" id="searchInput">
+  </div>
+
+  <!-- Cases -->
+  <div class="section-header">
+    <div class="section-title">📚 قاعدة الردود المدربة</div>
+    <button class="btn btn-primary" onclick="addCase()">+ إضافة حالة</button>
+  </div>
+
+  <div class="cases-grid" id="casesGrid"></div>
+
+</main>
+</div>
+</div>
+
+<!-- Toast -->
+<div class="toast" id="toast">✅ تم النسخ</div>
+
+<script>
+const CASES = [
+  {
+    id: 1, category: "delivery", categoryLabel: "تأخير التوصيل",
+    icon: "🛵", badge: "badge-yellow",
+    title: "تأخير التوصيل عن الوقت المتوقع",
+    desc: "عندما يشكو العميل من تأخر وصول طلبه",
+    complaint: "طلبي تأخر كثير وما وصل! الوقت المتوقع كان ٣٠ دقيقة وانا ساعة ونص انتظر",
+    response: `عزيزي [اسم العميل]،
+
+نعتذر بشكل خاص عن التأخير الذي واجهته، هذا ليس المستوى الذي نسعى لتقديمه ونتفهم مدى إزعاج هذا الموقف.
+
+بعد مراجعة طلبك رقم [رقم الطلب]، تبين أن [سبب التأخير] أثّر على وقت التوصيل.
+
+ما قمنا به الآن:
+• متابعة حالة طلبك مع فريق التوصيل
+• التأكد من وصول طلبك في أقرب وقت ممكن
+• تسجيل هذه الحادثة لتحسين خدمتنا
+
+نقدر صبرك ووثوقك بنا، وسنحرص على ألا تتكرر هذه التجربة.
+
+فريق خدمة العملاء
+DLVR Restaurant Solutions`,
+    placeholders: ["اسم العميل", "رقم الطلب", "سبب التأخير"],
+    objections: [
+      {
+        q: "العميل يقول: هذا ليس المرة الأولى، دائمًا يتأخر",
+        a: "نتفهم إحساسك تمامًا، والتكرار يجعل الأمر أكثر إزعاجًا. لقد رفعنا الأمر كأولوية قصوى وسنضمن تعويضك بكوبون خصم على طلبك القادم. نحن نعمل على حل جذري لهذه المشكلة."
+      },
+      {
+        q: "العميل يطالب بإلغاء الطلب والاسترداد الكامل",
+        a: "حقك محفوظ تمامًا. سنرفع طلب الاسترداد الكامل فورًا وسيتم معالجته خلال [٢-٥ أيام عمل] حسب سياسة هنقرستيشن. رقم طلب الاسترداد: [الرقم]. هل تريد الانتظار أم تفضل الإلغاء الآن؟"
+      },
+      {
+        q: "العميل يهدد بتقييم سلبي",
+        a: "رأيك يهمنا ونحترم حقك في التعبير عنه. مشكلتك الأصلية يجب أن تُحل، وهذا ما نركز عليه الآن. بعد حل المشكلة نأمل أن تعطينا فرصة أخرى، لكن قرارك في النهاية لك."
+      }
+    ]
+  },
+  {
+    id: 2, category: "order", categoryLabel: "مشاكل الطلب",
+    icon: "📦", badge: "badge-red",
+    title: "وصول طلب ناقص أو خاطئ",
+    desc: "منتجات مفقودة أو طلب مختلف عما تم طلبه",
+    complaint: "طلبي وصل ناقص، اطلبت وجبة كبيرة والبطاطس ما جات",
+    response: `عزيزي [اسم العميل]،
+
+يؤسفنا جدًا سماع ذلك، وصول طلب ناقص أمر غير مقبول ونتحمل المسؤولية الكاملة.
+
+تأكيد: استلمنا شكواك بخصوص [اسم المنتج الناقص] من الطلب رقم [رقم الطلب].
+
+خطوات المعالجة الفورية:
+• ✅ رفع طلب تعويض رسمي على هنقرستيشن الآن
+• ✅ التنسيق مع المطعم للتحقق من سبب النقص
+• ✅ ضمان عدم التكرار في الطلبات القادمة
+
+التعويض المستحق: [قيمة المنتج/كوبون/إضافة للمحفظة] سيُضاف خلال [المدة].
+
+نشكرك على إبلاغنا فورًا.`,
+    placeholders: ["اسم العميل", "رقم الطلب", "اسم المنتج الناقص", "قيمة التعويض", "المدة"],
+    objections: [
+      {
+        q: "العميل يقول: لن أعيد الطلب من هذا المطعم",
+        a: "قرارك نحترمه تمامًا. لكن نودّ إعلامك أن هذه الحادثة ستُسجل في ملف المطعم وستؤثر على متابعتهم معنا. التعويض المستحق لك محفوظ بغض النظر عن قرارك."
+      },
+      {
+        q: "العميل يطلب دليلًا على رفع التعويض",
+        a: "بالطبع، حقك. رقم تذكرة الاعتراض المرفوع هو [رقم التذكرة] ويمكنك متابعتها مباشرةً على تطبيق هنقرستيشن في قسم طلباتي."
+      },
+      {
+        q: "العميل يقول: هذا حصل قبل ويعوضوني كوبونات وأنا ما أبيها",
+        a: "هذه ملاحظة مهمة ومشروعة. سنطلب استرداد نقدي مباشر إلى محفظتك على التطبيق بدلًا من الكوبون. هذا الخيار متاح وسنحرص عليه."
+      }
+    ]
+  },
+  {
+    id: 3, category: "quality", categoryLabel: "جودة الطعام",
+    icon: "⭐", badge: "badge-orange",
+    title: "الطعام بارد أو جودته رديئة",
+    desc: "شكاوى تتعلق بحرارة الطعام أو مستوى جودته",
+    complaint: "الأكل وصلني بارد تمامًا وكان الفرايز ناشف وما يؤكل",
+    response: `عزيزي [اسم العميل]،
+
+هذا غير مقبول إطلاقًا، الطعام يجب أن يصل بالجودة التي تستحقها.
+
+فهمنا من شكواك أن طلبك رقم [رقم الطلب] وصل [بارد / جودة غير مناسبة]، وهذا يؤثر مباشرة على تجربتك ولا نتهاون معه.
+
+ما الذي نقوم به:
+• مراجعة وقت التوصيل ومدى تأثيره على درجة حرارة الطعام
+• إرسال تنبيه رسمي للمطعم بشأن معايير التغليف والحرارة
+• رفع طلب التعويض المناسب لك
+
+في حال رغبت، يمكنك مشاركتنا صورة للطلب لتسريع عملية التعويض.
+
+نأمل أن تمنحنا فرصة أخرى لتقديم ما تستحقه.`,
+    placeholders: ["اسم العميل", "رقم الطلب"],
+    objections: [
+      {
+        q: "العميل يقول: ما عندي وقت أصور",
+        a: "لا مشكلة على الإطلاق، قبلنا شكواك بدون صور ورفعنا الاعتراض اعتمادًا على تفاصيلك. لا يحتاج هذا إثباتًا منك."
+      },
+      {
+        q: "العميل يقول: أريد استرداد كامل وليس تعويضًا جزئيًا",
+        a: "إذا كان الطلب غير قابل للأكل بشكل كامل فالاسترداد الكامل حقك. سنرفع هذا الطلب كمستوى تعويض كامل وسيخضع للمراجعة من هنقرستيشن خلال [المدة]."
+      },
+      {
+        q: "المطعم يعترض ويقول: الطعام كان ساخنًا عند الخروج",
+        a: "ندرك أن مسؤولية المطعم تنتهي عند التسليم للسائق، لكن التجربة النهائية للعميل هي المعيار. سنُقيّم وقت التوصيل ومدى تأثيره ونتخذ الإجراء المناسب."
+      }
+    ]
+  },
+  {
+    id: 4, category: "compensation", categoryLabel: "التعويضات",
+    icon: "💰", badge: "badge-green",
+    title: "اعتراض على تعويض مرفوض",
+    desc: "عندما يُرفض طلب تعويض العميل من هنقرستيشن",
+    complaint: "رفعوا لي اعتراض على الطلب وهنقرستيشن رفضوا التعويض بدون سبب واضح",
+    response: `عزيزي [اسم العميل]،
+
+استلمنا إشعار برفض طلب التعويض الخاص بك، وهذا الأمر يستدعي منا التحرك الفوري.
+
+رقم الطلب: [رقم الطلب]
+سبب الرفض المُعطى: [سبب الرفض]
+
+خطة العمل من جانبنا:
+• 🔁 رفع اعتراض رسمي ثانٍ مدعوم بالأدلة
+• 📞 التواصل المباشر مع فريق دعم هنقرستيشن
+• 📋 توثيق الحالة كاملًا لضمان متابعتها
+
+موعد الرد المتوقع: خلال [٢-٣ أيام عمل]
+
+سنُبقيك على اطلاع كامل بكل تطور. شكرًا لثقتك بنا في متابعة حقوقك.`,
+    placeholders: ["اسم العميل", "رقم الطلب", "سبب الرفض", "المدة"],
+    objections: [
+      {
+        q: "العميل يقول: هذه المرة الثانية يُرفض طلبي",
+        a: "هذا يستدعي تصعيد الحالة لمستوى أعلى. سنتواصل مع مسؤول حسابات المطعم في هنقرستيشن مباشرةً وليس عبر قنوات الدعم العادية. التكرار يُقوّي موقف الاعتراض."
+      },
+      {
+        q: "العميل يسأل: ما ضمانكم أن الاعتراض سيُقبل هذه المرة؟",
+        a: "لا نضمن النتيجة لأنها قرار منصة هنقرستيشن، لكن نضمن لك الرفع الصحيح بكل الأدلة المتاحة والمتابعة حتى النهاية. في حال الرفض النهائي سنناقش بدائل أخرى معك."
+      },
+      {
+        q: "العميل يهدد بمقاضاة المطعم",
+        a: "حقك القانوني محفوظ ولسنا بموقع منعك من ذلك. لكن ننصحك بإعطاء قناة الاعتراض الرسمية فرصتها أولًا كونها أسرع وأبسط. سنوثق كل شيء بشكل يدعم أي خطوة تتخذها لاحقًا."
+      }
+    ]
+  },
+  {
+    id: 5, category: "delivery", categoryLabel: "تأخير التوصيل",
+    icon: "❌", badge: "badge-red",
+    title: "الطلب لم يصل نهائيًا",
+    desc: "عميل أكد عدم استلام أي طلب رغم ظهوره مُسلَّمًا",
+    complaint: "ظهر عندي الطلب مسلم وما استلمت شي خالص، السائق ما اتصل ولا شي",
+    response: `عزيزي [اسم العميل]،
+
+هذا يُعدّ من أكثر الحالات خطورةً بالنسبة لنا ونتعامل معها بأعلى أولوية.
+
+الطلب رقم [رقم الطلب] ظهر حالته "مُسلَّم" لكنك لم تستلمه، وهذا يعني إما خطأ في إثبات التسليم أو مشكلة في سلوك السائق.
+
+الإجراءات الفورية:
+• 🚨 رفع بلاغ عدم استلام رسمي على هنقرستيشن
+• 📱 التحقق من سجل اتصالات السائق والموقع
+• 💰 طلب استرداد كامل أو إعادة إرسال الطلب
+
+هل الطلب كان لعنوان [عنوان التوصيل]؟ نحتاج تأكيد العنوان للمتابعة.
+
+سنتابع هذه الحالة معك كل ساعة حتى حلها.`,
+    placeholders: ["اسم العميل", "رقم الطلب", "عنوان التوصيل"],
+    objections: [
+      {
+        q: "العميل يقول: لن أدفع ثمن شيء لم أستلمه",
+        a: "هذا حق مطلق ولن نطلب منك ذلك. الاسترداد الكامل سيُرفع فورًا كحالة طوارئ. لن يُحتسب عليك أي مبلغ حتى تُحل القضية."
+      },
+      {
+        q: "هنقرستيشن يقول: السائق أثبت التسليم بالصورة",
+        a: "سنطلب مراجعة صورة إثبات التسليم للتحقق من أن العنوان صحيح والشخص المُسلَّم إليه هو العميل. في حال وجود أي تناقض، الاعتراض سيُقبل."
+      },
+      {
+        q: "العميل يرفع القضية لهنقرستيشن مباشرةً",
+        a: "دعنا نرفعها معًا، حضورنا كطرف وسيط يُعزز موقفك. لكن إن فضّلت المراجعة المباشرة فهذا حقك ونحن ندعمك بكل التوثيقات المطلوبة."
+      }
+    ]
+  },
+  {
+    id: 6, category: "quality", categoryLabel: "جودة الطعام",
+    icon: "🤢", badge: "badge-red",
+    title: "وجود جسم غريب في الطعام",
+    desc: "حالات خطيرة: شعر، بلاستيك، أو غيره",
+    complaint: "وجدت شعر في الأكل! هذا مقرف جدًا وخطر على الصحة",
+    response: `عزيزي [اسم العميل]،
+
+نأخذ هذه الشكوى بجدية قصوى وهي من أعلى أولوياتنا. وجود أي جسم غريب في الطعام أمر غير مقبول ويمس سلامتك الشخصية.
+
+الرجاء عدم التخلص من الطعام في الوقت الحالي إن أمكن، حيث يساعد الحفاظ عليه في توثيق الحالة.
+
+الإجراءات الفورية من DLVR:
+• 🚨 تصعيد فوري للمطعم بمستوى طارئ
+• 📋 رفع تقرير رسمي لهيئة الغذاء والدواء إذا رغبت
+• 💰 استرداد كامل + تعويض إضافي عن الإزعاج
+
+هل تعاني من أي أعراض؟ سلامتك أهم شيء.
+
+نطلب منك مشاركتنا صورة الجسم الغريب لتسريع المعالجة.`,
+    placeholders: ["اسم العميل", "رقم الطلب"],
+    objections: [
+      {
+        q: "العميل يهدد بنشر الأمر على السوشيال ميديا",
+        a: "حقك في ذلك محفوظ ونحترمه. لكن نطلب منك إعطاءنا ٢٤ ساعة لحل المشكلة بشكل كامل أولًا. نحن لسنا هنا لإخفاء الأمر، بل لحله فعليًا."
+      },
+      {
+        q: "المطعم يرفض الاعتراف بالمشكلة",
+        a: "وجودنا هو لحماية العميل، وفي حال إنكار المطعم سنصعد الأمر لفريق الجودة في هنقرستيشن مباشرةً مع كل الأدلة المتوفرة."
+      },
+      {
+        q: "العميل يطلب إزالة المطعم من المنصة",
+        a: "هذا القرار يخص هنقرستيشن، لكننا سنوثق هذه الحالة في سجل المطعم ونرفعها ضمن تقرير الجودة الشهري الذي يؤثر على استمرارهم على المنصة."
+      }
+    ]
+  },
+  {
+    id: 7, category: "technical", categoryLabel: "مشاكل تقنية",
+    icon: "⚙️", badge: "badge-blue",
+    title: "مشكلة في الدفع أو الخصم المزدوج",
+    desc: "خُصم مبلغ أكثر من مرة أو مبلغ خاطئ",
+    complaint: "انخصم مني المبلغ مرتين على نفس الطلب!",
+    response: `عزيزي [اسم العميل]،
+
+نفهم مدى قلقك وهذا وضع يستحق حلًا عاجلًا.
+
+بناءً على بلاغك، تم خصم مبلغ [المبلغ] مرتين من [البطاقة/المحفظة] بتاريخ [التاريخ].
+
+للمتابعة نحتاج:
+• آخر ٤ أرقام من البطاقة المستخدمة
+• رقم طلبك: [رقم الطلب]
+
+الخطوات الفورية:
+• رفع طلب استرداد المبلغ المخصوم مزدوجًا
+• الحصول على مرجع المعاملة المالية من هنقرستيشن
+• المتابعة مع خدمة العملاء التقنية
+
+المدة المتوقعة للاسترداد: [٣-٧ أيام عمل] حسب سياسة البنك والمنصة.`,
+    placeholders: ["اسم العميل", "المبلغ", "رقم الطلب", "التاريخ"],
+    objections: [
+      {
+        q: "العميل يقول: مضت أسبوع ولم يُسترد المبلغ",
+        a: "هذا تجاوز المدة المعتادة. سنرفع طلب تصعيد مالي عاجل الآن مع كل المراجع. هل يمكنك مشاركتنا صورة من كشف حسابك البنكي تُثبت الخصمين؟ هذا يُسرّع العملية جدًا."
+      },
+      {
+        q: "هنقرستيشن يقول: خصم مرة واحدة فقط",
+        a: "كشف الحساب البنكي يُثبت خلاف ذلك، وهو مرجع أقوى من سجلات المنصة. سنطلب مطابقة المعاملة مع بيانات بوابة الدفع للوصول للحقيقة."
+      }
+    ]
+  },
+  {
+    id: 8, category: "order", categoryLabel: "مشاكل الطلب",
+    icon: "🔄", badge: "badge-yellow",
+    title: "إلغاء الطلب من طرف المطعم",
+    desc: "ألغى المطعم الطلب بعد انتظار العميل",
+    complaint: "انتظرت ساعة والمطعم رفض الطلب! ما عندهم كفاءة",
+    response: `عزيزي [اسم العميل]،
+
+نعتذر بصدق عما مررت به. انتظار ساعة ثم إلغاء الطلب من طرف المطعم تجربة محبطة تمامًا.
+
+الطلب رقم [رقم الطلب] أُلغي من المطعم بعد [مدة الانتظار].
+
+موقفنا الفوري:
+• استرداد كامل للمبلغ المدفوع بدون أي خصومات
+• تسجيل رسمي لهذه الحادثة في سجل المطعم
+• كوبون تعويض عن وقتك المهدر
+
+المطعم سيتحمل عواقب هذا الإلغاء المتأخر وفق سياسة هنقرستيشن.
+
+هل تود أن نقترح عليك بديلًا من مطاعم أخرى الآن؟`,
+    placeholders: ["اسم العميل", "رقم الطلب", "مدة الانتظار"],
+    objections: [
+      {
+        q: "العميل يقول: هذا المطعم يلغي دائمًا",
+        a: "إذا كان هذا نمطًا متكررًا فهو مشكلة حقيقية تؤثر على تقييم المطعم معنا. سنرفع تقرير انتظام الإلغاءات لهنقرستيشن لمراجعة وضع المطعم على المنصة."
+      },
+      {
+        q: "العميل يطلب تعويضًا عن وقته المهدر",
+        a: "هذا مطلب مشروع. سنطلب كوبون خصم بقيمة [المبلغ] إضافةً للاسترداد الكامل تعويضًا عن وقتك وإزعاجك."
+      }
+    ]
+  },
+  {
+    id: 9, category: "compensation", categoryLabel: "التعويضات",
+    icon: "🏷️", badge: "badge-blue",
+    title: "كوبون الخصم لم يعمل",
+    desc: "عميل يشكو من عدم تطبيق الخصم رغم استخدامه",
+    complaint: "استخدمت كوبون الخصم وما انطبق على طلبي وخسرت الفلوس",
+    response: `عزيزي [اسم العميل]،
+
+نتفهم إحباطك تمامًا، خصوصًا عندما تكون قد اعتمدت على الخصم عند الطلب.
+
+الكوبون المستخدم: [كود الكوبون]
+الطلب رقم: [رقم الطلب]
+
+أسباب محتملة للمشكلة:
+• الكوبون له حد أدنى للطلب لم يُحقَّق
+• الكوبون خاص بمنتجات أو مطاعم بعينها
+• خطأ تقني في التطبيق وقت الطلب
+
+الإجراء:
+سنتحقق من صحة وشروط الكوبون وفي حال كان يجب أن يُطبَّق سنسترد الفارق لمحفظتك.
+
+هل يمكنك مشاركتنا صورة شاشة تُظهر استخدام الكوبون في الطلب؟`,
+    placeholders: ["اسم العميل", "كود الكوبون", "رقم الطلب"],
+    objections: [
+      {
+        q: "العميل يقول: ما أبي صور أبي فلوسي فقط",
+        a: "قبلنا طلبك بدون صور. سنراجع سجلات الطلب من جانبنا وإن تأكد أن الكوبون كان صالحًا سنُعيد الفارق فورًا."
+      }
+    ]
+  },
+  {
+    id: 10, category: "delivery", categoryLabel: "تأخير التوصيل",
+    icon: "📍", badge: "badge-yellow",
+    title: "السائق لا يجد العنوان",
+    desc: "العميل يشكو من عدم قدرة السائق على الوصول",
+    complaint: "السائق يقول ما يلقى البيت ومشكلة العنوان منه وليس مني",
+    response: `عزيزي [اسم العميل]،
+
+نتفهم الإحباط من هذا الموقف. توصيل الطلب لعنوانك الصحيح هو مسؤوليتنا الكاملة.
+
+للمساعدة الفورية:
+• هل يمكنك إرسال موقعك الحالي على الخريطة للسائق؟
+• رقم السائق: [رقم السائق] — يمكنك التواصل مباشرةً
+• أو نتدخل نحن في التنسيق بين الطرفين
+
+إذا تأخر الوصول أكثر من [١٥ دقيقة] إضافية، سيكون لك الحق في تعويض التأخير.
+
+تواصل معنا فورًا وسنحل الأمر الآن.`,
+    placeholders: ["اسم العميل", "رقم السائق"],
+    objections: [
+      {
+        q: "العميل يقول: أعطيت عنوانًا صحيحًا والمشكلة من السائق",
+        a: "نصدقك تمامًا. مشكلة السائق في إيجاد العناوين مسؤوليتنا كذلك. سنتدخل الآن لتوجيه السائق وسيُسجَّل هذا في تقييمه."
+      },
+      {
+        q: "العميل يريد إلغاء الطلب بسبب هذا التأخير",
+        a: "إذا فشل السائق في الوصول بعد التنسيق فالإلغاء مع الاسترداد الكامل حقك. لا يتحمل العميل أي خسارة في هذه الحالة."
+      }
+    ]
+  },
+  {
+    id: 11, category: "technical", categoryLabel: "مشاكل تقنية",
+    icon: "📱", badge: "badge-blue",
+    title: "مشكلة في تطبيق هنقرستيشن",
+    desc: "تعطل التطبيق أو عدم ظهور الطلبات",
+    complaint: "التطبيق ما يفتح عندي وما أقدر أتابع طلبي",
+    response: `عزيزي [اسم العميل]،
+
+نفهم مدى الإزعاج عندما لا تستطيع متابعة طلبك. دعنا نساعدك الآن.
+
+خطوات سريعة للحل:
+١. أغلق التطبيق كليًا وأعد فتحه
+٢. تأكد من اتصالك بالإنترنت
+٣. جرب تحديث التطبيق إن كان متاحًا
+
+إذا لم تنجح هذه الخطوات:
+• يمكنك متابعة طلبك عبر الموقع الإلكتروني: hungerstation.com
+• أو أخبرنا برقم طلبك وسنتابعه نيابةً عنك ونُحدثك مباشرةً
+
+رقم طلبك: [رقم الطلب]`,
+    placeholders: ["اسم العميل", "رقم الطلب"],
+    objections: [
+      {
+        q: "العميل يقول: دائمًا يتعطل التطبيق",
+        a: "هذا ليس مشكلتك، المنصة مسؤولة عن استقرار التطبيق. يمكنك الإبلاغ عن هذا التكرار لفريق هنقرستيشن التقني عبر الدعم الرسمي. نحن نتابع طلبك في الوقت الحالي نيابةً عنك."
+      }
+    ]
+  },
+  {
+    id: 12, category: "order", categoryLabel: "مشاكل الطلب",
+    icon: "🌡️", badge: "badge-blue",
+    title: "تغيير في قائمة الأسعار دون إشعار",
+    desc: "العميل يجد سعرًا مختلفًا عما كان يتوقعه",
+    complaint: "السعر اللي ظهر في التطبيق غير اللي دُفع، اتخصم أكثر",
+    response: `عزيزي [اسم العميل]،
+
+هذا وضع يجب مراجعته فورًا. التسعير الظاهر في التطبيق هو ما يجب أن يُحتسب.
+
+التفاصيل كما أفدت:
+• السعر المعروض: [السعر المعروض]
+• المبلغ المخصوم فعليًا: [المبلغ المخصوم]
+• الفارق: [الفارق]
+
+التحقيق الذي سنقوم به:
+• مقارنة سعر المنتج وقت الطلب مع الفاتورة
+• التحقق من أي رسوم إضافية غير مُعلنة (خدمة، توصيل، إلخ)
+• استرداد الفارق إن تأكد وجوده
+
+هل يمكنك مشاركتنا صورة الفاتورة الظاهرة في التطبيق؟`,
+    placeholders: ["اسم العميل", "السعر المعروض", "المبلغ المخصوم", "الفارق"],
+    objections: [
+      {
+        q: "المطعم يقول: المنيو تحديث والسعر القديم",
+        a: "مسؤولية تحديث القائمة في الوقت الصحيح تقع على المطعم. إذا ظهر سعر قديم في التطبيق وقت الطلب فالعميل يستحق الشراء بالسعر المعروض له."
+      }
+    ]
+  }
+];
+
+// Render
+let activeCategory = 'all';
+let searchQuery = '';
+
+function renderCases() {
+  const grid = document.getElementById('casesGrid');
+  let filtered = CASES;
+
+  if (activeCategory !== 'all') {
+    filtered = filtered.filter(c => c.category === activeCategory);
+  }
+
+  if (searchQuery) {
+    const q = searchQuery.toLowerCase();
+    filtered = filtered.filter(c =>
+      c.title.includes(q) ||
+      c.desc.includes(q) ||
+      c.complaint.includes(q) ||
+      c.response.includes(q) ||
+      c.objections.some(o => o.q.includes(q) || o.a.includes(q))
+    );
+  }
+
+  // Update counts
+  ['all','delivery','order','quality','compensation','technical'].forEach(cat => {
+    const count = cat === 'all' ? CASES.length : CASES.filter(c => c.category === cat).length;
+    document.getElementById('count-' + cat).textContent = count;
+  });
+
+  document.getElementById('stat-total').textContent = CASES.length;
+  document.getElementById('stat-obj').textContent = CASES.reduce((s,c) => s + c.objections.length, 0);
+
+  grid.innerHTML = filtered.map((c, idx) => `
+    <div class="case-card" id="case-${c.id}">
+      <div class="case-header" onclick="toggleCase(${c.id})">
+        <span class="case-num">#${String(c.id).padStart(2,'0')}</span>
+        <span class="case-icon">${c.icon}</span>
+        <div class="case-info">
+          <div class="case-title">${c.title}</div>
+          <div class="case-desc">${c.desc}</div>
+        </div>
+        <div class="case-meta">
+          <span class="badge ${c.badge}">${c.categoryLabel}</span>
+          <span class="badge badge-blue">${c.objections.length} اعتراض</span>
+        </div>
+        <span class="expand-icon">▾</span>
+      </div>
+      <div class="case-body">
+        <!-- Tabs -->
+        <div class="response-tabs">
+          <button class="tab-btn active" onclick="switchTab(event, ${c.id}, 'complaint')">🗣️ الشكوى النموذجية</button>
+          <button class="tab-btn" onclick="switchTab(event, ${c.id}, 'response')">📝 الرد المدرب</button>
+          <button class="tab-btn" onclick="switchTab(event, ${c.id}, 'objections')">⚡ الاعتراضات (${c.objections.length})</button>
+        </div>
+
+        <!-- Complaint -->
+        <div class="tab-pane active" id="tab-${c.id}-complaint">
+          <div class="response-block">
+            <div class="response-block-header">
+              <span class="response-block-label">🗣️ مثال على شكوى العميل</span>
+            </div>
+            <div class="response-text" style="color: var(--text-muted); font-style: italic;">"${c.complaint}"</div>
+          </div>
+        </div>
+
+        <!-- Response -->
+        <div class="tab-pane" id="tab-${c.id}-response">
+          <div class="response-block">
+            <div class="response-block-header">
+              <span class="response-block-label">📝 الرد المدرب الجاهز</span>
+              <button class="btn btn-copy" onclick="copyText(event, \`${c.response.replace(/`/g,'\\`')}\`, this)">📋 نسخ</button>
+            </div>
+            <div class="response-text">${c.response}</div>
+            ${c.placeholders.length ? `
+            <div class="placeholders-row">
+              ${c.placeholders.map(p => `<span class="placeholder-chip">[${p}]</span>`).join('')}
+            </div>` : ''}
+          </div>
+        </div>
+
+        <!-- Objections -->
+        <div class="tab-pane" id="tab-${c.id}-objections">
+          ${c.objections.map((obj, i) => `
+          <div class="objection-item">
+            <div class="objection-q">
+              <span>💬</span> ${obj.q}
+            </div>
+            <div class="objection-a">${obj.a}</div>
+            <div style="margin-top: 10px;">
+              <button class="btn btn-copy" onclick="copyText(event, \`${obj.a.replace(/`/g,'\\`')}\`, this)">📋 نسخ الرد</button>
+            </div>
+          </div>
+          `).join('')}
+        </div>
+      </div>
+    </div>
+  `).join('');
+}
+
+function toggleCase(id) {
+  const card = document.getElementById('case-' + id);
+  const wasExpanded = card.classList.contains('expanded');
+  document.querySelectorAll('.case-card.expanded').forEach(c => c.classList.remove('expanded'));
+  if (!wasExpanded) card.classList.add('expanded');
+}
+
+function switchTab(e, caseId, tab) {
+  const card = document.getElementById('case-' + caseId);
+  card.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  card.querySelectorAll('.tab-pane').forEach(p => p.classList.remove('active'));
+  e.target.classList.add('active');
+  document.getElementById(`tab-${caseId}-${tab}`).classList.add('active');
+}
+
+function filterCases(cat) {
+  activeCategory = cat;
+  document.querySelectorAll('.sidebar-item').forEach(i => i.classList.remove('active'));
+  event.currentTarget.classList.add('active');
+  renderCases();
+}
+
+function searchCases(q) {
+  searchQuery = q;
+  renderCases();
+}
+
+function copyText(e, text, btn) {
+  e.stopPropagation();
+  navigator.clipboard.writeText(text).then(() => {
+    const original = btn.textContent;
+    btn.textContent = '✅ تم النسخ';
+    btn.classList.add('copied');
+    showToast('✅ تم نسخ الرد بنجاح');
+    setTimeout(() => {
+      btn.textContent = original;
+      btn.classList.remove('copied');
+    }, 2000);
+  });
+}
+
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2500);
+}
+
+function scrollToFlow() {
+  document.getElementById('flow-section').scrollIntoView({ behavior: 'smooth' });
+}
+
+function exportAll() {
+  let text = 'DLVR – قاعدة الردود على هنقرستيشن\n' + '='.repeat(50) + '\n\n';
+  CASES.forEach(c => {
+    text += `الحالة #${c.id}: ${c.title}\n${'─'.repeat(40)}\n`;
+    text += `الشكوى: ${c.complaint}\n\nالرد:\n${c.response}\n\nالاعتراضات:\n`;
+    c.objections.forEach((o,i) => {
+      text += `${i+1}. س: ${o.q}\n   ج: ${o.a}\n`;
+    });
+    text += '\n\n';
+  });
+  const blob = new Blob([text], { type: 'text/plain;charset=utf-8' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = 'DLVR-HungerStation-Responses.txt';
+  a.click();
+  showToast('📤 تم تصدير الردود');
+}
+
+function addCase() {
+  showToast('🔜 ميزة الإضافة قادمة في الإصدار القادم');
+}
+
+// Init
+renderCases();
+</script>
+</body>
+</html>
