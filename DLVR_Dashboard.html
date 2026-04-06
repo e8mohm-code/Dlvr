@@ -384,7 +384,7 @@ select option{background:var(--dark);}
 <script>
 // ══ CONFIG ════════════════════════════════════════════
 const SHEET_ID  = '1Engs0_WKiyYwVkOxqaZMGlo2H6SxJm45OOnDlC3z89A';
-const API_URL   = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json`;
+const API_URL   = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&range=A2:J10000`;
 const PAGE_SIZE = 50;
 
 const BRANCHES = {
@@ -441,18 +441,34 @@ async function loadData(){
     const text = await res.text();
     const json = JSON.parse(text.match(/google\.visualization\.Query\.setResponse\(([\s\S]*)\)/)[1]);
     const rows = json.table.rows || [];
-    allRows = rows.map(r => ({
-      date:        r.c[0]?.v || '',
-      time:        r.c[1]?.v || '',
-      branchCode:  String(r.c[2]?.v || '').trim(),
-      branchLabel: r.c[3]?.v || '',
-      orderNumber: r.c[4]?.v || '',
-      platform:    r.c[5]?.v || '',
-      invoiceDate: r.c[6]?.v || '',
-      invoiceTime: r.c[7]?.v || '',
-      notes:       r.c[8]?.v || '',
-      imageUrl:    r.c[9]?.v || ''
-    })).filter(r=>r.date && r.date!=='التاريخ');
+    allRows = rows.map(r => {
+      // gviz returns dates as "Date(yyyy,mm,dd)" or plain string
+      let dateVal = '';
+      const d0 = r.c[0];
+      if(d0){
+        if(typeof d0.v === 'string' && d0.v.startsWith('Date(')) {
+          const parts = d0.v.replace('Date(','').replace(')','').split(',');
+          const yr=parts[0], mo=String(parseInt(parts[1])+1).padStart(2,'0'), dy=String(parts[2]).padStart(2,'0');
+          dateVal = `${yr}-${mo}-${dy}`;
+        } else if(d0.f) {
+          dateVal = d0.f;
+        } else {
+          dateVal = String(d0.v||'');
+        }
+      }
+      return {
+        date:        dateVal,
+        time:        r.c[1]?.v || r.c[1]?.f || '',
+        branchCode:  String(r.c[2]?.v || '').trim(),
+        branchLabel: r.c[3]?.v || '',
+        orderNumber: String(r.c[4]?.v || ''),
+        platform:    r.c[5]?.v || '',
+        invoiceDate: r.c[6]?.v || '',
+        invoiceTime: r.c[7]?.v || '',
+        notes:       r.c[8]?.v || '',
+        imageUrl:    r.c[9]?.v || ''
+      };
+    }).filter(r => r.date && r.date !== 'التاريخ' && r.date !== '');
     document.getElementById('lastUpdate').textContent = 'آخر تحديث: '+new Date().toLocaleTimeString('ar-SA');
     applyFilters();
   }catch(e){
