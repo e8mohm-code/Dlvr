@@ -177,7 +177,7 @@ canvas{display:none;}
 }
 @keyframes fadeUp{from{transform:translateY(10px);opacity:0}to{transform:translateY(0);opacity:1}}
 /* RETAKE OVERLAY */
-.retake-overlay{display:none;position:fixed;inset:0;z-index:100;align-items:center;justify-content:center;background:rgba(0,0,0,.8);backdrop-filter:blur(8px);flex-direction:column;gap:14px;}
+.retake-overlay{display:none;position:fixed;inset:0;z-index:100;align-items:center;justify-content:center;background:rgba(0,0,0,.88);backdrop-filter:blur(10px);flex-direction:column;gap:12px;}
 .retake-overlay.on{display:flex;}
 .retake-icon{font-size:52px;animation:popIn .4s cubic-bezier(.34,1.56,.64,1);}
 .retake-msg{font-size:17px;font-weight:700;color:var(--warn);text-align:center;padding:0 30px;animation:fadeUp .4s .2s both;}
@@ -299,8 +299,8 @@ canvas{display:none;}
 <!-- ANALYZING -->
 <div class="analyzing" id="analyzing">
   <div class="spin-ring"></div>
-  <div class="an-t">AI يحلل الطلب...</div>
-  <div class="an-s">يقرأ رقم الطلب والمنصة والتاريخ</div>
+  <div class="an-t">جاري الإرسال...</div>
+  <div class="an-s">تحليل البيانات</div>
 </div>
 
 <!-- RESULT -->
@@ -325,9 +325,14 @@ canvas{display:none;}
 
 <!-- RETAKE OVERLAY -->
 <div class="retake-overlay" id="retakeOverlay">
-  <div class="retake-icon">📷</div>
-  <div class="retake-msg">الصورة غير واضحة</div>
-  <div class="retake-sub">الرجاء إعادة التصوير</div>
+  <div style="width:90px;height:90px;border-radius:50%;background:rgba(255,61,87,.15);border:3px solid var(--red);display:flex;align-items:center;justify-content:center;animation:popIn .4s cubic-bezier(.34,1.56,.64,1);">
+    <svg width="46" height="46" viewBox="0 0 24 24" fill="none" stroke="#ff3d57" stroke-width="2" stroke-linecap="round">
+      <circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>
+    </svg>
+  </div>
+  <div style="font-size:18px;font-weight:900;color:var(--red);animation:fadeUp .3s .2s both;">الصورة مرفوضة</div>
+  <div style="font-size:14px;font-weight:700;color:var(--text);text-align:center;padding:0 28px;animation:fadeUp .3s .25s both;">غير واضحة — الرجاء إعادة التصوير بشكل واضح</div>
+  <div style="font-size:12px;color:var(--muted);text-align:center;padding:0 28px;animation:fadeUp .3s .3s both;">Image rejected — Please retake clearly</div>
 </div>
 
 <!-- SUCCESS OVERLAY -->
@@ -446,7 +451,7 @@ async function capture(){
     result.branchCode = branchName;
     result.branchLabel = branchNameLabel || BRANCHES[branchName] || branchName;
     let saved = false;
-    if(sheetUrl) saved = await saveSheet(result, b64Upload);
+    if(sheetUrl && result.readable !== 'no') saved = await saveSheet(result, b64Upload);
     showResult(result, saved);
     count++;
     localStorage.setItem(KEY_COUNT, count);
