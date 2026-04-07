@@ -5,6 +5,13 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
 <title>DLVR</title>
 <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;900&display=swap" rel="stylesheet">
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#00C853">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="DLVR">
+<link rel="apple-touch-icon" href="icon-192.png">
 <style>
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
 :root{
@@ -243,7 +250,7 @@ canvas{display:none;}
     </div>
     <div class="conn" id="conn">
       <div class="conn-dot"></div>
-      <span id="connTxt">غير مرتبط بـ Sheets</span>
+      <span id="connTxt">غير متصل</span>
     </div>
     <div class="shutter-ring">
       <button class="shutter" id="shutter" onclick="capture()" disabled>
@@ -332,7 +339,7 @@ canvas{display:none;}
   </div>
   <div style="font-size:18px;font-weight:900;color:var(--red);animation:fadeUp .3s .2s both;">الصورة مرفوضة</div>
   <div style="font-size:14px;font-weight:700;color:var(--text);text-align:center;padding:0 28px;animation:fadeUp .3s .25s both;">غير واضحة — الرجاء إعادة التصوير بشكل واضح</div>
-  <div style="font-size:12px;color:var(--muted);text-align:center;padding:0 28px;animation:fadeUp .3s .3s both;">Image rejected — Please retake clearly</div>
+  <div style="font-size:16px;font-weight:700;color:var(--red);text-align:center;padding:0 28px;animation:fadeUp .3s .3s both;">Image rejected — Please retake clearly</div>
 </div>
 
 <!-- SUCCESS OVERLAY -->
@@ -615,7 +622,7 @@ function saveSettings(){
 
 function setConn(ok){
   document.getElementById('conn').className='conn'+(ok?' ok':'');
-  document.getElementById('connTxt').textContent=ok?'مرتبط بـ Google Sheets':'غير مرتبط بـ Sheets';
+  document.getElementById('connTxt').textContent=ok?'متصل':'غير متصل';
 }
 
 function updateBranchBar(){
