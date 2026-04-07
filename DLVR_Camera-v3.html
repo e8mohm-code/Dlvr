@@ -445,9 +445,8 @@ async function capture(){
     const result = await analyze(b64);
     result.branchCode = branchName;
     result.branchLabel = branchNameLabel || BRANCHES[branchName] || branchName;
-    const imageUrl = await uploadToImgBB(b64Upload);
     let saved = false;
-    if(sheetUrl) saved = await saveSheet(result, imageUrl);
+    if(sheetUrl) saved = await saveSheet(result, b64Upload);
     showResult(result, saved);
     count++;
     localStorage.setItem(KEY_COUNT, count);
@@ -507,7 +506,7 @@ async function uploadToImgBB(b64){
 }
 
 // ══ SAVE TO SHEET ════════════════════════════════════
-async function saveSheet(r, imageUrl){
+async function saveSheet(r, b64Upload){
   try{
     await fetch(sheetUrl,{
       method:'POST',
@@ -519,7 +518,7 @@ async function saveSheet(r, imageUrl){
         branchName:   r.branchLabel  || '',
         orderNumber:  (r.orderNumber||'').replace(/^#+/,'').trim() || '',
         platform:     r.platform     || '',
-        imageUrl:     imageUrl       || ''
+        imageBase64:  b64Upload      || ''
       })
     });
     return true;
