@@ -5,6 +5,13 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
 <title>DLVR</title>
 <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;900&display=swap" rel="stylesheet">
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#00C853">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="DLVR">
+<link rel="apple-touch-icon" href="icon-192.png">
 <style>
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
 :root{
@@ -665,6 +672,15 @@ document.addEventListener('keydown',e=>{
     e.preventDefault(); capture();
   }
 });
+
+// ══ PWA Service Worker ════════════════════════════════
+if('serviceWorker' in navigator){
+  window.addEventListener('load', ()=>{
+    navigator.serviceWorker.register('sw.js')
+      .then(()=>console.log('SW registered'))
+      .catch(e=>console.log('SW error',e));
+  });
+}
 </script>
 </body>
 </html>
