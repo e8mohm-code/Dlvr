@@ -279,6 +279,9 @@ canvas{display:none;}
       <div class="field-label">رمز المنشأة (4 أرقام)</div>
       <input class="text-in" id="branchIn" type="number" inputmode="numeric" maxlength="4" placeholder="أدخل رمز المنشأة المكون من 4 أرقام" oninput="if(this.value.length>4)this.value=this.value.slice(0,4)" />
       <div class="field-hint" id="branchHint">أدخل الرمز الرباعي المخصص لمنشأتك</div>
+      <div class="field-label">اسم الفرع</div>
+      <input class="text-in" id="branchNameIn" type="text" placeholder="مثال: فرع النسيم" />
+      <div class="field-hint">اسم الفرع كما سيظهر في الشيت</div>
 
       <!-- رابط الشيت -->
       <div class="field-label">الصق الرابط</div>
@@ -375,8 +378,10 @@ let audioCtx = null;
 const KEY_URL    = 'dlvr_v2_url';
 const KEY_BRANCH = 'dlvr_v2_branch';
 const KEY_COUNT  = 'dlvr_v2_count';
+const KEY_BRANCH_NAME = 'dlvr_v2_branch_name';
 
-let sheetUrl   = localStorage.getItem(KEY_URL)    || '';
+let sheetUrl       = localStorage.getItem(KEY_URL)         || '';
+let branchNameLabel = localStorage.getItem(KEY_BRANCH_NAME) || '';
 let branchName = localStorage.getItem(KEY_BRANCH) || '';
 let count      = parseInt(localStorage.getItem(KEY_COUNT) || '0');
 
@@ -438,10 +443,11 @@ async function capture(){
 
   try{
     const result = await analyze(b64);
-    result.branchCode = branchName; // branchName holds the code
-    result.branchLabel = BRANCHES[branchName] || branchName;
+    result.branchCode = branchName;
+    result.branchLabel = branchNameLabel || BRANCHES[branchName] || branchName;
+    const imageUrl = await uploadToImgBB(b64Upload);
     let saved = false;
-    if(sheetUrl) saved = await saveSheet(result, b64Upload);
+    if(sheetUrl) saved = await saveSheet(result, imageUrl);
     showResult(result, saved);
     count++;
     localStorage.setItem(KEY_COUNT, count);
@@ -485,8 +491,23 @@ async function analyze(b64){
   return JSON.parse(match[0]);
 }
 
+
+// ══ IMGBB UPLOAD ═════════════════════════════════════
+const IMGBB_KEY = '7cf15082b41afb536fe73aa393d6dfb4';
+async function uploadToImgBB(b64){
+  try{
+    const form = new FormData();
+    form.append('key',   IMGBB_KEY);
+    form.append('image', b64);
+    const res  = await fetch('https://api.imgbb.com/1/upload', {method:'POST', body:form});
+    if(!res.ok) return '';
+    const data = await res.json();
+    return (data && data.success && data.data && data.data.url) ? data.data.url : '';
+  }catch(e){ return ''; }
+}
+
 // ══ SAVE TO SHEET ════════════════════════════════════
-async function saveSheet(r, b64Upload){
+async function saveSheet(r, imageUrl){
   try{
     await fetch(sheetUrl,{
       method:'POST',
@@ -495,10 +516,10 @@ async function saveSheet(r, b64Upload){
       body:JSON.stringify({
         branchCode:   r.branchCode   || '',
         branchLabel:  r.branchLabel  || '',
-        branchName:   (r.branchCode ? (r.branchLabel || '') + ' - ' + r.branchCode : ''),
+        branchName:   r.branchLabel  || '',
         orderNumber:  (r.orderNumber||'').replace(/^#+/,'').trim() || '',
         platform:     r.platform     || '',
-        imageBase64:  b64Upload      || ''
+        imageUrl:     imageUrl       || ''
       })
     });
     return true;
@@ -543,8 +564,9 @@ function checkPin(){
     document.getElementById('pinWrap').style.display='none';
     document.getElementById('settingsDiv').style.display='block';
     // عبّي الحقول بالقيم المحفوظة
-    document.getElementById('urlIn').value    = sheetUrl;
-    document.getElementById('branchIn').value = branchName; // code
+    document.getElementById('urlIn').value       = sheetUrl;
+    document.getElementById('branchIn').value    = branchName;
+    document.getElementById('branchNameIn').value = branchNameLabel;
   }else{
     document.getElementById('pinErr').style.display='block';
     document.getElementById('pinIn').value='';
@@ -579,6 +601,8 @@ function saveSettings(){
 
   branchName = branch;
   localStorage.setItem(KEY_BRANCH, branchName);
+  const nameInput = document.getElementById('branchNameIn').value.trim();
+  if(nameInput){ branchNameLabel = nameInput; localStorage.setItem(KEY_BRANCH_NAME, branchNameLabel); }
   updateBranchBar();
 
   closeAdmin();
@@ -593,7 +617,8 @@ function setConn(ok){
 function updateBranchBar(){
   const el = document.getElementById('branchInfo');
   if(branchName && BRANCHES[branchName]){
-    el.innerHTML = BRANCHES[branchName] + ' · <span>' + branchName + '</span>';
+    const displayName = branchNameLabel || BRANCHES[branchName] || branchName;
+    el.innerHTML = displayName + ' · <span>' + branchName + '</span>';
     el.style.color = '';
   } else {
     el.innerHTML = '⚠️ يجب تحديد رمز المنشأة';
