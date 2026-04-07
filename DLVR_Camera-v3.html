@@ -603,25 +603,35 @@ function updateBranchBar(){
 
 // ══ RESULT ═══════════════════════════════════════════
 function showResult(r, saved){
-  // ٢ - صورة غير واضحة
-  if(r.readable === 'no'){ showRetake(); return; }
-  const badge = document.getElementById('rBadge');
+  // ٢ - صورة غير واضحة → اخرج مباشرة بدون أي وصول للـ DOM
+  if(!r || r.readable === 'no'){ showRetake(); return; }
+
+  const badge   = document.getElementById('rBadge');
+  const rRows   = document.getElementById('rRows');
+  const sentRow = document.getElementById('sentRow');
+  const overlay = document.getElementById('resultOverlay');
+
+  // تأكد من وجود العناصر قبل الوصول
+  if(!badge || !rRows || !overlay) return;
+
   badge.textContent = saved ? '✓ تم الإرسال' : (sheetUrl?'⚠️ فشل الحفظ':'⬡ غير مرتبط');
   badge.className   = 'r-badge '+(saved?'ok':'err');
+
   const rows = [
     {k:'رقم الطلب', v:r.orderNumber ||'—', c:'big'},
     {k:'المنصة',    v:r.platform    ||'—', c:''},
   ];
   if(r.branchCode){
     const bname = BRANCHES[r.branchCode] || r.branchCode;
-    rows.splice(1,0,{k:'الفرع', v:bname + ' · ' + r.branchCode, c:''});
+    rows.splice(1,0,{k:'الفرع', v:bname+' · '+r.branchCode, c:''});
   }
-  document.getElementById('rRows').innerHTML = rows.map(x=>
+  rRows.innerHTML = rows.map(x=>
     `<div class="r-row"><span class="r-key">${x.k}</span><span class="r-val ${x.c}">${x.v}</span></div>`
   ).join('');
-  const sentRow = document.getElementById('sentRow');
-  sentRow.style.display = saved ? 'flex' : 'none';
-  document.getElementById('resultOverlay').classList.add('on');
+
+  if(sentRow) sentRow.style.display = saved ? 'flex' : 'none';
+
+  overlay.classList.add('on');
   setTimeout(()=>closeResult(), 3000);
   if(!saved) toast('✓ تم التحليل','info');
 }
