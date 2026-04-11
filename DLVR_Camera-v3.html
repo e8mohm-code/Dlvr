@@ -487,7 +487,7 @@ async function analyze(b64){
         content:[
           {type:'image',source:{type:'base64',media_type:'image/jpeg',data:b64}},
           {type:'text',text:`أنت نظام توثيق طلبات مطاعم. حلّل صورة طلب التيك أواي وأعطني JSON فقط بدون أي نص إضافي:
-{"orderNumber":"رقم الطلب أو الكود بدون علامة # أو أي رمز آخر","platform":"HungerStation أو Keeta أو Jahez أو Ninja أو ToYou أو Marsool أو غير واضح","readable":"yes إذا كان رقم الطلب والمنصة واضحين بشكل كافٍ، no إذا كانت الصورة غير واضحة أو غير مقروءة"}
+{"orderNumber":"إذا كانت المنصة HungerStation: ابحث عن الرقم المكون من 7-9 أرقام الموجود أسفل التاريخ والوقت مباشرة — هذا هو رقم الطلب الصحيح وتجاهل أي أرقام أخرى قصيرة. أما بقية المنصات: خذ رقم الطلب المعتاد. أزل أي علامة # أو رموز","platform":"HungerStation أو Keeta أو Jahez أو Ninja أو ToYou أو Marsool أو غير واضح","readable":"yes إذا كان رقم الطلب والمنصة واضحين بشكل كافٍ، no إذا كانت الصورة غير واضحة أو غير مقروءة"}
 لا تكتب أي شيء خارج JSON.`}
         ]
       }]
