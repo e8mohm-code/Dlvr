@@ -32,12 +32,9 @@ html,body{height:100%;font-family:'Tajawal',sans-serif;background:var(--dark);co
 /* HEADER */
 .header{flex-shrink:0;display:flex;align-items:center;justify-content:space-between;padding:12px 16px 10px;background:var(--card);border-bottom:2px solid var(--org);position:relative;z-index:20;}
 .brand{display:flex;align-items:center;gap:10px;cursor:pointer;}
-
-/* SVG Logo */
 .logo-svg{width:38px;height:38px;flex-shrink:0;}
 .brand-text{display:flex;flex-direction:column;}
 .brand-name{font-size:20px;font-weight:900;color:var(--text);letter-spacing:3px;line-height:1;}
-.brand-tagline{font-size:9px;color:var(--org);font-weight:600;letter-spacing:1px;margin-top:1px;}
 .tap-row{display:flex;gap:3px;margin-top:2px;}
 .tdot{width:4px;height:4px;border-radius:50%;background:var(--border);transition:background .15s;}
 .tdot.on{background:var(--org);}
@@ -59,10 +56,11 @@ video#vid{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;disp
 .sc.bl{bottom:0;right:0;border-width:0 0 3px 3px;border-radius:0 0 0 3px;}
 .sc.br{bottom:0;left:0;border-width:0 3px 3px 0;border-radius:0 0 3px 0;}
 .scan-box.captured .sc{border-color:#fff;}
+.scan-box.detected .sc{border-color:var(--warn);box-shadow:0 0 8px rgba(255,179,0,.4);}
 .scan-line{position:absolute;left:4px;right:4px;height:2px;background:linear-gradient(90deg,transparent,var(--org),transparent);top:0;opacity:0;}
 .scanning .scan-line{animation:scanMove 2s ease-in-out infinite;opacity:1;}
 @keyframes scanMove{0%{top:4px;}50%{top:calc(100% - 4px);}100%{top:4px;}}
-.box-label{position:absolute;bottom:-28px;right:50%;transform:translateX(50%);font-size:11px;font-weight:700;color:var(--org);letter-spacing:1.5px;opacity:.9;white-space:nowrap;}
+.box-label{position:absolute;bottom:-28px;right:50%;transform:translateX(50%);font-size:11px;font-weight:700;color:var(--org);letter-spacing:1.5px;opacity:.9;white-space:nowrap;transition:color .3s;}
 
 /* FLASH */
 .flash{position:absolute;inset:0;background:#fff;opacity:0;pointer-events:none;z-index:10;transition:opacity .06s;}
@@ -77,8 +75,6 @@ video#vid{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;disp
 
 /* BOTTOM */
 .bottom{flex-shrink:0;background:var(--card);border-top:2px solid var(--org);padding:10px 20px 16px;display:flex;flex-direction:column;align-items:center;gap:8px;position:relative;z-index:20;}
-
-/* Branch info bar */
 .branch-bar{display:flex;align-items:center;gap:8px;width:100%;}
 .branch-info{flex:1;font-size:11px;font-weight:600;color:var(--muted);text-align:center;letter-spacing:.5px;}
 .branch-info span{color:var(--org);font-weight:700;}
@@ -88,14 +84,38 @@ video#vid{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;disp
 .conn.ok .conn-dot{background:var(--org);box-shadow:0 0 6px var(--org);}
 .conn.ok{color:var(--org);}
 
+/* MODE TOGGLE + SHUTTER ROW */
+.controls-row{display:flex;align-items:center;justify-content:center;gap:20px;width:100%;}
+
+/* MODE TOGGLE */
+.mode-toggle{display:flex;align-items:center;gap:8px;background:var(--dark);border:1.5px solid var(--border);border-radius:50px;padding:6px 14px;cursor:pointer;transition:border-color .2s;}
+.mode-toggle.auto-on{border-color:var(--org);}
+.mode-icon{width:18px;height:18px;display:flex;align-items:center;justify-content:center;}
+.mode-label{font-size:11px;font-weight:700;color:var(--muted);transition:color .2s;letter-spacing:.5px;}
+.mode-toggle.auto-on .mode-label{color:var(--org);}
+.mode-dot{width:8px;height:8px;border-radius:50%;background:var(--muted);transition:background .3s;}
+.mode-toggle.auto-on .mode-dot{background:var(--org);box-shadow:0 0 8px var(--org);animation:pulse 2s infinite;}
+@keyframes pulse{0%,100%{opacity:1;}50%{opacity:.4;}}
+
 /* SHUTTER */
-.shutter-ring{width:80px;height:80px;border-radius:50%;border:2px solid rgba(0,200,83,.3);display:flex;align-items:center;justify-content:center;}
-.shutter{width:66px;height:66px;border-radius:50%;border:none;background:linear-gradient(135deg,var(--org),var(--org2));cursor:pointer;display:flex;align-items:center;justify-content:center;transition:transform .12s,box-shadow .2s;box-shadow:0 4px 24px rgba(0,200,83,.4);position:relative;overflow:hidden;}
+.shutter-ring{width:70px;height:70px;border-radius:50%;border:2px solid rgba(0,200,83,.3);display:flex;align-items:center;justify-content:center;transition:opacity .3s;}
+.shutter-ring.hidden{opacity:.2;pointer-events:none;}
+.shutter{width:58px;height:58px;border-radius:50%;border:none;background:linear-gradient(135deg,var(--org),var(--org2));cursor:pointer;display:flex;align-items:center;justify-content:center;transition:transform .12s,box-shadow .2s;box-shadow:0 4px 24px rgba(0,200,83,.4);position:relative;overflow:hidden;}
 .shutter::after{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(255,255,255,.25),transparent);border-radius:50%;}
 .shutter:active{transform:scale(.9);}
 .shutter:disabled{opacity:.3;cursor:not-allowed;box-shadow:none;}
 .shutter svg{position:relative;z-index:1;}
 canvas{display:none;}
+
+/* AUTO SCAN STATUS */
+.auto-status{position:absolute;top:12px;left:50%;transform:translateX(-50%);z-index:6;display:none;align-items:center;gap:8px;background:rgba(0,0,0,.7);backdrop-filter:blur(8px);border:1px solid var(--border);border-radius:50px;padding:6px 16px;}
+.auto-status.on{display:flex;}
+.auto-status-dot{width:8px;height:8px;border-radius:50%;background:var(--org);animation:pulse 1.5s infinite;}
+.auto-status-txt{font-size:11px;font-weight:700;color:var(--org);letter-spacing:.5px;}
+
+/* COOLDOWN BAR */
+.cooldown-bar{position:absolute;bottom:0;left:0;right:0;height:3px;z-index:6;background:transparent;}
+.cooldown-fill{height:100%;background:var(--org);width:0%;transition:width linear;}
 
 /* ADMIN OVERLAY */
 .overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.85);z-index:50;backdrop-filter:blur(10px);align-items:flex-end;justify-content:center;}
@@ -105,7 +125,7 @@ canvas{display:none;}
 .sheet-handle{width:40px;height:3px;background:var(--border);border-radius:2px;margin:0 auto 18px;}
 .sheet-head{display:flex;align-items:center;gap:8px;margin-bottom:6px;}
 .sheet-title{font-size:15px;font-weight:700;}
-.sheet-badge{font-size:10px;font-weight:700;background:rgba(255,90,0,.15);color:var(--org);border-radius:20px;padding:2px 9px;letter-spacing:.5px;}
+.sheet-badge{font-size:10px;font-weight:700;background:rgba(0,200,83,.15);color:var(--org);border-radius:20px;padding:2px 9px;letter-spacing:.5px;}
 .sheet-sub{font-size:12px;color:var(--muted);margin-bottom:18px;}
 .pin-wrap{margin-bottom:4px;}
 .pin-in{width:100%;background:var(--dark);border:1.5px solid var(--border);border-radius:12px;padding:13px;font-family:'Tajawal',sans-serif;font-size:20px;font-weight:700;color:var(--text);outline:none;text-align:center;letter-spacing:8px;transition:border-color .2s;}
@@ -128,7 +148,7 @@ canvas{display:none;}
 /* ANALYZING */
 .analyzing{display:none;position:fixed;inset:0;background:rgba(10,10,10,.92);z-index:60;flex-direction:column;align-items:center;justify-content:center;gap:18px;backdrop-filter:blur(12px);}
 .analyzing.on{display:flex;}
-.spin-ring{width:58px;height:58px;border-radius:50%;border:3px solid rgba(255,90,0,.15);border-top-color:var(--org);animation:spin .7s linear infinite;}
+.spin-ring{width:58px;height:58px;border-radius:50%;border:3px solid rgba(0,200,83,.15);border-top-color:var(--org);animation:spin .7s linear infinite;}
 @keyframes spin{to{transform:rotate(360deg)}}
 .an-t{font-size:16px;font-weight:700;color:var(--org);}
 .an-s{font-size:12px;color:var(--muted);}
@@ -141,7 +161,7 @@ canvas{display:none;}
 .r-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;}
 .r-title{font-size:14px;font-weight:700;color:var(--org);}
 .r-badge{font-size:11px;font-weight:700;padding:3px 10px;border-radius:20px;}
-.r-badge.ok{background:rgba(255,90,0,.15);color:var(--org);}
+.r-badge.ok{background:rgba(0,200,83,.15);color:var(--org);}
 .r-badge.err{background:rgba(255,61,87,.1);color:var(--red);}
 .r-rows{display:flex;flex-direction:column;gap:10px;margin-bottom:16px;}
 .r-row{display:flex;gap:10px;align-items:flex-start;}
@@ -159,36 +179,18 @@ canvas{display:none;}
 .toast.info{background:#1a1a1a;color:var(--text);border:1px solid var(--border);}
 
 /* SUCCESS OVERLAY */
-.success-overlay{
-  display:none;position:fixed;inset:0;z-index:100;
-  align-items:center;justify-content:center;
-  background:rgba(0,0,0,.75);backdrop-filter:blur(8px);
-  flex-direction:column;gap:16px;
-}
+.success-overlay{display:none;position:fixed;inset:0;z-index:100;align-items:center;justify-content:center;background:rgba(0,0,0,.75);backdrop-filter:blur(8px);flex-direction:column;gap:16px;}
 .success-overlay.on{display:flex;}
-.success-circle{
-  width:110px;height:110px;border-radius:50%;
-  background:rgba(0,200,83,.12);
-  border:3px solid var(--org);
-  display:flex;align-items:center;justify-content:center;
-  animation:popIn .4s cubic-bezier(.34,1.56,.64,1);
-}
+.success-circle{width:110px;height:110px;border-radius:50%;background:rgba(0,200,83,.12);border:3px solid var(--org);display:flex;align-items:center;justify-content:center;animation:popIn .4s cubic-bezier(.34,1.56,.64,1);}
 @keyframes popIn{from{transform:scale(0);opacity:0}to{transform:scale(1);opacity:1}}
-.success-check{
-  animation:drawCheck .4s .2s cubic-bezier(.34,1.56,.64,1) both;
-}
+.success-check{animation:drawCheck .4s .2s cubic-bezier(.34,1.56,.64,1) both;}
 @keyframes drawCheck{from{transform:scale(0) rotate(-20deg);opacity:0}to{transform:scale(1) rotate(0);opacity:1}}
-.success-txt{
-  font-size:18px;font-weight:700;color:var(--text);
-  animation:fadeUp .4s .3s both;
-}
+.success-txt{font-size:18px;font-weight:700;color:var(--text);animation:fadeUp .4s .3s both;}
 @keyframes fadeUp{from{transform:translateY(10px);opacity:0}to{transform:translateY(0);opacity:1}}
+
 /* RETAKE OVERLAY */
 .retake-overlay{display:none;position:fixed;inset:0;z-index:100;align-items:center;justify-content:center;background:rgba(0,0,0,.88);backdrop-filter:blur(10px);flex-direction:column;gap:12px;}
 .retake-overlay.on{display:flex;}
-.retake-icon{font-size:52px;animation:popIn .4s cubic-bezier(.34,1.56,.64,1);}
-.retake-msg{font-size:17px;font-weight:700;color:var(--warn);text-align:center;padding:0 30px;animation:fadeUp .4s .2s both;}
-.retake-sub{font-size:13px;color:var(--muted);animation:fadeUp .4s .3s both;}
 </style>
 </head>
 <body>
@@ -197,10 +199,8 @@ canvas{display:none;}
   <!-- HEADER -->
   <div class="header">
     <div class="brand" id="brand" onclick="onBrandTap()">
-      <!-- DLVR Logo SVG -->
       <svg class="logo-svg" viewBox="0 0 38 38" fill="none" xmlns="http://www.w3.org/2000/svg">
         <rect width="38" height="38" rx="9" fill="#00C853"/>
-        <!-- Lightning bolt matching DLVR logo: top-right diagonal, sharp middle, bottom-right diagonal -->
         <path d="M24 5L10 20.5H19L13 33L28 17.5H19L24 5Z" fill="#0d0d0d"/>
       </svg>
       <div class="brand-text">
@@ -223,12 +223,20 @@ canvas{display:none;}
     <video id="vid" autoplay playsinline muted></video>
     <div class="vignette"></div>
     <div class="flash" id="flash"></div>
+
+    <!-- AUTO SCAN STATUS -->
+    <div class="auto-status" id="autoStatus">
+      <div class="auto-status-dot"></div>
+      <span class="auto-status-txt" id="autoStatusTxt">مسح تلقائي</span>
+    </div>
+
     <div class="scan-box" id="scanBox">
       <div class="sc tl"></div><div class="sc tr"></div>
       <div class="sc bl"></div><div class="sc br"></div>
       <div class="scan-line"></div>
-      <div class="box-label">ضع الطلب داخل الإطار</div>
+      <div class="box-label" id="boxLabel">ضع الطلب داخل الإطار</div>
     </div>
+
     <div class="no-cam" id="noCam">
       <div class="no-cam-icon">
         <svg width="32" height="32" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
@@ -239,6 +247,9 @@ canvas{display:none;}
       <p>الكاميرا غير مفعّلة</p>
       <button class="start-btn" onclick="startCam()">تشغيل الكاميرا</button>
     </div>
+
+    <!-- COOLDOWN BAR -->
+    <div class="cooldown-bar"><div class="cooldown-fill" id="cooldownFill"></div></div>
   </div>
 
   <canvas id="cv"></canvas>
@@ -252,13 +263,27 @@ canvas{display:none;}
       <div class="conn-dot"></div>
       <span id="connTxt">غير متصل</span>
     </div>
-    <div class="shutter-ring">
-      <button class="shutter" id="shutter" onclick="capture()" disabled>
-        <svg width="26" height="26" fill="none" viewBox="0 0 24 24" stroke="#000" stroke-width="2.5">
-          <circle cx="12" cy="12" r="4"/>
-          <path stroke-linecap="round" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"/>
-        </svg>
-      </button>
+    <div class="controls-row">
+      <!-- MODE TOGGLE -->
+      <div class="mode-toggle" id="modeToggle" onclick="toggleMode()">
+        <div class="mode-icon">
+          <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+            <path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
+          </svg>
+        </div>
+        <span class="mode-label" id="modeLabel">تلقائي</span>
+        <div class="mode-dot"></div>
+      </div>
+      <!-- SHUTTER -->
+      <div class="shutter-ring" id="shutterRing">
+        <button class="shutter" id="shutter" onclick="capture()" disabled>
+          <svg width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="#000" stroke-width="2.5">
+            <circle cx="12" cy="12" r="4"/>
+            <path stroke-linecap="round" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"/>
+          </svg>
+        </button>
+      </div>
     </div>
   </div>
 </div>
@@ -272,25 +297,17 @@ canvas{display:none;}
       <div class="sheet-badge">🔒 محمي</div>
     </div>
     <div class="sheet-sub">أدخل كود الدخول</div>
-
-    <!-- PIN -->
     <div class="pin-wrap" id="pinWrap">
       <input class="pin-in" id="pinIn" type="password" inputmode="numeric" maxlength="4" placeholder="••••" oninput="checkPin()">
       <div class="pin-err" id="pinErr">❌ كود خاطئ</div>
     </div>
-
-    <!-- SETTINGS -->
     <div class="settings" id="settingsDiv">
-
-      <!-- رقم المنشأة -->
       <div class="field-label">رمز المنشأة (4 أرقام)</div>
       <input class="text-in" id="branchIn" type="number" inputmode="numeric" maxlength="4" placeholder="أدخل رمز المنشأة المكون من 4 أرقام" oninput="if(this.value.length>4)this.value=this.value.slice(0,4)" />
       <div class="field-hint" id="branchHint">أدخل الرمز الرباعي المخصص لمنشأتك</div>
       <div class="field-label">اسم الفرع</div>
       <input class="text-in" id="branchNameIn" type="text" placeholder="مثال: فرع النسيم" />
       <div class="field-hint">اسم الفرع كما سيظهر في الشيت</div>
-
-      <!-- رابط الشيت -->
       <div class="field-label">الصق الرابط</div>
       <div class="url-row">
         <input class="url-in" id="urlIn" placeholder="https://script.google.com/macros/s/.../exec">
@@ -298,7 +315,6 @@ canvas{display:none;}
       </div>
       <div class="field-hint">يُحفظ على الجهاز دائماً ولا يظهر للموظفين</div>
     </div>
-
     <button class="close-btn" onclick="closeAdmin()">إغلاق</button>
   </div>
 </div>
@@ -306,8 +322,8 @@ canvas{display:none;}
 <!-- ANALYZING -->
 <div class="analyzing" id="analyzing">
   <div class="spin-ring"></div>
-  <div class="an-t">جاري الإرسال...</div>
-  <div class="an-s">تحليل البيانات</div>
+  <div class="an-t">جاري التحليل...</div>
+  <div class="an-s" id="anSub">تحليل البيانات</div>
 </div>
 
 <!-- RESULT -->
@@ -352,12 +368,15 @@ canvas{display:none;}
   <div class="success-txt">تم الإرسال</div>
 </div>
 
+<!-- TESSERACT.JS CDN -->
+<script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
+
 <script>
 // ══ CONFIG ═══════════════════════════════════════════
 const WORKER_URL = 'https://dry-glade-3ab4.e-8mohm.workers.dev/';
 const ADMIN_PIN  = '1234';
 
-// ══ أرقام المنشآت المعتمدة (رقم → اسم الفرع) ════════
+// ══ BRANCHES ═════════════════════════════════════════
 const BRANCHES = {
   '3847': 'تست',       '5921': 'النسيم',    '7364': 'الحمدانية',
   '1589': 'الاجاويد',  '4203': 'الصفا',     '8716': 'السامر',
@@ -385,24 +404,78 @@ let tapN     = 0;
 let tapTimer = null;
 let audioCtx = null;
 
-// ══ PERSISTENT STORAGE (لا تُمسح) ══════════════════
-// نستخدم localStorage مع prefix ثابت
-const KEY_URL    = 'dlvr_v2_url';
-const KEY_BRANCH = 'dlvr_v2_branch';
-const KEY_COUNT  = 'dlvr_v2_count';
+// ══ AUTO SCAN STATE ══════════════════════════════════
+let autoMode      = false;
+let autoInterval   = null;
+let tesseractWorker = null;
+let tesseractReady  = false;
+let lastProcessedOrders = new Set();  // تجنب تكرار نفس الطلب
+const AUTO_SCAN_MS      = 2000;       // فحص كل 2 ثانية
+const COOLDOWN_AFTER_HIT = 8000;      // انتظار 8 ثواني بعد طلب ناجح
+let cooldownUntil = 0;
+
+// كلمات مفتاحية للكشف عن الفواتير
+const PLATFORM_KEYWORDS = [
+  'hungerstation', 'hunger', 'station', 'هنقرستيشن', 'هنقر',
+  'keeta', 'كيتا',
+  'jahez', 'جاهز',
+  'ninja', 'نينجا',
+  'toyou', 'توصيل', 'تويو',
+  'marsool', 'مرسول',
+  'paid', 'مدفوع', 'الطلب', 'order', '#'
+];
+
+// ══ PERSISTENT STORAGE ══════════════════════════════
+const KEY_URL         = 'dlvr_v2_url';
+const KEY_BRANCH      = 'dlvr_v2_branch';
+const KEY_COUNT       = 'dlvr_v2_count';
 const KEY_BRANCH_NAME = 'dlvr_v2_branch_name';
+const KEY_AUTO_MODE   = 'dlvr_v2_auto';
 
 let sheetUrl       = localStorage.getItem(KEY_URL)         || '';
 let branchNameLabel = localStorage.getItem(KEY_BRANCH_NAME) || '';
-let branchName = localStorage.getItem(KEY_BRANCH) || '';
-let count      = parseInt(localStorage.getItem(KEY_COUNT) || '0');
+let branchName     = localStorage.getItem(KEY_BRANCH)      || '';
+let count          = parseInt(localStorage.getItem(KEY_COUNT) || '0');
 
 // ══ INIT ═════════════════════════════════════════════
 document.getElementById('cnt').textContent = count;
-if(sheetUrl)   setConn(true);
-updateBranchBar(); // always call to show warning if not set
+if(sheetUrl) setConn(true);
+updateBranchBar();
 if(sheetUrl)   document.getElementById('urlIn').value    = sheetUrl;
 if(branchName) document.getElementById('branchIn').value = branchName;
+
+// Restore auto mode preference
+if(localStorage.getItem(KEY_AUTO_MODE) === 'true'){
+  // Will activate after camera starts
+  autoMode = true;
+  updateModeUI();
+}
+
+// ══ TESSERACT INIT ═══════════════════════════════════
+async function initTesseract(){
+  try{
+    document.getElementById('anSub').textContent = 'تحميل محرك القراءة...';
+    document.getElementById('analyzing').classList.add('on');
+
+    tesseractWorker = await Tesseract.createWorker('eng+ara', 1, {
+      logger: m => {
+        if(m.status === 'recognizing text'){
+          const pct = Math.round((m.progress || 0) * 100);
+          document.getElementById('anSub').textContent = `تحميل... ${pct}%`;
+        }
+      }
+    });
+
+    tesseractReady = true;
+    document.getElementById('analyzing').classList.remove('on');
+    document.getElementById('anSub').textContent = 'تحليل البيانات';
+    toast('✓ محرك القراءة جاهز','ok');
+  }catch(err){
+    document.getElementById('analyzing').classList.remove('on');
+    console.error('Tesseract init error:', err);
+    toast('⚠️ تعذّر تحميل محرك القراءة','bad');
+  }
+}
 
 // ══ CAMERA ═══════════════════════════════════════════
 async function startCam(){
@@ -421,9 +494,212 @@ async function startCam(){
   document.getElementById('noCam').style.display = 'none';
   document.getElementById('shutter').disabled = false;
   document.getElementById('camZone').classList.add('scanning');
+
+  // Start auto mode if it was saved
+  if(autoMode) startAutoScan();
 }
 
-// ══ CAPTURE ══════════════════════════════════════════
+// ══ MODE TOGGLE ══════════════════════════════════════
+function toggleMode(){
+  autoMode = !autoMode;
+  localStorage.setItem(KEY_AUTO_MODE, autoMode);
+  updateModeUI();
+
+  if(autoMode && stream){
+    startAutoScan();
+  } else {
+    stopAutoScan();
+  }
+}
+
+function updateModeUI(){
+  const toggle = document.getElementById('modeToggle');
+  const label  = document.getElementById('modeLabel');
+  const ring   = document.getElementById('shutterRing');
+
+  if(autoMode){
+    toggle.classList.add('auto-on');
+    label.textContent = 'تلقائي';
+    ring.classList.add('hidden');
+  } else {
+    toggle.classList.remove('auto-on');
+    label.textContent = 'يدوي';
+    ring.classList.remove('hidden');
+  }
+}
+
+// ══ AUTO SCAN ════════════════════════════════════════
+async function startAutoScan(){
+  if(!stream) return;
+  if(!tesseractReady) await initTesseract();
+  if(!tesseractReady) { autoMode = false; updateModeUI(); return; }
+
+  document.getElementById('autoStatus').classList.add('on');
+  document.getElementById('boxLabel').textContent = 'مسح تلقائي — ضع الفاتورة';
+
+  // Clear previous interval
+  if(autoInterval) clearInterval(autoInterval);
+  autoInterval = setInterval(autoScanFrame, AUTO_SCAN_MS);
+  toast('📡 المسح التلقائي شغّال','info');
+}
+
+function stopAutoScan(){
+  if(autoInterval){ clearInterval(autoInterval); autoInterval = null; }
+  document.getElementById('autoStatus').classList.remove('on');
+  document.getElementById('boxLabel').textContent = 'ضع الطلب داخل الإطار';
+}
+
+// ══ AUTO SCAN FRAME (Layer 1: Tesseract) ═════════════
+async function autoScanFrame(){
+  if(busy || !stream || !tesseractReady) return;
+  if(Date.now() < cooldownUntil) return; // Still in cooldown
+
+  const vid = document.getElementById('vid');
+  const cv  = document.getElementById('cv');
+  if(!vid.videoWidth) return;
+
+  // Take a small frame for fast OCR
+  const maxW = 400;
+  const ratio = Math.min(maxW / vid.videoWidth, 1);
+  cv.width  = Math.round(vid.videoWidth * ratio);
+  cv.height = Math.round(vid.videoHeight * ratio);
+  const ctx = cv.getContext('2d');
+  ctx.drawImage(vid, 0, 0, cv.width, cv.height);
+
+  try{
+    const { data } = await tesseractWorker.recognize(cv);
+    const text = (data.text || '').toLowerCase();
+
+    // Check if text contains platform keywords
+    const hasKeyword = PLATFORM_KEYWORDS.some(kw => text.includes(kw));
+    // Check if text contains a long number (7+ digits = likely order number)
+    const hasLongNumber = /\d{7,}/.test(text);
+
+    const scanBox = document.getElementById('scanBox');
+    const label   = document.getElementById('boxLabel');
+
+    if(hasKeyword || hasLongNumber){
+      // DETECTED! Show visual feedback
+      scanBox.classList.add('detected');
+      label.textContent = '🔍 فاتورة مكتشفة...';
+      label.style.color = 'var(--warn)';
+
+      // Send to AI (Layer 2)
+      await captureAuto();
+
+      // Reset visual
+      setTimeout(()=>{
+        scanBox.classList.remove('detected');
+        label.textContent = 'مسح تلقائي — ضع الفاتورة';
+        label.style.color = '';
+      }, 1500);
+    }
+  }catch(err){
+    console.error('OCR error:', err);
+  }
+}
+
+// ══ CAPTURE (Auto mode) ══════════════════════════════
+async function captureAuto(){
+  if(busy) return;
+  if(!branchName || !BRANCHES[branchName]){
+    toast('⚠️ أدخل رقم المنشأة أولاً','bad');
+    return;
+  }
+  busy = true;
+
+  // Flash + beep
+  const fl = document.getElementById('flash');
+  fl.classList.add('go');
+  setTimeout(()=>fl.classList.remove('go'), 100);
+  beep();
+
+  const vid = document.getElementById('vid');
+  const cv  = document.getElementById('cv');
+  const maxW = 600;
+  const ratio = Math.min(maxW/(vid.videoWidth||1280),1);
+  cv.width  = Math.round((vid.videoWidth||1280)*ratio);
+  cv.height = Math.round((vid.videoHeight||720)*ratio);
+  const ctx = cv.getContext('2d');
+  ctx.drawImage(vid, 0, 0, cv.width, cv.height);
+
+  const b64       = cv.toDataURL('image/jpeg', 0.5).split(',')[1];
+  const b64Upload = cv.toDataURL('image/jpeg', 0.85).split(',')[1];
+
+  document.getElementById('analyzing').classList.add('on');
+  document.getElementById('anSub').textContent = 'تحليل الفاتورة بالذكاء الاصطناعي...';
+
+  try{
+    const result = await analyze(b64);
+
+    // Check if unreadable
+    if(!result || result.readable === 'no'){
+      // Silently skip in auto mode - don't show retake overlay
+      busy = false;
+      document.getElementById('analyzing').classList.remove('on');
+      return;
+    }
+
+    // Check for duplicate
+    const orderKey = (result.orderNumber || '').trim();
+    if(orderKey && lastProcessedOrders.has(orderKey)){
+      // Already processed this order - skip
+      busy = false;
+      document.getElementById('analyzing').classList.remove('on');
+      return;
+    }
+
+    // Process the order
+    result.branchCode  = branchName;
+    result.branchLabel = branchNameLabel || BRANCHES[branchName] || branchName;
+    let saved = false;
+    if(sheetUrl) saved = await saveSheet(result, b64Upload);
+    showResult(result, saved);
+
+    // Track this order to avoid duplicates
+    if(orderKey) lastProcessedOrders.add(orderKey);
+    // Keep set manageable (last 100)
+    if(lastProcessedOrders.size > 100){
+      const arr = [...lastProcessedOrders];
+      lastProcessedOrders.clear();
+      arr.slice(-50).forEach(x => lastProcessedOrders.add(x));
+    }
+
+    count++;
+    localStorage.setItem(KEY_COUNT, count);
+    document.getElementById('cnt').textContent = count;
+
+    document.getElementById('scanBox').classList.add('captured');
+    setTimeout(()=>document.getElementById('scanBox').classList.remove('captured'), 800);
+
+    // Set cooldown
+    cooldownUntil = Date.now() + COOLDOWN_AFTER_HIT;
+    showCooldown(COOLDOWN_AFTER_HIT);
+
+  }catch(err){
+    // Silent fail in auto mode
+    console.error('Auto capture error:', err);
+  }finally{
+    document.getElementById('analyzing').classList.remove('on');
+    document.getElementById('anSub').textContent = 'تحليل البيانات';
+    busy = false;
+  }
+}
+
+// ══ COOLDOWN BAR ═════════════════════════════════════
+function showCooldown(ms){
+  const fill = document.getElementById('cooldownFill');
+  fill.style.transition = 'none';
+  fill.style.width = '100%';
+  requestAnimationFrame(()=>{
+    requestAnimationFrame(()=>{
+      fill.style.transition = `width ${ms}ms linear`;
+      fill.style.width = '0%';
+    });
+  });
+}
+
+// ══ MANUAL CAPTURE ═══════════════════════════════════
 async function capture(){
   if(!stream || busy) return;
   if(!branchName || !BRANCHES[branchName]){
@@ -455,7 +731,7 @@ async function capture(){
 
   try{
     const result = await analyze(b64);
-    result.branchCode = branchName;
+    result.branchCode  = branchName;
     result.branchLabel = branchNameLabel || BRANCHES[branchName] || branchName;
     let saved = false;
     if(sheetUrl && result.readable !== 'no') saved = await saveSheet(result, b64Upload);
@@ -474,7 +750,7 @@ async function capture(){
   }
 }
 
-// ══ AI ANALYSIS ══════════════════════════════════════
+// ══ AI ANALYSIS (Layer 2) ════════════════════════════
 async function analyze(b64){
   const res = await fetch(WORKER_URL,{
     method:'POST',
@@ -487,7 +763,18 @@ async function analyze(b64){
         content:[
           {type:'image',source:{type:'base64',media_type:'image/jpeg',data:b64}},
           {type:'text',text:`أنت نظام توثيق طلبات مطاعم. حلّل صورة طلب التيك أواي وأعطني JSON فقط بدون أي نص إضافي:
-{"orderNumber":"إذا كانت المنصة HungerStation: ابحث عن الرقم المكون من 7-9 أرقام الموجود أسفل التاريخ والوقت مباشرة — هذا هو رقم الطلب الصحيح وتجاهل أي أرقام أخرى قصيرة. أما بقية المنصات: خذ رقم الطلب المعتاد. أزل أي علامة # أو رموز","platform":"HungerStation أو Keeta أو Jahez أو Ninja أو ToYou أو Marsool أو غير واضح","readable":"yes إذا كان رقم الطلب والمنصة واضحين بشكل كافٍ، no إذا كانت الصورة غير واضحة أو غير مقروءة"}
+{"orderNumber":"...","platform":"...","readable":"..."}
+
+قواعد تحديد رقم الطلب:
+- HungerStation فقط: يوجد رقمان في الفاتورة:
+  1) رقم قصير من 4 أرقام بعد علامة # (مثل #5350) ← تجاهل هذا تماماً
+  2) رقم طويل من 7-10 أرقام (مثل 588185171) ← هذا هو رقم الطلب الصحيح المطلوب
+  دائماً خذ الرقم الطويل فقط وتجاهل الرقم القصير بعد #
+- بقية المنصات (Keeta, Jahez, Ninja, ToYou, Marsool): خذ رقم الطلب المعتاد
+- أزل أي علامة # أو رموز من الرقم
+
+platform: HungerStation أو Keeta أو Jahez أو Ninja أو ToYou أو Marsool أو غير واضح
+readable: yes إذا كان رقم الطلب والمنصة واضحين، no إذا كانت الصورة غير مقروءة
 لا تكتب أي شيء خارج JSON.`}
         ]
       }]
@@ -502,15 +789,14 @@ async function analyze(b64){
   return JSON.parse(match[0]);
 }
 
-
 // ══ IMGBB UPLOAD ═════════════════════════════════════
 const IMGBB_KEY = '7cf15082b41afb536fe73aa393d6dfb4';
 async function uploadToImgBB(b64){
   try{
     const form = new FormData();
-    form.append('key',   IMGBB_KEY);
+    form.append('key', IMGBB_KEY);
     form.append('image', b64);
-    const res  = await fetch('https://api.imgbb.com/1/upload', {method:'POST', body:form});
+    const res = await fetch('https://api.imgbb.com/1/upload', {method:'POST', body:form});
     if(!res.ok) return '';
     const data = await res.json();
     return (data && data.success && data.data && data.data.url) ? data.data.url : '';
@@ -539,7 +825,6 @@ async function saveSheet(r, b64Upload){
 
 // ══ BRAND TAP (5x secret) ════════════════════════════
 function onBrandTap(){
-  const icon = document.getElementById('brandIcon') || document.querySelector('.logo-svg');
   tapN++;
   for(let i=0;i<5;i++) document.getElementById('t'+i).classList.toggle('on',i<tapN);
   clearTimeout(tapTimer);
@@ -574,7 +859,6 @@ function checkPin(){
   if(v===ADMIN_PIN){
     document.getElementById('pinWrap').style.display='none';
     document.getElementById('settingsDiv').style.display='block';
-    // عبّي الحقول بالقيم المحفوظة
     document.getElementById('urlIn').value       = sheetUrl;
     document.getElementById('branchIn').value    = branchName;
     document.getElementById('branchNameIn').value = branchNameLabel;
@@ -589,7 +873,6 @@ function saveSettings(){
   const url    = document.getElementById('urlIn').value.trim();
   const branch = document.getElementById('branchIn').value.trim();
 
-  // التحقق من رقم المنشأة
   if(!branch){
     toast('⚠️ أدخل رقم المنشأة','bad'); return;
   }
@@ -639,7 +922,6 @@ function updateBranchBar(){
 
 // ══ RESULT ═══════════════════════════════════════════
 function showResult(r, saved){
-  // ٢ - صورة غير واضحة → اخرج مباشرة بدون أي وصول للـ DOM
   if(!r || r.readable === 'no'){ showRetake(); return; }
 
   const badge   = document.getElementById('rBadge');
@@ -647,7 +929,6 @@ function showResult(r, saved){
   const sentRow = document.getElementById('sentRow');
   const overlay = document.getElementById('resultOverlay');
 
-  // تأكد من وجود العناصر قبل الوصول
   if(!badge || !rRows || !overlay) return;
 
   badge.textContent = saved ? '✓ تم الإرسال' : (sheetUrl?'⚠️ فشل الحفظ':'⬡ غير مرتبط');
