@@ -62,14 +62,7 @@ video#vid{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;disp
 .conn-dot{width:7px;height:7px;border-radius:50%;background:var(--muted);transition:background .3s;}
 .conn.ok .conn-dot{background:var(--org);box-shadow:0 0 6px var(--org);}
 .conn.ok{color:var(--org);}
-.controls-row{display:flex;align-items:center;justify-content:center;gap:20px;width:100%;}
-.mode-toggle{display:flex;align-items:center;gap:8px;background:var(--dark);border:1.5px solid var(--border);border-radius:50px;padding:6px 14px;cursor:pointer;transition:border-color .2s;}
-.mode-toggle.auto-on{border-color:var(--org);}
-.mode-icon{width:18px;height:18px;display:flex;align-items:center;justify-content:center;}
-.mode-label{font-size:11px;font-weight:700;color:var(--muted);transition:color .2s;letter-spacing:.5px;}
-.mode-toggle.auto-on .mode-label{color:var(--org);}
-.mode-dot{width:8px;height:8px;border-radius:50%;background:var(--muted);transition:background .3s;}
-.mode-toggle.auto-on .mode-dot{background:var(--org);box-shadow:0 0 8px var(--org);animation:pulse 2s infinite;}
+.controls-row{display:flex;align-items:center;justify-content:center;width:100%;}
 @keyframes pulse{0%,100%{opacity:1;}50%{opacity:.4;}}
 .shutter-ring{width:70px;height:70px;border-radius:50%;border:2px solid rgba(0,200,83,.3);display:flex;align-items:center;justify-content:center;transition:opacity .3s;}
 .shutter-ring.hidden{opacity:.15;pointer-events:none;}
@@ -182,11 +175,6 @@ canvas{display:none;}
     <div class="branch-bar"><div class="branch-info" id="branchInfo">⚠️ يجب تحديد رقم المنشأة</div></div>
     <div class="conn" id="conn"><div class="conn-dot"></div><span id="connTxt">غير متصل</span></div>
     <div class="controls-row">
-      <div class="mode-toggle" id="modeToggle" onclick="toggleMode()">
-        <div class="mode-icon"><svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg></div>
-        <span class="mode-label" id="modeLabel">تلقائي</span>
-        <div class="mode-dot"></div>
-      </div>
       <div class="shutter-ring" id="shutterRing">
         <button class="shutter" id="shutter" onclick="capture()" disabled>
           <svg width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="#000" stroke-width="2.5"><circle cx="12" cy="12" r="4"/><path stroke-linecap="round" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"/></svg>
@@ -209,6 +197,16 @@ canvas{display:none;}
       <div class="field-label">اسم الفرع</div>
       <input class="text-in" id="branchNameIn" type="text" placeholder="مثال: فرع النسيم"/>
       <div class="field-hint">اسم الفرع كما سيظهر في الشيت</div>
+      <div class="field-label">الكاميرا</div>
+      <select class="text-in" id="camSelect" style="direction:ltr;text-align:left;appearance:auto;-webkit-appearance:menulist;padding:12px 10px;color:var(--text);background:var(--dark);">
+        <option value="">جاري البحث عن الكاميرات...</option>
+      </select>
+      <div class="field-hint">اختر الكاميرا الأساسية أو USB</div>
+      <div class="field-label">وضع المسح</div>
+      <div style="display:flex;gap:8px;margin-bottom:6px;">
+        <button class="save-btn" id="modeBtn" onclick="toggleMode()" style="flex:1;background:var(--dark);color:var(--muted);border:1.5px solid var(--border);font-size:13px;padding:12px;border-radius:12px;">يدوي</button>
+      </div>
+      <div class="field-hint">يدوي = تصوير بالزر · تلقائي = يكتشف الفاتورة ويصوّر لحاله</div>
       <div class="field-label">الصق الرابط</div>
       <div class="url-row"><input class="url-in" id="urlIn" placeholder="https://script.google.com/macros/s/.../exec"><button class="save-btn" onclick="saveSettings()">حفظ</button></div>
       <div class="field-hint">يُحفظ على الجهاز دائماً ولا يظهر للموظفين</div>
@@ -261,8 +259,9 @@ const SCAN_MS=500;        // فحص كل 500ms
 const COOLDOWN=6000;      // 6 ثواني بعد نجاح
 let cooldownUntil=0;
 
-const KEY_URL='dlvr_v2_url',KEY_BRANCH='dlvr_v2_branch',KEY_COUNT='dlvr_v2_count',KEY_BRANCH_NAME='dlvr_v2_branch_name',KEY_AUTO='dlvr_v2_auto';
+const KEY_URL='dlvr_v2_url',KEY_BRANCH='dlvr_v2_branch',KEY_COUNT='dlvr_v2_count',KEY_BRANCH_NAME='dlvr_v2_branch_name',KEY_AUTO='dlvr_v2_auto',KEY_CAM='dlvr_v2_cam';
 let sheetUrl=localStorage.getItem(KEY_URL)||'';
+let selectedCamId=localStorage.getItem(KEY_CAM)||'';
 let branchNameLabel=localStorage.getItem(KEY_BRANCH_NAME)||'';
 let branchName=localStorage.getItem(KEY_BRANCH)||'';
 let count=parseInt(localStorage.getItem(KEY_COUNT)||'0');
@@ -276,14 +275,58 @@ if(branchName)document.getElementById('branchIn').value=branchName;
 if(localStorage.getItem(KEY_AUTO)==='true'){autoMode=true;updateModeUI();}
 
 // CAMERA
-async function startCam(){
-  try{stream=await navigator.mediaDevices.getUserMedia({video:{facingMode:{ideal:'environment'},width:{ideal:1920},height:{ideal:1080}},audio:false});}
+async function startCam(deviceId){
+  // لو فيه كاميرا محددة استخدمها
+  const camId = deviceId || selectedCamId;
+  const constraints = camId
+    ? {video:{deviceId:{exact:camId},width:{ideal:1920},height:{ideal:1080}},audio:false}
+    : {video:{facingMode:{ideal:'environment'},width:{ideal:1920},height:{ideal:1080}},audio:false};
+
+  // لو فيه stream قديم أوقفه
+  if(stream){stream.getTracks().forEach(t=>t.stop());stream=null;}
+
+  try{stream=await navigator.mediaDevices.getUserMedia(constraints);}
   catch{try{stream=await navigator.mediaDevices.getUserMedia({video:true,audio:false});}catch{toast('⚠️ تعذّر الوصول للكاميرا','bad');return;}}
   const v=document.getElementById('vid');v.srcObject=stream;v.style.display='block';
   document.getElementById('noCam').style.display='none';
   document.getElementById('shutter').disabled=false;
   document.getElementById('camZone').classList.add('scanning');
   if(autoMode)startAutoScan();
+  // بعد تشغيل الكاميرا، حدّث قائمة الكاميرات
+  loadCameras();
+}
+
+// ══ CAMERA LIST ══════════════════════════════════════
+async function loadCameras(){
+  try{
+    const devices=await navigator.mediaDevices.enumerateDevices();
+    const cams=devices.filter(d=>d.kind==='videoinput');
+    const sel=document.getElementById('camSelect');
+    if(!sel)return;
+    sel.innerHTML='';
+    if(cams.length===0){sel.innerHTML='<option value="">لا توجد كاميرات</option>';return;}
+    cams.forEach((cam,i)=>{
+      const opt=document.createElement('option');
+      opt.value=cam.deviceId;
+      opt.textContent=cam.label||('كاميرا '+(i+1));
+      if(cam.deviceId===selectedCamId)opt.selected=true;
+      sel.appendChild(opt);
+    });
+    // لو ما فيه كاميرا محفوظة، حدد الحالية
+    if(!selectedCamId&&stream){
+      const activeTrack=stream.getVideoTracks()[0];
+      if(activeTrack){
+        const activeCam=cams.find(c=>c.label===activeTrack.label);
+        if(activeCam)sel.value=activeCam.deviceId;
+      }
+    }
+    sel.onchange=()=>{
+      selectedCamId=sel.value;
+      localStorage.setItem(KEY_CAM,selectedCamId);
+      startCam(selectedCamId);
+      toast('✓ تم تغيير الكاميرا','ok');
+    };
+  }catch(e){console.error('Camera list error:',e);}
 }
 
 // MODE
@@ -292,9 +335,12 @@ function toggleMode(){
   if(autoMode&&stream)startAutoScan();else stopAutoScan();
 }
 function updateModeUI(){
-  const t=document.getElementById('modeToggle'),l=document.getElementById('modeLabel'),r=document.getElementById('shutterRing');
-  if(autoMode){t.classList.add('auto-on');l.textContent='تلقائي';r.classList.add('hidden');}
-  else{t.classList.remove('auto-on');l.textContent='يدوي';r.classList.remove('hidden');}
+  const btn=document.getElementById('modeBtn'),r=document.getElementById('shutterRing');
+  if(btn){
+    if(autoMode){btn.textContent='✓ تلقائي';btn.style.background='var(--org)';btn.style.color='#000';btn.style.borderColor='var(--org)';}
+    else{btn.textContent='يدوي';btn.style.background='var(--dark)';btn.style.color='var(--muted)';btn.style.borderColor='var(--border)';}
+  }
+  if(r){if(autoMode)r.classList.add('hidden');else r.classList.remove('hidden');}
 }
 
 // AUTO SCAN
@@ -370,10 +416,10 @@ async function captureAuto(){
   flash();beep();
 
   const vid=document.getElementById('vid'),cv=document.getElementById('cv');
-  const maxW=600,ratio=Math.min(maxW/(vid.videoWidth||1280),1);
+  const maxW=900,ratio=Math.min(maxW/(vid.videoWidth||1280),1);
   cv.width=Math.round((vid.videoWidth||1280)*ratio);cv.height=Math.round((vid.videoHeight||720)*ratio);
   cv.getContext('2d').drawImage(vid,0,0,cv.width,cv.height);
-  const b64=cv.toDataURL('image/jpeg',0.5).split(',')[1];
+  const b64=cv.toDataURL('image/jpeg',0.8).split(',')[1];
   const b64Up=cv.toDataURL('image/jpeg',0.85).split(',')[1];
 
   document.getElementById('analyzing').classList.add('on');
@@ -414,10 +460,10 @@ async function capture(){
   if(!branchName||!BRANCHES[branchName]){toast('⚠️ أدخل رقم المنشأة أولاً','bad');setTimeout(()=>openAdmin(),800);return;}
   busy=true;flash();beep();
   const vid=document.getElementById('vid'),cv=document.getElementById('cv');
-  const maxW=600,ratio=Math.min(maxW/(vid.videoWidth||1280),1);
+  const maxW=900,ratio=Math.min(maxW/(vid.videoWidth||1280),1);
   cv.width=Math.round((vid.videoWidth||1280)*ratio);cv.height=Math.round((vid.videoHeight||720)*ratio);
   cv.getContext('2d').drawImage(vid,0,0,cv.width,cv.height);
-  const b64=cv.toDataURL('image/jpeg',0.5).split(',')[1];
+  const b64=cv.toDataURL('image/jpeg',0.8).split(',')[1];
   const b64Up=cv.toDataURL('image/jpeg',0.85).split(',')[1];
   document.getElementById('analyzing').classList.add('on');document.getElementById('shutter').disabled=true;
   try{
@@ -432,7 +478,7 @@ async function capture(){
 // AI
 async function analyze(b64){
   const res=await fetch(WORKER_URL,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'claude-haiku-4-5-20251001',max_tokens:400,messages:[{role:'user',content:[{type:'image',source:{type:'base64',media_type:'image/jpeg',data:b64}},{type:'text',text:`أنت نظام توثيق طلبات مطاعم. حلّل صورة طلب التيك أواي وأعطني JSON فقط بدون أي نص إضافي:
-{"orderNumber":"...","platform":"...","readable":"..."}
+{"orderNumber":"...","platform":"...","readable":"...","confidence":"..."}
 
 قواعد تحديد رقم الطلب:
 - HungerStation فقط: يوجد رقمان في الفاتورة:
@@ -442,15 +488,35 @@ async function analyze(b64){
 - بقية المنصات (Keeta, Jahez, Ninja, ToYou, Marsool): خذ رقم الطلب المعتاد
 - أزل أي علامة # أو رموز من الرقم
 
+مهم جداً — الدقة أهم من السرعة:
+- إذا أي رقم (digit) في رقم الطلب غير واضح أو مشوّش أو ممكن يكون رقم ثاني (مثلاً 0 أو 8 أو 6 أو 9)، اجعل readable = "no"
+- لا تخمّن أبداً — الرقم الغلط أسوأ بكثير من إعادة التصوير
+- أرقام HungerStation دائماً 9 أرقام بالضبط. إذا طلع أقل أو أكثر فالقراءة غالباً خاطئة واجعل readable = "no"
+
+confidence: high إذا كل الأرقام واضحة 100%، low إذا فيه أي شك
 platform: HungerStation أو Keeta أو Jahez أو Ninja أو ToYou أو Marsool أو غير واضح
-readable: yes إذا كان رقم الطلب والمنصة واضحين، no إذا كانت الصورة غير مقروءة أو لا تحتوي على فاتورة طلب
+readable: yes فقط إذا كل رقم واضح تماماً بدون أي شك، no إذا فيه أي شك أو الصورة غير مقروءة أو لا تحتوي على فاتورة
 لا تكتب أي شيء خارج JSON.`}]}]})});
   const data=await res.json();
   if(data.error)throw new Error(data.error.message||JSON.stringify(data.error));
   if(!data.content||!data.content[0])throw new Error('رد غير متوقع');
   const m=data.content[0].text.trim().match(/\{[\s\S]*\}/);
   if(!m)throw new Error('لم يتمكن AI من قراءة الطلب');
-  return JSON.parse(m[0]);
+  const result = JSON.parse(m[0]);
+
+  // تحقق إضافي: أرقام HungerStation لازم 9 أرقام
+  if(result.readable === 'yes' && result.platform === 'HungerStation'){
+    const digits = (result.orderNumber || '').replace(/\D/g, '');
+    if(digits.length !== 9){
+      result.readable = 'no';
+    }
+  }
+  // لو الثقة منخفضة، ارفض
+  if(result.confidence === 'low'){
+    result.readable = 'no';
+  }
+
+  return result;
 }
 
 // SHEET
