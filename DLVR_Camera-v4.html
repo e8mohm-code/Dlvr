@@ -389,20 +389,37 @@ async function capture(){
   beep();
 
   const vid=document.getElementById('vid'),cv=document.getElementById('cv');
-  // Full resolution — no downscaling for maximum OCR accuracy
+  // Full resolution for sheet upload
   cv.width=vid.videoWidth||1920;
   cv.height=vid.videoHeight||1080;
   const ctx=cv.getContext('2d');
   ctx.drawImage(vid,0,0,cv.width,cv.height);
-
-  const b64=cv.toDataURL('image/jpeg',0.92).split(',')[1];
   const b64Upload=cv.toDataURL('image/jpeg',0.92).split(',')[1];
+
+  // Zoomed crops for AI analysis — 3 horizontal strips covering the receipt
+  const crops=[];
+  const cw=cv.width, ch=cv.height;
+  const stripH=Math.round(ch*0.4);
+  const positions=[
+    {y:0,label:'top'},
+    {y:Math.round(ch*0.3),label:'mid'},
+    {y:Math.max(0,ch-stripH),label:'bot'}
+  ];
+  const cropCv=document.createElement('canvas');
+  const cropCtx=cropCv.getContext('2d');
+  cropCv.width=cw;cropCv.height=stripH;
+  for(const p of positions){
+    cropCtx.drawImage(cv,0,p.y,cw,stripH,0,0,cw,stripH);
+    crops.push(cropCv.toDataURL('image/jpeg',0.95).split(',')[1]);
+  }
+  // Also full image at good quality
+  const b64Full=cv.toDataURL('image/jpeg',0.85).split(',')[1];
 
   document.getElementById('analyzing').classList.add('on');
   document.getElementById('shutter').disabled=true;
 
   try{
-    const result=await analyze(b64);
+    const result=await analyze(b64Full,crops);
     result.branchCode=branchName;
     result.branchLabel=branchNameLabel||BRANCHES[branchName]||branchName;
     let saved=false;
@@ -421,41 +438,50 @@ async function capture(){
   }
 }
 
-// ══ AI ANALYSIS (v4 — precise extraction) ════════════
-async function analyze(b64){
+// ══ AI ANALYSIS (v4 — multi-crop precise extraction) ═
+async function analyze(b64Full,crops){
+  // Build content array: full image + 3 zoomed crops + prompt
+  const content=[
+    {type:'image',source:{type:'base64',media_type:'image/jpeg',data:b64Full}},
+  ];
+  // Add cropped zoom strips
+  for(let i=0;i<crops.length;i++){
+    content.push({type:'image',source:{type:'base64',media_type:'image/jpeg',data:crops[i]}});
+  }
+  content.push({type:'text',text:`You are an order receipt OCR system. I've given you 4 images of the SAME receipt:
+- Image 1: Full receipt
+- Image 2: Zoomed TOP portion
+- Image 3: Zoomed MIDDLE portion
+- Image 4: Zoomed BOTTOM portion
+
+Use ALL images to find the clearest view of the order number. Extract EXACTLY two fields. Return ONLY JSON.
+
+CRITICAL RULES:
+1. "orderNumber" — The DELIVERY APP order number ONLY:
+   - HungerStation: Find "External Order Id:" — the number AFTER it (e.g. 930066132). IGNORE the large receipt number, IGNORE "Order Ref:", IGNORE all other numbers.
+   - Keeta: The short order number (4-5 digits).
+   - Jahez: The Jahez order number.
+   - ToYou/Ninja/Marsool: The delivery order reference number.
+   - Read EVERY digit carefully from the zoomed images. NEVER guess. NEVER invent. If even ONE digit is unclear → readable = "no".
+   - Remove # from start if present.
+
+2. "platform" — The delivery app name:
+   - Find "Channel Name:" field (e.g. HUNGER_STATION → HungerStation, KEETA → Keeta).
+   - Or identify from app logo/branding.
+   - Must be: HungerStation, Keeta, Jahez, Ninja, ToYou, or Marsool
+   - If unclear → "غير واضح"
+
+3. "readable" — "yes" ONLY if you are 100% certain of EVERY digit in the order number AND the platform. Otherwise "no".
+
+Return: {"orderNumber":"...","platform":"...","readable":"yes/no"}`});
+
   const res=await fetch(WORKER_URL,{
     method:'POST',
     headers:{'Content-Type':'application/json'},
     body:JSON.stringify({
       model:'claude-haiku-4-5-20251001',
       max_tokens:400,
-      messages:[{
-        role:'user',
-        content:[
-          {type:'image',source:{type:'base64',media_type:'image/jpeg',data:b64}},
-          {type:'text',text:`You are an order receipt OCR system. Extract EXACTLY two fields from this receipt image. Return ONLY JSON, no other text.
-
-CRITICAL RULES:
-1. "orderNumber" — The DELIVERY APP order number ONLY. Find it using these rules:
-   - For HungerStation: Look for "External Order Id:" — the number after it is the order number (e.g. 930066132). IGNORE the large receipt number (like 233), IGNORE "Order Ref", IGNORE any other numbers.
-   - For Keeta: The short order number (usually 4-5 digits).
-   - For Jahez: The order number shown on the receipt.
-   - For ToYou/Ninja/Marsool: The delivery order reference number.
-   - NEVER guess. NEVER invent a number. If you cannot clearly read the exact digits, set readable to "no".
-   - Remove any # symbol from the start.
-
-2. "platform" — The delivery app name. Find it using these rules:
-   - Look for "Channel Name:" field — use the value (e.g. HUNGER_STATION → HungerStation).
-   - Or identify from the app logo/branding on the receipt.
-   - Must be one of: HungerStation, Keeta, Jahez, Ninja, ToYou, Marsool
-   - If unclear, set to "غير واضح"
-
-3. "readable" — Set to "yes" ONLY if you can read BOTH the exact order number AND the platform with 100% confidence. If ANY digit is unclear or you are guessing, set to "no".
-
-Return: {"orderNumber":"...","platform":"...","readable":"yes/no"}
-Do NOT write anything outside the JSON.`}
-        ]
-      }]
+      messages:[{role:'user',content}]
     })
   });
   const data=await res.json();
