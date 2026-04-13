@@ -281,7 +281,7 @@ const DEFAULT_BRANDS=[
 ];
 
 const DEFAULT_SUPERVISORS=Array.from({length:18},(_,i)=>({
-  username:`sup${i+1}`,password:`sup${i+1}pass`,label:`مشرف ${i+1}`
+  username:`sup${i+1}`,password:`sup${i+1}pass`,label:`مشرف ${i+1}`,assignedBrands:'all'
 }));
 
 const DELIVERY_APPS=['HungerStation','Keeta','Jahez','Ninja','ToYou','Marsool'];
@@ -305,7 +305,16 @@ function getVisibleBrands(){
   const all=getBrands();
   if(!currentUser)return[];
   if(currentUser.role==='admin')return all;
-  return all.filter(b=>b.enabled);
+  let filtered=all.filter(b=>b.enabled);
+  if(currentUser.role==='supervisor'){
+    const sups=getSupervisorsConfig();
+    const sup=sups.find(s=>s.username===currentUser.username);
+    if(sup&&sup.assignedBrands&&sup.assignedBrands!=='all'){
+      const assigned=Array.isArray(sup.assignedBrands)?sup.assignedBrands:[];
+      if(assigned.length>0)filtered=filtered.filter(b=>assigned.includes(b.id));
+    }
+  }
+  return filtered;
 }
 
 // ══ USERS (dynamic from config) ═════════════════════
@@ -737,21 +746,45 @@ function renderSettingsBrands(){
 
 function renderSettingsSupervisors(){
   const sups=getSupervisorsConfig();
+  const brands=getBrands().filter(b=>b.enabled);
   let h=`<div class="sett-card">
     <div class="sett-title">إدارة المشرفين</div>
-    <div class="sett-desc">تعديل أسماء وكلمات مرور المشرفين</div>
-    <div style="display:flex;flex-direction:column;gap:8px;">
-      ${sups.map((s,i)=>`<div class="brand-sett-row">
-        <div style="width:28px;height:28px;border-radius:7px;background:var(--g);display:flex;align-items:center;justify-content:center;font-weight:900;color:#000;font-size:11px;flex-shrink:0;">${i+1}</div>
-        <div style="flex:1;display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;align-items:center;">
-          <div><div style="font-size:9px;color:var(--muted);">الاسم</div>
-            <input class="sett-input rtl-input" style="margin:0;font-size:12px;padding:6px 8px;" value="${s.label}" onchange="updateSup(${i},'label',this.value)"></div>
-          <div><div style="font-size:9px;color:var(--muted);">المستخدم</div>
-            <div style="font-size:12px;color:var(--muted);padding:6px 8px;">${s.username}</div></div>
-          <div><div style="font-size:9px;color:var(--muted);">كلمة المرور</div>
-            <input class="sett-input" style="margin:0;font-size:12px;padding:6px 8px;" value="${s.password}" onchange="updateSup(${i},'password',this.value)"></div>
+    <div class="sett-desc">تعديل أسماء وكلمات مرور المشرفين وتحديد البراندات المتاحة لكل مشرف</div>
+    <div style="display:flex;flex-direction:column;gap:10px;">
+      ${sups.map((s,i)=>{
+        const isAll=!s.assignedBrands||s.assignedBrands==='all';
+        const assigned=isAll?[]:Array.isArray(s.assignedBrands)?s.assignedBrands:[];
+        return `<div style="border:1px solid var(--border);border-radius:12px;padding:12px;transition:background .15s;">
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px;">
+          <div style="width:28px;height:28px;border-radius:7px;background:var(--g);display:flex;align-items:center;justify-content:center;font-weight:900;color:#000;font-size:11px;flex-shrink:0;">${i+1}</div>
+          <div style="flex:1;display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;align-items:center;">
+            <div><div style="font-size:9px;color:var(--muted);">الاسم</div>
+              <input class="sett-input rtl-input" style="margin:0;font-size:12px;padding:6px 8px;" value="${s.label}" onchange="updateSup(${i},'label',this.value)"></div>
+            <div><div style="font-size:9px;color:var(--muted);">المستخدم</div>
+              <div style="font-size:12px;color:var(--muted);padding:6px 8px;">${s.username}</div></div>
+            <div><div style="font-size:9px;color:var(--muted);">كلمة المرور</div>
+              <input class="sett-input" style="margin:0;font-size:12px;padding:6px 8px;" value="${s.password}" onchange="updateSup(${i},'password',this.value)"></div>
+          </div>
         </div>
-      </div>`).join('')}
+        <div style="border-top:1px solid var(--border);padding-top:8px;">
+          <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;">
+            <div style="font-size:10px;font-weight:700;color:var(--muted);">البراندات المتاحة:</div>
+            <label style="font-size:11px;display:flex;align-items:center;gap:4px;cursor:pointer;">
+              <input type="checkbox" ${isAll?'checked':''} onchange="toggleSupAllBrands(${i},this.checked)" style="accent-color:var(--g);"> الكل
+            </label>
+          </div>
+          <div style="display:flex;flex-wrap:wrap;gap:4px;" id="sup-brands-${i}">
+            ${brands.map(b=>{
+              const checked=isAll||assigned.includes(b.id);
+              return `<label style="display:flex;align-items:center;gap:4px;padding:4px 10px;border:1px solid ${checked?'var(--g)':'var(--border)'};border-radius:8px;font-size:11px;font-weight:600;cursor:pointer;background:${checked?'var(--g-dim)':'transparent'};transition:all .15s;">
+                <input type="checkbox" ${checked?'checked':''} ${isAll?'disabled':''} value="${b.id}" onchange="toggleSupBrand(${i},'${b.id}',this.checked)" style="accent-color:var(--g);">
+                <span style="width:8px;height:8px;border-radius:50%;background:${b.color};flex-shrink:0;"></span>
+                ${b.name}
+              </label>`;
+            }).join('')}
+          </div>
+        </div>
+      </div>`;}).join('')}
     </div>
   </div>`;
   return h;
@@ -858,6 +891,27 @@ function updateDeliveryLogo(brandId,app,val){
 function updateSup(idx,field,val){
   const sups=getSupervisorsConfig();
   if(sups[idx]){sups[idx][field]=val;saveSupervisorsConfig(sups);toast('تم الحفظ');buildNav();}
+}
+
+function toggleSupAllBrands(idx,isAll){
+  const sups=getSupervisorsConfig();
+  if(sups[idx]){
+    sups[idx].assignedBrands=isAll?'all':[];
+    saveSupervisorsConfig(sups);
+    renderSettings();
+    toast(isAll?'تم تفعيل كل البراندات':'اختر البراندات المطلوبة');
+  }
+}
+
+function toggleSupBrand(idx,brandId,checked){
+  const sups=getSupervisorsConfig();
+  if(!sups[idx])return;
+  let assigned=Array.isArray(sups[idx].assignedBrands)?[...sups[idx].assignedBrands]:[];
+  if(checked){if(!assigned.includes(brandId))assigned.push(brandId);}
+  else{assigned=assigned.filter(x=>x!==brandId);}
+  sups[idx].assignedBrands=assigned;
+  saveSupervisorsConfig(sups);
+  renderSettings();
 }
 
 function toggleBrand(id,enabled){
