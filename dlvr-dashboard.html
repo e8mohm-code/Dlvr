@@ -206,9 +206,14 @@ canvas.perf-chart{width:100%!important;max-height:300px;}
 .sett-input{width:100%;padding:10px 12px;background:var(--input-bg);border:1.5px solid var(--border);border-radius:10px;color:var(--text);font-family:'Tajawal';font-size:13px;outline:none;direction:ltr;text-align:left;margin-bottom:8px;transition:border-color .2s;}
 .sett-input:focus{border-color:var(--g);}
 .sett-input.rtl-input{direction:rtl;text-align:right;}
-.sett-btn{padding:8px 20px;border:none;border-radius:8px;background:var(--g);color:#000;font-family:'Tajawal';font-size:12px;font-weight:700;cursor:pointer;}
+.sett-btn{padding:8px 20px;border:none;border-radius:8px;background:var(--g);color:#000;font-family:'Tajawal';font-size:12px;font-weight:700;cursor:pointer;transition:transform .1s;}
+.sett-btn:hover{transform:scale(1.02);}
 .sett-btn-o{padding:8px 20px;border:1px solid var(--border);border-radius:8px;background:transparent;color:var(--text);font-family:'Tajawal';font-size:12px;font-weight:600;cursor:pointer;}
 .sett-btn-o:hover{border-color:var(--g);}
+.save-bar{position:sticky;bottom:0;background:var(--bg);border-top:1px solid var(--border);padding:14px 0;margin-top:18px;display:flex;align-items:center;gap:12px;z-index:10;}
+.save-bar .sett-btn{padding:12px 40px;font-size:14px;font-weight:800;border-radius:10px;}
+.save-bar .save-status{font-size:12px;color:var(--muted);display:none;}
+.save-bar .save-status.show{display:inline;color:var(--g);font-weight:700;}
 .sett-tabs{display:flex;gap:4px;margin-bottom:18px;flex-wrap:wrap;}
 .sett-tab{padding:8px 16px;border:1px solid var(--border);border-radius:8px;background:transparent;color:var(--muted);font-family:'Tajawal';font-size:12px;font-weight:600;cursor:pointer;transition:all .15s;}
 .sett-tab:hover{border-color:var(--g);color:var(--text);}
@@ -285,6 +290,15 @@ const DEFAULT_SUPERVISORS=Array.from({length:18},(_,i)=>({
 }));
 
 const DELIVERY_APPS=['HungerStation','Keeta','Jahez','Ninja','ToYou','Marsool'];
+
+const PLATFORM_LOGOS={
+  hungerstation:'https://play-lh.googleusercontent.com/HGVgTMpEkNGxqSP7lMxGMPaNmB3vKhQsLMjDOR7_bMGKDpEsJGFGXdMkRGIpGP7VCA',
+  keeta:'https://play-lh.googleusercontent.com/8dWEBRFPpPwHGBDCBjIA4eCe2Oi6VYwWIFiEyKe73_-0LLQLU2k2FqkfVBt3qKsh1g',
+  jahez:'https://play-lh.googleusercontent.com/sBb_JiCaEwFpOwJipH63hJeTi3OqB3XSy4ObqwyybiEXlSr0MivqVz9o9NGV03tmBl4',
+  toyou:'https://play-lh.googleusercontent.com/j5gb8mL3GqRAaR4os5PK3tMimM8sFdc7X5MRjJTdj4aT2uAPQRVLk1-bAmXGnjFcXNM',
+  ninja:'https://play-lh.googleusercontent.com/3bVhB2EiM-g3LGPBgqRxOPnMIR-wFzLBj_vNDdjPRl__JGhz7TemES3j0R3VFpMVaQ',
+  marsool:'https://play-lh.googleusercontent.com/MZUHO9JH4TM1JZ5Q1SVZhfKQfJb7a5eKshW6_v8idI-4Ds9i9v7N1JHKJc_cH_JRFYs',
+};
 
 // ══ DYNAMIC CONFIG (localStorage) ═══════════════════
 function getBrandsConfig(){
@@ -522,7 +536,7 @@ function renderOrders(data){
     return `<tr>
       <td class="td-num" onclick="copyNum(this,'${num}')" title="انقر للنسخ">${num}</td>
       <td class="td-branch">${r.branchName||r.branch||'—'}</td>
-      <td><span class="o-platform ${pCls}">${r.platform||'—'}</span></td>
+      <td>${platBadge(r.platform)}</td>
       <td class="td-date">${r.date||'—'}</td>
       <td class="td-time">${r.time||'—'}</td>
       <td style="text-align:center">${hasImg?`<div class="td-img" onclick="openImg('${r.image}')" style="margin:0 auto;"><img src="${thumb}" loading="lazy" onerror="this.outerHTML='<svg fill=\\'none\\' viewBox=\\'0 0 24 24\\' stroke=\\'currentColor\\' stroke-width=\\'1.5\\'><rect x=\\'3\\' y=\\'3\\' width=\\'18\\' height=\\'18\\' rx=\\'2\\'/></svg>'"></div>`:`<div class="td-img" style="margin:0 auto;"><svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/></svg></div>`}</td>
@@ -533,7 +547,7 @@ function renderOrders(data){
     return `<div class="mobile-card">
       <div class="mc-top">
         <div class="mc-num" onclick="copyNum(this,'${num}')">${num}</div>
-        <span class="o-platform ${pCls}">${r.platform||'—'}</span>
+        ${platBadge(r.platform)}
         ${hasImg?`<div class="mc-img" onclick="openImg('${r.image}')"><img src="${thumb}" loading="lazy"></div>`:''}
       </div>
       <div class="mc-details">
@@ -704,26 +718,26 @@ function renderSettingsBrands(){
 
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px;">
         <div><div style="font-size:10px;color:var(--muted);margin-bottom:3px;">اسم البراند</div>
-          <input class="sett-input rtl-input" style="margin-bottom:0" value="${b.name}" onchange="updateBrandField('${b.id}','name',this.value)"></div>
+          <input class="sett-input rtl-input" style="margin-bottom:0" value="${b.name}" data-brand="${b.id}" data-field="name"></div>
         <div><div style="font-size:10px;color:var(--muted);margin-bottom:3px;">اللون</div>
-          <input class="sett-input" type="color" style="margin-bottom:0;padding:4px;height:38px;" value="${b.color}" onchange="updateBrandField('${b.id}','color',this.value)"></div>
+          <input class="sett-input" type="color" style="margin-bottom:0;padding:4px;height:38px;" value="${b.color}" data-brand="${b.id}" data-field="color"></div>
       </div>
 
       <div style="font-size:10px;color:var(--muted);margin-bottom:3px;">Google Sheet ID</div>
-      <input class="sett-input" value="${b.sheetId||''}" placeholder="أدخل Sheet ID" onchange="updateBrandField('${b.id}','sheetId',this.value)">
+      <input class="sett-input" value="${b.sheetId||''}" placeholder="أدخل Sheet ID" data-brand="${b.id}" data-field="sheetId">
 
       <div style="font-size:10px;color:var(--muted);margin-bottom:3px;">رابط Apps Script (للطلبات)</div>
-      <input class="sett-input" value="${b.scriptUrl||''}" placeholder="https://script.google.com/macros/s/.../exec" onchange="updateBrandField('${b.id}','scriptUrl',this.value)">
+      <input class="sett-input" value="${b.scriptUrl||''}" placeholder="https://script.google.com/macros/s/.../exec" data-brand="${b.id}" data-field="scriptUrl">
 
       <div style="font-size:10px;color:var(--muted);margin-bottom:3px;">رابط شعار البراند</div>
-      <input class="sett-input" value="${b.logo||''}" placeholder="https://example.com/logo.png" onchange="updateBrandField('${b.id}','logo',this.value)">
+      <input class="sett-input" value="${b.logo||''}" placeholder="https://example.com/logo.png" data-brand="${b.id}" data-field="logo">
 
       <div style="border-top:1px solid var(--border);margin:10px 0;padding-top:10px;">
         <div style="font-size:12px;font-weight:700;margin-bottom:8px;">الفروع <span style="color:var(--muted);font-weight:400;">(${(b.branches||[]).length})</span></div>
         <div id="branches-${b.id}">
           ${(b.branches||[]).map((br,bi)=>`<div class="brand-sett-row">
-            <input class="sett-input rtl-input" style="margin:0;flex:1;min-width:100px;" value="${br.name}" onchange="updateBranch('${b.id}',${bi},'name',this.value)" placeholder="اسم الفرع">
-            <input class="sett-input" style="margin:0;width:80px;text-align:center;" value="${br.code}" onchange="updateBranch('${b.id}',${bi},'code',this.value)" placeholder="رمز" maxlength="4">
+            <input class="sett-input rtl-input" style="margin:0;flex:1;min-width:100px;" value="${br.name}" data-brand="${b.id}" data-branchidx="${bi}" data-field="brname" placeholder="اسم الفرع">
+            <input class="sett-input" style="margin:0;width:80px;text-align:center;" value="${br.code}" data-brand="${b.id}" data-branchidx="${bi}" data-field="brcode" placeholder="رمز" maxlength="4">
             <button onclick="removeBranch('${b.id}',${bi})" style="padding:5px 10px;border:1px solid var(--red);border-radius:6px;background:transparent;color:var(--red);font-size:11px;cursor:pointer;font-family:'Tajawal';">حذف</button>
           </div>`).join('')}
         </div>
@@ -735,12 +749,13 @@ function renderSettingsBrands(){
         <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:6px;">
           ${DELIVERY_APPS.map(app=>`<div>
             <div style="font-size:10px;color:var(--muted);margin-bottom:2px;">${app}</div>
-            <input class="sett-input" style="margin:0;font-size:11px;" value="${(b.deliveryLogos||{})[app]||''}" placeholder="رابط الشعار" onchange="updateDeliveryLogo('${b.id}','${app}',this.value)">
+            <input class="sett-input" style="margin:0;font-size:11px;" value="${(b.deliveryLogos||{})[app]||''}" placeholder="رابط الشعار" data-brand="${b.id}" data-field="dlogo" data-app="${app}">
           </div>`).join('')}
         </div>
       </div>
     </div>`;
   });
+  h+=`<div class="save-bar"><button class="sett-btn" onclick="saveBrandsSettings()">حفظ التغييرات</button><span class="save-status" id="brandsSaveStatus">تم الحفظ بنجاح ✓</span></div>`;
   return h;
 }
 
@@ -759,11 +774,11 @@ function renderSettingsSupervisors(){
           <div style="width:28px;height:28px;border-radius:7px;background:var(--g);display:flex;align-items:center;justify-content:center;font-weight:900;color:#000;font-size:11px;flex-shrink:0;">${i+1}</div>
           <div style="flex:1;display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;align-items:center;">
             <div><div style="font-size:9px;color:var(--muted);">الاسم</div>
-              <input class="sett-input rtl-input" style="margin:0;font-size:12px;padding:6px 8px;" value="${s.label}" onchange="updateSup(${i},'label',this.value)"></div>
+              <input class="sett-input rtl-input" style="margin:0;font-size:12px;padding:6px 8px;" value="${s.label}" data-sup="${i}" data-field="label"></div>
             <div><div style="font-size:9px;color:var(--muted);">المستخدم</div>
               <div style="font-size:12px;color:var(--muted);padding:6px 8px;">${s.username}</div></div>
             <div><div style="font-size:9px;color:var(--muted);">كلمة المرور</div>
-              <input class="sett-input" style="margin:0;font-size:12px;padding:6px 8px;" value="${s.password}" onchange="updateSup(${i},'password',this.value)"></div>
+              <input class="sett-input" style="margin:0;font-size:12px;padding:6px 8px;" value="${s.password}" data-sup="${i}" data-field="password"></div>
           </div>
         </div>
         <div style="border-top:1px solid var(--border);padding-top:8px;">
@@ -786,7 +801,8 @@ function renderSettingsSupervisors(){
         </div>
       </div>`;}).join('')}
     </div>
-  </div>`;
+  </div>
+  <div class="save-bar"><button class="sett-btn" onclick="saveSupSettings()">حفظ التغييرات</button><span class="save-status" id="supSaveStatus">تم الحفظ بنجاح ✓</span></div>`;
   return h;
 }
 
@@ -807,16 +823,17 @@ function renderSettingsToggle(){
           </div>
         </div>
         <label class="toggle-wrap">
-          <input type="checkbox" ${b.enabled?'checked':''} onchange="toggleBrand('${b.id}',this.checked)">
+          <input type="checkbox" ${b.enabled?'checked':''} data-toggle-brand="${b.id}">
           <span class="toggle-slider"></span>
         </label>
       </div>`).join('')}
     </div>
     <div style="display:flex;gap:8px;margin-top:12px;">
-      <button class="sett-btn" onclick="toggleAllBrands(true)">تفعيل الكل</button>
-      <button class="sett-btn-o" onclick="toggleAllBrands(false)">تعطيل الكل</button>
+      <button class="sett-btn-o" onclick="document.querySelectorAll('[data-toggle-brand]').forEach(c=>c.checked=true)">تفعيل الكل</button>
+      <button class="sett-btn-o" onclick="document.querySelectorAll('[data-toggle-brand]').forEach(c=>c.checked=false)">تعطيل الكل</button>
     </div>
-  </div>`;
+  </div>
+  <div class="save-bar"><button class="sett-btn" onclick="saveToggleSettings()">حفظ التغييرات</button><span class="save-status" id="toggleSaveStatus">تم الحفظ بنجاح ✓</span></div>`;
   return h;
 }
 
@@ -842,90 +859,77 @@ async function testTrackingUrl(){
   }catch(e){result.style.color='var(--red)';result.textContent='تعذّر الاتصال — تأكد من الرابط';}
 }
 
-function updateBrandField(id,field,val){
+// ── Brands save ──
+function saveBrandsSettings(){
   const brands=getBrands();
-  const b=brands.find(x=>x.id===id);
-  if(b){b[field]=val;saveBrandsConfig(brands);toast('تم الحفظ');buildNav();}
+  document.querySelectorAll('[data-brand][data-field]').forEach(el=>{
+    const bid=el.dataset.brand,field=el.dataset.field,b=brands.find(x=>x.id===bid);
+    if(!b)return;
+    if(field==='brname'){const i=+el.dataset.branchidx;if(b.branches&&b.branches[i])b.branches[i].name=el.value;}
+    else if(field==='brcode'){const i=+el.dataset.branchidx;if(b.branches&&b.branches[i])b.branches[i].code=el.value;}
+    else if(field==='dlogo'){const app=el.dataset.app;if(!b.deliveryLogos)b.deliveryLogos={};b.deliveryLogos[app]=el.value;}
+    else{b[field]=el.value;}
+  });
+  saveBrandsConfig(brands);buildNav();
+  showSaveStatus('brandsSaveStatus');
 }
 
 function addBranch(brandId){
-  const brands=getBrands();
-  const b=brands.find(x=>x.id===brandId);
-  if(b){
-    if(!b.branches)b.branches=[];
-    b.branches.push({name:'',code:''});
-    saveBrandsConfig(brands);
-    renderSettings();
-  }
-}
-
-function updateBranch(brandId,idx,field,val){
-  const brands=getBrands();
-  const b=brands.find(x=>x.id===brandId);
-  if(b&&b.branches&&b.branches[idx]){
-    b.branches[idx][field]=val;
-    saveBrandsConfig(brands);
-  }
+  // Save current state first then add branch
+  saveBrandsSettings();
+  const brands=getBrands();const b=brands.find(x=>x.id===brandId);
+  if(b){if(!b.branches)b.branches=[];b.branches.push({name:'',code:''});saveBrandsConfig(brands);renderSettings();}
 }
 
 function removeBranch(brandId,idx){
-  const brands=getBrands();
-  const b=brands.find(x=>x.id===brandId);
-  if(b&&b.branches){
-    b.branches.splice(idx,1);
-    saveBrandsConfig(brands);
-    renderSettings();
-  }
+  saveBrandsSettings();
+  const brands=getBrands();const b=brands.find(x=>x.id===brandId);
+  if(b&&b.branches){b.branches.splice(idx,1);saveBrandsConfig(brands);renderSettings();}
 }
 
-function updateDeliveryLogo(brandId,app,val){
-  const brands=getBrands();
-  const b=brands.find(x=>x.id===brandId);
-  if(b){
-    if(!b.deliveryLogos)b.deliveryLogos={};
-    b.deliveryLogos[app]=val;
-    saveBrandsConfig(brands);
-  }
-}
-
-function updateSup(idx,field,val){
+// ── Supervisors save ──
+function saveSupSettings(){
   const sups=getSupervisorsConfig();
-  if(sups[idx]){sups[idx][field]=val;saveSupervisorsConfig(sups);toast('تم الحفظ');buildNav();}
+  document.querySelectorAll('[data-sup][data-field]').forEach(el=>{
+    const i=+el.dataset.sup,field=el.dataset.field;
+    if(sups[i])sups[i][field]=el.value;
+  });
+  // Collect brand assignments
+  sups.forEach((s,i)=>{
+    const allCheck=document.querySelector(`#sup-brands-${i}`)?.parentElement?.querySelector('input[type=checkbox]');
+    if(allCheck&&allCheck.checked){s.assignedBrands='all';}
+    else{
+      const checks=document.querySelectorAll(`#sup-brands-${i} input[type=checkbox]`);
+      const assigned=[];checks.forEach(c=>{if(c.checked)assigned.push(c.value);});
+      s.assignedBrands=assigned;
+    }
+  });
+  saveSupervisorsConfig(sups);buildNav();
+  showSaveStatus('supSaveStatus');
 }
 
 function toggleSupAllBrands(idx,isAll){
-  const sups=getSupervisorsConfig();
-  if(sups[idx]){
-    sups[idx].assignedBrands=isAll?'all':[];
-    saveSupervisorsConfig(sups);
-    renderSettings();
-    toast(isAll?'تم تفعيل كل البراندات':'اختر البراندات المطلوبة');
-  }
+  const container=document.getElementById('sup-brands-'+idx);
+  if(container){container.querySelectorAll('input[type=checkbox]').forEach(c=>{c.checked=isAll;c.disabled=isAll;});}
 }
 
-function toggleSupBrand(idx,brandId,checked){
-  const sups=getSupervisorsConfig();
-  if(!sups[idx])return;
-  let assigned=Array.isArray(sups[idx].assignedBrands)?[...sups[idx].assignedBrands]:[];
-  if(checked){if(!assigned.includes(brandId))assigned.push(brandId);}
-  else{assigned=assigned.filter(x=>x!==brandId);}
-  sups[idx].assignedBrands=assigned;
-  saveSupervisorsConfig(sups);
-  renderSettings();
-}
+function toggleSupBrand(idx,brandId,checked){/* UI only — saved on button click */}
 
-function toggleBrand(id,enabled){
+// ── Toggle save ──
+function saveToggleSettings(){
   const brands=getBrands();
-  const b=brands.find(x=>x.id===id);
-  if(b){b.enabled=enabled;saveBrandsConfig(brands);toast(enabled?'تم التفعيل':'تم التعطيل');buildNav();}
+  document.querySelectorAll('[data-toggle-brand]').forEach(el=>{
+    const b=brands.find(x=>x.id===el.dataset.toggleBrand);
+    if(b)b.enabled=el.checked;
+  });
+  saveBrandsConfig(brands);buildNav();
+  showSaveStatus('toggleSaveStatus');
 }
 
-function toggleAllBrands(enabled){
-  const brands=getBrands();
-  brands.forEach(b=>b.enabled=enabled);
-  saveBrandsConfig(brands);
-  toast(enabled?'تم تفعيل الكل':'تم تعطيل الكل');
-  buildNav();renderSettings();
+function showSaveStatus(id){
+  toast('تم الحفظ بنجاح');
+  const el=document.getElementById(id);
+  if(el){el.classList.add('show');setTimeout(()=>el.classList.remove('show'),3000);}
 }
 
 // ══ ACTIONS WITH TRACKING ════════════════════════════
@@ -947,6 +951,19 @@ function getDriveThumb(url){const m=url.match(/\/d\/([a-zA-Z0-9_-]+)/);return m?
 
 // ══ HELPERS ══════════════════════════════════════════
 function platClass(p){if(!p)return'other';const l=p.toLowerCase();if(l.includes('hunger'))return'hs';if(l.includes('keeta'))return'keeta';if(l.includes('jahez'))return'jahez';if(l.includes('toyou'))return'toyou';if(l.includes('ninja'))return'ninja';if(l.includes('marsool')||l.includes('مرسول'))return'marsool';return'other';}
+function getPlatLogo(p){
+  if(!p)return'';const l=p.toLowerCase();
+  // Check brand-specific logos first
+  if(selectedBrand){const br=getBrands().find(b=>b.id===selectedBrand);if(br&&br.deliveryLogos){for(const[app,url]of Object.entries(br.deliveryLogos)){if(url&&l.includes(app.toLowerCase()))return url;}}}
+  // Default logos
+  for(const[key,url]of Object.entries(PLATFORM_LOGOS)){if(l.includes(key))return url;}
+  return'';
+}
+function platBadge(p){
+  const cls=platClass(p);const logo=getPlatLogo(p);const name=p||'—';
+  if(logo)return`<span class="o-platform ${cls}" style="display:inline-flex;align-items:center;gap:5px;"><img src="${logo}" style="width:16px;height:16px;border-radius:3px;" onerror="this.style.display='none'">${name}</span>`;
+  return`<span class="o-platform ${cls}">${name}</span>`;
+}
 function setNav(id){document.querySelectorAll('.nav-i').forEach(n=>n.classList.remove('on'));const e=document.getElementById(id);if(e)e.classList.add('on');}
 function toggleSidebar(){document.getElementById('sidebar').classList.toggle('open');}
 function toast(msg){const e=document.getElementById('toast');e.textContent=msg;e.className='toast show';setTimeout(()=>e.classList.remove('show'),2000);}
