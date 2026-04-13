@@ -9,7 +9,7 @@
 <style>
 *{margin:0;padding:0;box-sizing:border-box;}
 
-/* ══ THEME: DARK (default) ══ */
+/* ‚ïê‚ïê THEME: DARK (default) ‚ïê‚ïê */
 :root,[data-theme="dark"]{
   --g:#00C853;--g2:#69F0AE;--g-dim:rgba(0,200,83,.08);
   --bg:#060608;--card:#0d0d10;--card2:#141418;--border:#1a1a20;
@@ -17,7 +17,7 @@
   --input-bg:#060608;--sidebar-bg:#0d0d10;
 }
 
-/* ══ THEME: LIGHT ══ */
+/* ‚ïê‚ïê THEME: LIGHT ‚ïê‚ïê */
 [data-theme="light"]{
   --bg:#f2f3f5;--card:#ffffff;--card2:#f8f8fa;--border:#e0e0e4;
   --text:#1a1a2e;--muted:#7a7a8c;--input-bg:#ffffff;--sidebar-bg:#ffffff;
@@ -29,7 +29,7 @@
 [data-theme="light"] .bc-st-v{color:#009624;}
 [data-theme="light"] .st-v.gr{color:#009624;}
 
-/* ══ THEME: BLUE DARK ══ */
+/* ‚ïê‚ïê THEME: BLUE DARK ‚ïê‚ïê */
 [data-theme="blue"]{
   --bg:#0a0e1a;--card:#111827;--card2:#1a2236;--border:#1e2a42;
   --text:#dfe3ec;--muted:#6878a0;--input-bg:#0a0e1a;--sidebar-bg:#111827;
@@ -205,11 +205,11 @@ canvas.perf-chart{width:100%!important;max-height:300px;}
   <div class="login-card">
     <div class="login-logo"><svg viewBox="0 0 38 38" fill="none"><path d="M24 5L10 20.5H19L13 33L28 17.5H19L24 5Z" fill="#0d0d0d"/></svg></div>
     <div class="login-title">DLVR</div>
-    <div class="login-sub">منصة إدارة التوثيق</div>
-    <div class="login-field"><input id="loginUser" type="text" placeholder="اسم المستخدم"></div>
-    <div class="login-field"><input id="loginPass" type="password" placeholder="كلمة المرور"></div>
-    <button class="login-btn" onclick="doLogin()">تسجيل الدخول</button>
-    <div class="login-err" id="loginErr">اسم المستخدم أو كلمة المرور غير صحيحة</div>
+    <div class="login-sub">ŸÖŸÜÿµÿ© ÿ•ÿØÿßÿ±ÿ© ÿßŸÑÿ™Ÿàÿ´ŸäŸÇ</div>
+    <div class="login-field"><input id="loginUser" type="text" placeholder="ÿßÿ≥ŸÖ ÿßŸÑŸÖÿ≥ÿ™ÿÆÿØŸÖ"></div>
+    <div class="login-field"><input id="loginPass" type="password" placeholder="ŸÉŸÑŸÖÿ© ÿßŸÑŸÖÿ±Ÿàÿ±"></div>
+    <button class="login-btn" onclick="doLogin()">ÿ™ÿ≥ÿ¨ŸäŸÑ ÿßŸÑÿØÿÆŸàŸÑ</button>
+    <div class="login-err" id="loginErr">ÿßÿ≥ŸÖ ÿßŸÑŸÖÿ≥ÿ™ÿÆÿØŸÖ ÿ£Ÿà ŸÉŸÑŸÖÿ© ÿßŸÑŸÖÿ±Ÿàÿ± ÿ∫Ÿäÿ± ÿµÿ≠Ÿäÿ≠ÿ©</div>
   </div>
 </div>
 
@@ -217,47 +217,47 @@ canvas.perf-chart{width:100%!important;max-height:300px;}
   <button class="menu-btn" onclick="toggleSidebar()"><svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" d="M4 6h16M4 12h16M4 18h16"/></svg></button>
   <div class="sidebar" id="sidebar">
     <div class="sb-logo"><div class="sb-logo-i"><svg viewBox="0 0 38 38" fill="none"><path d="M24 5L10 20.5H19L13 33L28 17.5H19L24 5Z" fill="#0d0d0d"/></svg></div><span class="sb-logo-t">DLVR</span></div>
-    <div class="sb-user"><div class="sb-user-n" id="sbName">—</div><div class="sb-user-r" id="sbRole">—</div></div>
+    <div class="sb-user"><div class="sb-user-n" id="sbName">‚Äî</div><div class="sb-user-r" id="sbRole">‚Äî</div></div>
     <div class="sb-nav" id="sbNav"></div>
     <div class="sb-bot">
       <div class="theme-switch">
-        <button class="theme-btn on" data-theme="dark" onclick="setTheme('dark')">داكن</button>
-        <button class="theme-btn" data-theme="light" onclick="setTheme('light')">فاتح</button>
-        <button class="theme-btn" data-theme="blue" onclick="setTheme('blue')">أزرق</button>
+        <button class="theme-btn on" data-theme="dark" onclick="setTheme('dark')">ÿØÿßŸÉŸÜ</button>
+        <button class="theme-btn" data-theme="light" onclick="setTheme('light')">ŸÅÿßÿ™ÿ≠</button>
+        <button class="theme-btn" data-theme="blue" onclick="setTheme('blue')">ÿ£ÿ≤ÿ±ŸÇ</button>
       </div>
-      <button class="logout-btn" onclick="doLogout()">تسجيل خروج</button>
+      <button class="logout-btn" onclick="doLogout()">ÿ™ÿ≥ÿ¨ŸäŸÑ ÿÆÿ±Ÿàÿ¨</button>
     </div>
   </div>
-  <div class="main" id="mainContent"><div class="loading"><div class="ld-spin"></div><span class="ld-t">جاري التحميل...</span></div></div>
+  <div class="main" id="mainContent"><div class="loading"><div class="ld-spin"></div><span class="ld-t">ÿ¨ÿßÿ±Ÿä ÿßŸÑÿ™ÿ≠ŸÖŸäŸÑ...</span></div></div>
 </div>
 
-<div class="img-modal" id="imgModal" onclick="this.classList.remove('on')"><img id="imgModalSrc" src=""><div class="img-modal-close">إغلاق</div></div>
+<div class="img-modal" id="imgModal" onclick="this.classList.remove('on')"><img id="imgModalSrc" src=""><div class="img-modal-close">ÿ•ÿ∫ŸÑÿßŸÇ</div></div>
 <div class="toast" id="toast"></div>
 
 <script>
-// ══ CONFIG ═══════════════════════════════════════════
-let TRACKING_URL=localStorage.getItem('dlvr_tracking_url')||'';
+// ‚ïê‚ïê CONFIG ‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê
+let TRACKING_URL=localStorage.getItem('dlvr_tracking_url')||'https://script.google.com/macros/s/AKfycbxzznxkER6oRmjAxwZU1h8vNntKkYVqrHp_mkZo5vvOLXNBOG8HEfH69NCNoo32KAPGmw/exec';
 
 const DEFAULT_BRANDS=[
-  {id:'macarono',name:'مكرونو',color:'#FF6B00',sheetId:'1Engs0_WKiyYwVkOxqaZMGlo2H6SxJm45OOnDlC3z89A',scriptUrl:'',logo:'',branches:[],enabled:false,deliveryLogos:{}},
-  {id:'namaq',name:'نمق',color:'#8E24AA',sheetId:'',scriptUrl:'',logo:'',branches:[],enabled:false,deliveryLogos:{}},
-  {id:'brand3',name:'براند 3',color:'#1E88E5',sheetId:'',scriptUrl:'',logo:'',branches:[],enabled:false,deliveryLogos:{}},
-  {id:'brand4',name:'براند 4',color:'#43A047',sheetId:'',scriptUrl:'',logo:'',branches:[],enabled:false,deliveryLogos:{}},
-  {id:'brand5',name:'براند 5',color:'#E53935',sheetId:'',scriptUrl:'',logo:'',branches:[],enabled:false,deliveryLogos:{}},
-  {id:'brand6',name:'براند 6',color:'#FB8C00',sheetId:'',scriptUrl:'',logo:'',branches:[],enabled:false,deliveryLogos:{}},
-  {id:'brand7',name:'براند 7',color:'#00ACC1',sheetId:'',scriptUrl:'',logo:'',branches:[],enabled:false,deliveryLogos:{}},
-  {id:'brand8',name:'براند 8',color:'#7CB342',sheetId:'',scriptUrl:'',logo:'',branches:[],enabled:false,deliveryLogos:{}},
-  {id:'brand9',name:'براند 9',color:'#5E35B1',sheetId:'',scriptUrl:'',logo:'',branches:[],enabled:false,deliveryLogos:{}},
-  {id:'brand10',name:'براند 10',color:'#D81B60',sheetId:'',scriptUrl:'',logo:'',branches:[],enabled:false,deliveryLogos:{}},
+  {id:'macarono',name:'ŸÖŸÉÿ±ŸàŸÜŸà',color:'#FF6B00',sheetId:'1Engs0_WKiyYwVkOxqaZMGlo2H6SxJm45OOnDlC3z89A',scriptUrl:'',logo:'',branches:[],enabled:true,deliveryLogos:{}},
+  {id:'namaq',name:'ŸÜŸÖŸÇ',color:'#8E24AA',sheetId:'',scriptUrl:'',logo:'',branches:[],enabled:false,deliveryLogos:{}},
+  {id:'brand3',name:'ÿ®ÿ±ÿßŸÜÿØ 3',color:'#1E88E5',sheetId:'',scriptUrl:'',logo:'',branches:[],enabled:false,deliveryLogos:{}},
+  {id:'brand4',name:'ÿ®ÿ±ÿßŸÜÿØ 4',color:'#43A047',sheetId:'',scriptUrl:'',logo:'',branches:[],enabled:false,deliveryLogos:{}},
+  {id:'brand5',name:'ÿ®ÿ±ÿßŸÜÿØ 5',color:'#E53935',sheetId:'',scriptUrl:'',logo:'',branches:[],enabled:false,deliveryLogos:{}},
+  {id:'brand6',name:'ÿ®ÿ±ÿßŸÜÿØ 6',color:'#FB8C00',sheetId:'',scriptUrl:'',logo:'',branches:[],enabled:false,deliveryLogos:{}},
+  {id:'brand7',name:'ÿ®ÿ±ÿßŸÜÿØ 7',color:'#00ACC1',sheetId:'',scriptUrl:'',logo:'',branches:[],enabled:false,deliveryLogos:{}},
+  {id:'brand8',name:'ÿ®ÿ±ÿßŸÜÿØ 8',color:'#7CB342',sheetId:'',scriptUrl:'',logo:'',branches:[],enabled:false,deliveryLogos:{}},
+  {id:'brand9',name:'ÿ®ÿ±ÿßŸÜÿØ 9',color:'#5E35B1',sheetId:'',scriptUrl:'',logo:'',branches:[],enabled:false,deliveryLogos:{}},
+  {id:'brand10',name:'ÿ®ÿ±ÿßŸÜÿØ 10',color:'#D81B60',sheetId:'',scriptUrl:'',logo:'',branches:[],enabled:false,deliveryLogos:{}},
 ];
 
 const DEFAULT_SUPERVISORS=Array.from({length:18},(_,i)=>({
-  username:`sup${i+1}`,password:`sup${i+1}pass`,label:`مشرف ${i+1}`
+  username:`sup${i+1}`,password:`sup${i+1}pass`,label:`ŸÖÿ¥ÿ±ŸÅ ${i+1}`
 }));
 
 const DELIVERY_APPS=['HungerStation','Keeta','Jahez','Ninja','ToYou','Marsool'];
 
-// ══ DYNAMIC CONFIG (localStorage) ═══════════════════
+// ‚ïê‚ïê DYNAMIC CONFIG (localStorage) ‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê
 function getBrandsConfig(){
   try{const s=localStorage.getItem('dlvr_brands_config');if(s){const saved=JSON.parse(s);return DEFAULT_BRANDS.map(d=>{const o=saved.find(x=>x.id===d.id);return o?{...d,...o}:{...d};});}}catch{}
   return DEFAULT_BRANDS.map(d=>({...d}));
@@ -279,12 +279,12 @@ function getVisibleBrands(){
   return all.filter(b=>b.enabled);
 }
 
-// ══ USERS (dynamic from config) ═════════════════════
+// ‚ïê‚ïê USERS (dynamic from config) ‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê
 function getUsers(){
   const sups=getSupervisorsConfig();
   const brands=getBrandsConfig();
   const users=[
-    {username:'admin',password:'dlvr2024',role:'admin',brandId:null,label:'مدير النظام'},
+    {username:'admin',password:'dlvr2024',role:'admin',brandId:null,label:'ŸÖÿØŸäÿ± ÿßŸÑŸÜÿ∏ÿßŸÖ'},
     ...sups.map((s,i)=>({username:s.username,password:s.password,role:'supervisor',brandId:null,label:s.label})),
     ...brands.map(b=>({username:b.id,password:b.id.replace('brand','br')+'123',role:'brand',brandId:b.id,label:b.name})),
   ];
@@ -296,7 +296,7 @@ function getUsers(){
 
 let currentUser=null,allData={},selectedBrand=null,sessionStart=null,perfData=null,perfChart=null;
 
-// ══ THEME ═══════════════════════════════════════════
+// ‚ïê‚ïê THEME ‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê
 function setTheme(t){
   document.documentElement.setAttribute('data-theme',t);
   localStorage.setItem('dlvr_theme',t);
@@ -304,7 +304,7 @@ function setTheme(t){
 }
 (function(){const t=localStorage.getItem('dlvr_theme')||'dark';setTheme(t);})();
 
-// ══ TRACKING ═════════════════════════════════════════
+// ‚ïê‚ïê TRACKING ‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê
 function track(type,details='',brand=''){
   if(!currentUser||currentUser.role!=='supervisor')return;
   if(!TRACKING_URL)return;
@@ -316,7 +316,7 @@ function trackSessionEnd(){
   try{fetch(TRACKING_URL,{method:'POST',mode:'no-cors',headers:{'Content-Type':'application/json'},body:JSON.stringify({action:'session_end',supervisor:currentUser.username,duration:dur,startTime:new Date(sessionStart).toLocaleTimeString('en',{hour12:false})})});}catch{}
 }
 
-// ══ LOGIN ════════════════════════════════════════════
+// ‚ïê‚ïê LOGIN ‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê
 function doLogin(){
   const u=document.getElementById('loginUser').value.trim(),p=document.getElementById('loginPass').value.trim();
   const users=getUsers();
@@ -330,12 +330,12 @@ function doLogout(){trackSessionEnd();currentUser=null;sessionStart=null;localSt
 window.addEventListener('beforeunload',()=>trackSessionEnd());
 (function(){const s=localStorage.getItem('dlvr_user');if(s){try{const users=getUsers();const u=users.find(x=>x.username===JSON.parse(s).username);if(u){currentUser=u;sessionStart=Date.now();showDashboard();}}catch{}}})();
 
-// ══ DASHBOARD ════════════════════════════════════════
+// ‚ïê‚ïê DASHBOARD ‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê
 function showDashboard(){
   document.getElementById('loginPage').style.display='none';
   document.getElementById('dashboard').style.display='block';
   document.getElementById('sbName').textContent=currentUser.label;
-  const roleMap={admin:'مدير النظام',supervisor:'مشرف',brand:'حساب براند'};
+  const roleMap={admin:'ŸÖÿØŸäÿ± ÿßŸÑŸÜÿ∏ÿßŸÖ',supervisor:'ŸÖÿ¥ÿ±ŸÅ',brand:'ÿ≠ÿ≥ÿßÿ® ÿ®ÿ±ÿßŸÜÿØ'};
   document.getElementById('sbRole').textContent=roleMap[currentUser.role]||'';
   buildNav();loadAllData();
 }
@@ -345,19 +345,19 @@ function buildNav(){
   const brands=getBrands();
   const visible=getVisibleBrands();
   if(currentUser.role==='admin'){
-    h+=`<div class="nav-lbl">الرئيسية</div>`;
-    h+=navItem('nav-ov','نظرة عامة','<path stroke-linecap="round" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-4 0h4"/>',true);
-    h+=navItem('nav-perf','أداء المشرفين','<path stroke-linecap="round" d="M16 8v8m-4-5v5m-4-2v2m-2 4h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/>');
-    h+=navItem('nav-settings','الإعدادات','<path stroke-linecap="round" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.066 2.573c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.573 1.066c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.066-2.573c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><circle cx="12" cy="12" r="3"/>');
-    h+=`<div class="nav-lbl">البراندات</div>`;
+    h+=`<div class="nav-lbl">ÿßŸÑÿ±ÿ¶Ÿäÿ≥Ÿäÿ©</div>`;
+    h+=navItem('nav-ov','ŸÜÿ∏ÿ±ÿ© ÿπÿßŸÖÿ©','<path stroke-linecap="round" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-4 0h4"/>',true);
+    h+=navItem('nav-perf','ÿ£ÿØÿßÿ° ÿßŸÑŸÖÿ¥ÿ±ŸÅŸäŸÜ','<path stroke-linecap="round" d="M16 8v8m-4-5v5m-4-2v2m-2 4h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/>');
+    h+=navItem('nav-settings','ÿßŸÑÿ•ÿπÿØÿßÿØÿßÿ™','<path stroke-linecap="round" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.066 2.573c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.573 1.066c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.066-2.573c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><circle cx="12" cy="12" r="3"/>');
+    h+=`<div class="nav-lbl">ÿßŸÑÿ®ÿ±ÿßŸÜÿØÿßÿ™</div>`;
     brands.forEach(b=>{
       const dis=!b.enabled?' disabled-brand':'';
-      h+=`<div class="nav-i${dis}" onclick="showBrand('${b.id}')" id="nav-${b.id}"><div class="nav-dot" style="background:${b.color}"></div>${b.name}${!b.enabled?' (معطّل)':''}</div>`;
+      h+=`<div class="nav-i${dis}" onclick="showBrand('${b.id}')" id="nav-${b.id}"><div class="nav-dot" style="background:${b.color}"></div>${b.name}${!b.enabled?' (ŸÖÿπÿ∑ŸëŸÑ)':''}</div>`;
     });
   }else if(currentUser.role==='supervisor'){
-    h+=`<div class="nav-lbl">الرئيسية</div>`;
-    h+=navItem('nav-ov','نظرة عامة','<path stroke-linecap="round" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-4 0h4"/>',true);
-    h+=`<div class="nav-lbl">البراندات</div>`;
+    h+=`<div class="nav-lbl">ÿßŸÑÿ±ÿ¶Ÿäÿ≥Ÿäÿ©</div>`;
+    h+=navItem('nav-ov','ŸÜÿ∏ÿ±ÿ© ÿπÿßŸÖÿ©','<path stroke-linecap="round" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-4 0h4"/>',true);
+    h+=`<div class="nav-lbl">ÿßŸÑÿ®ÿ±ÿßŸÜÿØÿßÿ™</div>`;
     visible.forEach(b=>{h+=`<div class="nav-i" onclick="showBrand('${b.id}')" id="nav-${b.id}"><div class="nav-dot" style="background:${b.color}"></div>${b.name}</div>`;});
   }else{
     const b=visible.find(x=>x.id===currentUser.brandId);
@@ -368,9 +368,9 @@ function buildNav(){
 function navItem(id,label,path,active=false){return `<div class="nav-i${active?' on':''}" onclick="navClick('${id}')" id="${id}"><svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">${path}</svg>${label}</div>`;}
 function navClick(id){if(id==='nav-ov')showOverview();else if(id==='nav-perf')showPerformance();else if(id==='nav-settings')showSettings();}
 
-// ══ LOAD DATA ════════════════════════════════════════
+// ‚ïê‚ïê LOAD DATA ‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê
 async function loadAllData(){
-  document.getElementById('mainContent').innerHTML='<div class="loading"><div class="ld-spin"></div><span class="ld-t">جاري تحميل البيانات...</span></div>';
+  document.getElementById('mainContent').innerHTML='<div class="loading"><div class="ld-spin"></div><span class="ld-t">ÿ¨ÿßÿ±Ÿä ÿ™ÿ≠ŸÖŸäŸÑ ÿßŸÑÿ®ŸäÿßŸÜÿßÿ™...</span></div>';
   const brands=getBrands();
   const list=currentUser.role==='brand'?brands.filter(b=>b.id===currentUser.brandId):brands.filter(b=>currentUser.role==='admin'||b.enabled);
   await Promise.all(list.map(async b=>{
@@ -379,42 +379,42 @@ async function loadAllData(){
       const url=`https://docs.google.com/spreadsheets/d/${b.sheetId}/gviz/tq?tqx=out:json&tq=${encodeURIComponent('SELECT * ORDER BY A DESC, B DESC LIMIT 1000')}`;
       const res=await fetch(url);const text=await res.text();
       const json=JSON.parse(text.match(/google\.visualization\.Query\.setResponse\(([\s\S]+)\)/)[1]);
-      allData[b.id]=(json.table.rows||[]).map(r=>{const c=r.c||[];return{date:c[0]?.v||c[0]?.f||'',time:c[1]?.v||c[1]?.f||'',branch:c[2]?.v||c[2]?.f||'',branchName:c[3]?.v||c[3]?.f||'',order:c[4]?.v||c[4]?.f||'',platform:c[5]?.v||c[5]?.f||'',image:c[6]?.v||c[6]?.f||''};}).filter(r=>r.order&&r.order!=='غير واضح');
+      allData[b.id]=(json.table.rows||[]).map(r=>{const c=r.c||[];return{date:c[0]?.v||c[0]?.f||'',time:c[1]?.v||c[1]?.f||'',branch:c[2]?.v||c[2]?.f||'',branchName:c[3]?.v||c[3]?.f||'',order:c[4]?.v||c[4]?.f||'',platform:c[5]?.v||c[5]?.f||'',image:c[6]?.v||c[6]?.f||''};}).filter(r=>r.order&&r.order!=='ÿ∫Ÿäÿ± Ÿàÿßÿ∂ÿ≠');
     }catch(e){console.error(b.id,e);allData[b.id]=[];}
   }));
   if(currentUser.role==='brand')showBrand(currentUser.brandId);else showOverview();
 }
 
-// ══ OVERVIEW ═════════════════════════════════════════
+// ‚ïê‚ïê OVERVIEW ‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê
 function showOverview(){
   setNav('nav-ov');selectedBrand=null;
   const today=new Date().toISOString().split('T')[0];
   const brands=getVisibleBrands();
   let total=0,todayN=0,branches=new Set(),plats={};
-  brands.forEach(b=>{const d=allData[b.id]||[];total+=d.length;d.forEach(r=>{if(r.date?.includes(today))todayN++;if(r.branch)branches.add(r.branch);const p=r.platform||'—';plats[p]=(plats[p]||0)+1;});});
+  brands.forEach(b=>{const d=allData[b.id]||[];total+=d.length;d.forEach(r=>{if(r.date?.includes(today))todayN++;if(r.branch)branches.add(r.branch);const p=r.platform||'‚Äî';plats[p]=(plats[p]||0)+1;});});
   const topP=Object.entries(plats).sort((a,b)=>b[1]-a[1])[0];
   const enabledCount=brands.filter(b=>b.enabled).length;
   let h=`<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:18px;flex-wrap:wrap;gap:8px;">
-    <div style="font-size:20px;font-weight:900;">نظرة عامة</div><div style="font-size:11px;color:var(--muted);background:var(--card);padding:5px 12px;border-radius:6px;border:1px solid var(--border)">${today}</div></div>
+    <div style="font-size:20px;font-weight:900;">ŸÜÿ∏ÿ±ÿ© ÿπÿßŸÖÿ©</div><div style="font-size:11px;color:var(--muted);background:var(--card);padding:5px 12px;border-radius:6px;border:1px solid var(--border)">${today}</div></div>
     <div class="stats">
-      <div class="st"><div class="st-l">إجمالي الطلبات</div><div class="st-v gr">${total.toLocaleString()}</div></div>
-      <div class="st"><div class="st-l">اليوم</div><div class="st-v">${todayN}</div></div>
-      <div class="st"><div class="st-l">البراندات المفعّلة</div><div class="st-v">${enabledCount}</div></div>
-      <div class="st"><div class="st-l">الفروع</div><div class="st-v">${branches.size}</div></div>
-      <div class="st"><div class="st-l">أكثر منصة</div><div class="st-v" style="font-size:14px">${topP?topP[0]:'—'}</div></div>
+      <div class="st"><div class="st-l">ÿ•ÿ¨ŸÖÿßŸÑŸä ÿßŸÑÿ∑ŸÑÿ®ÿßÿ™</div><div class="st-v gr">${total.toLocaleString()}</div></div>
+      <div class="st"><div class="st-l">ÿßŸÑŸäŸàŸÖ</div><div class="st-v">${todayN}</div></div>
+      <div class="st"><div class="st-l">ÿßŸÑÿ®ÿ±ÿßŸÜÿØÿßÿ™ ÿßŸÑŸÖŸÅÿπŸëŸÑÿ©</div><div class="st-v">${enabledCount}</div></div>
+      <div class="st"><div class="st-l">ÿßŸÑŸÅÿ±Ÿàÿπ</div><div class="st-v">${branches.size}</div></div>
+      <div class="st"><div class="st-l">ÿ£ŸÉÿ´ÿ± ŸÖŸÜÿµÿ©</div><div class="st-v" style="font-size:14px">${topP?topP[0]:'‚Äî'}</div></div>
     </div><div class="brands-grid">`;
   brands.forEach(b=>{
     const d=allData[b.id]||[];const td=d.filter(r=>r.date?.includes(today)).length;const br=new Set(d.map(r=>r.branch).filter(Boolean));
     const disClass=!b.enabled?(currentUser.role==='admin'?' brand-disabled-admin':' brand-disabled'):'';
     const logoHtml=b.logo?`<img src="${b.logo}" alt="${b.name}">`:`${b.name.charAt(0)}`;
-    h+=`<div class="brand-card${disClass}" onclick="showBrand('${b.id}')"><div class="bc-head"><div class="bc-icon" style="background:${b.color}">${logoHtml}</div><div class="bc-name">${b.name}${!b.enabled&&currentUser.role==='admin'?' <span style="font-size:10px;color:var(--muted)">(معطّل)</span>':''}</div></div>
-    <div class="bc-stats"><div class="bc-st"><div class="bc-st-v">${d.length}</div><div class="bc-st-l">إجمالي</div></div><div class="bc-st"><div class="bc-st-v">${td}</div><div class="bc-st-l">اليوم</div></div><div class="bc-st"><div class="bc-st-v">${br.size}</div><div class="bc-st-l">فروع</div></div></div></div>`;
+    h+=`<div class="brand-card${disClass}" onclick="showBrand('${b.id}')"><div class="bc-head"><div class="bc-icon" style="background:${b.color}">${logoHtml}</div><div class="bc-name">${b.name}${!b.enabled&&currentUser.role==='admin'?' <span style="font-size:10px;color:var(--muted)">(ŸÖÿπÿ∑ŸëŸÑ)</span>':''}</div></div>
+    <div class="bc-stats"><div class="bc-st"><div class="bc-st-v">${d.length}</div><div class="bc-st-l">ÿ•ÿ¨ŸÖÿßŸÑŸä</div></div><div class="bc-st"><div class="bc-st-v">${td}</div><div class="bc-st-l">ÿßŸÑŸäŸàŸÖ</div></div><div class="bc-st"><div class="bc-st-v">${br.size}</div><div class="bc-st-l">ŸÅÿ±Ÿàÿπ</div></div></div></div>`;
   });
   h+='</div>';
   document.getElementById('mainContent').innerHTML=h;
 }
 
-// ══ BRAND VIEW ══════════════════════════════════════
+// ‚ïê‚ïê BRAND VIEW ‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê
 function showBrand(bid){
   setNav('nav-'+bid);selectedBrand=bid;
   const brands=getBrands();
@@ -427,25 +427,25 @@ function showBrand(bid){
   const logoHtml=brand?.logo?`<img src="${brand.logo}" style="width:100%;height:100%;object-fit:cover;border-radius:8px;">`:'';
   let h=`<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;flex-wrap:wrap;gap:8px;">
       <div style="display:flex;align-items:center;gap:10px;">
-        ${canGoBack?`<div style="cursor:pointer;color:var(--muted);font-size:13px;" onclick="showOverview()">← الرئيسية</div><div style="color:var(--border)">|</div>`:''}
+        ${canGoBack?`<div style="cursor:pointer;color:var(--muted);font-size:13px;" onclick="showOverview()">‚Üê ÿßŸÑÿ±ÿ¶Ÿäÿ≥Ÿäÿ©</div><div style="color:var(--border)">|</div>`:''}
         <div style="width:28px;height:28px;border-radius:8px;background:${brand?.color||'var(--g)'};display:flex;align-items:center;justify-content:center;font-weight:900;color:#000;font-size:12px;overflow:hidden;">${logoHtml||brand?.name?.charAt(0)||'?'}</div>
         <div style="font-size:17px;font-weight:900;">${brand?.name||bid}</div>
       </div></div>
     <div class="search-bar"><div class="search-wrap">
       <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path stroke-linecap="round" d="M21 21l-4.35-4.35"/></svg>
-      <input class="search-input" id="searchInput" type="text" placeholder="ابحث برقم الطلب أو اسم الفرع..." oninput="doFilter()" autofocus></div>
-      <div class="search-hint">اكتب رقم الطلب — اضغط الرقم الأخضر لنسخه</div></div>
+      <input class="search-input" id="searchInput" type="text" placeholder="ÿßÿ®ÿ≠ÿ´ ÿ®ÿ±ŸÇŸÖ ÿßŸÑÿ∑ŸÑÿ® ÿ£Ÿà ÿßÿ≥ŸÖ ÿßŸÑŸÅÿ±ÿπ..." oninput="doFilter()" autofocus></div>
+      <div class="search-hint">ÿßŸÉÿ™ÿ® ÿ±ŸÇŸÖ ÿßŸÑÿ∑ŸÑÿ® ‚Äî ÿßÿ∂ÿ∫ÿ∑ ÿßŸÑÿ±ŸÇŸÖ ÿßŸÑÿ£ÿÆÿ∂ÿ± ŸÑŸÜÿ≥ÿÆŸá</div></div>
     <div class="stats">
-      <div class="st"><div class="st-l">إجمالي</div><div class="st-v gr">${data.length}</div></div>
-      <div class="st"><div class="st-l">اليوم</div><div class="st-v">${todayN}</div></div>
-      <div class="st"><div class="st-l">الفروع</div><div class="st-v">${branchesList.length}</div></div>
-      <div class="st"><div class="st-l">المنصات</div><div class="st-v">${platList.length}</div></div></div>
+      <div class="st"><div class="st-l">ÿ•ÿ¨ŸÖÿßŸÑŸä</div><div class="st-v gr">${data.length}</div></div>
+      <div class="st"><div class="st-l">ÿßŸÑŸäŸàŸÖ</div><div class="st-v">${todayN}</div></div>
+      <div class="st"><div class="st-l">ÿßŸÑŸÅÿ±Ÿàÿπ</div><div class="st-v">${branchesList.length}</div></div>
+      <div class="st"><div class="st-l">ÿßŸÑŸÖŸÜÿµÿßÿ™</div><div class="st-v">${platList.length}</div></div></div>
     <div class="filters">
-      <select class="flt" id="fBranch" onchange="doFilter()"><option value="">كل الفروع</option>${branchesList.map(b=>`<option value="${b}">${b}</option>`).join('')}</select>
-      <select class="flt" id="fPlatform" onchange="doFilter()"><option value="">كل المنصات</option>${platList.map(p=>`<option value="${p}">${p}</option>`).join('')}</select>
+      <select class="flt" id="fBranch" onchange="doFilter()"><option value="">ŸÉŸÑ ÿßŸÑŸÅÿ±Ÿàÿπ</option>${branchesList.map(b=>`<option value="${b}">${b}</option>`).join('')}</select>
+      <select class="flt" id="fPlatform" onchange="doFilter()"><option value="">ŸÉŸÑ ÿßŸÑŸÖŸÜÿµÿßÿ™</option>${platList.map(p=>`<option value="${p}">${p}</option>`).join('')}</select>
       <input class="flt" type="date" id="fDate" onchange="doFilter()" style="direction:ltr"></div>
-    <div class="orders-wrap"><div class="orders-head"><div class="orders-title">الطلبات</div><div class="orders-count" id="oCount">${data.length}</div></div>
-      <div id="ordersList"></div><div class="no-data" id="noData" style="display:none">لا توجد نتائج</div></div>`;
+    <div class="orders-wrap"><div class="orders-head"><div class="orders-title">ÿßŸÑÿ∑ŸÑÿ®ÿßÿ™</div><div class="orders-count" id="oCount">${data.length}</div></div>
+      <div id="ordersList"></div><div class="no-data" id="noData" style="display:none">ŸÑÿß ÿ™Ÿàÿ¨ÿØ ŸÜÿ™ÿßÿ¶ÿ¨</div></div>`;
   document.getElementById('mainContent').innerHTML=h;
   renderOrders(data);
   setTimeout(()=>document.getElementById('searchInput')?.focus(),100);
@@ -456,11 +456,11 @@ function renderOrders(data){
   if(!data.length){el.innerHTML='';nd.style.display='block';cnt.textContent='0';return;}
   nd.style.display='none';cnt.textContent=data.length;
   el.innerHTML=data.slice(0,300).map(r=>{
-    const pCls=platClass(r.platform);const num=(r.order||'—').replace(/^#+/,'');const hasImg=!!r.image;const thumb=r.image?getDriveThumb(r.image):'';
+    const pCls=platClass(r.platform);const num=(r.order||'‚Äî').replace(/^#+/,'');const hasImg=!!r.image;const thumb=r.image?getDriveThumb(r.image):'';
     return `<div class="order-row">
-      <div class="o-num" onclick="copyNum(this,'${num}')" title="نسخ">${num}</div>
-      <div class="o-branch">${r.branchName||r.branch||'—'}</div>
-      <span class="o-platform ${pCls}">${r.platform||'—'}</span><div class="o-spacer"></div>
+      <div class="o-num" onclick="copyNum(this,'${num}')" title="ŸÜÿ≥ÿÆ">${num}</div>
+      <div class="o-branch">${r.branchName||r.branch||'‚Äî'}</div>
+      <span class="o-platform ${pCls}">${r.platform||'‚Äî'}</span><div class="o-spacer"></div>
       <div class="o-date">${r.date||''}</div><div class="o-time">${r.time||''}</div>
       ${hasImg?`<div class="o-img" onclick="openImg('${r.image}')"><img src="${thumb}" loading="lazy" onerror="this.outerHTML='<svg fill=\\'none\\' viewBox=\\'0 0 24 24\\' stroke=\\'currentColor\\' stroke-width=\\'1.5\\'><rect x=\\'3\\' y=\\'3\\' width=\\'18\\' height=\\'18\\' rx=\\'2\\'/></svg>'"></div>`:`<div class="o-img"><svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/></svg></div>`}
     </div>`;}).join('');
@@ -479,11 +479,11 @@ function doFilter(){
   renderOrders(f);
 }
 
-// ══ PERFORMANCE PAGE (Admin only) ════════════════════
+// ‚ïê‚ïê PERFORMANCE PAGE (Admin only) ‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê
 async function showPerformance(){
   setNav('nav-perf');selectedBrand=null;
   const main=document.getElementById('mainContent');
-  main.innerHTML='<div class="loading"><div class="ld-spin"></div><span class="ld-t">جاري تحميل بيانات الأداء...</span></div>';
+  main.innerHTML='<div class="loading"><div class="ld-spin"></div><span class="ld-t">ÿ¨ÿßÿ±Ÿä ÿ™ÿ≠ŸÖŸäŸÑ ÿ®ŸäÿßŸÜÿßÿ™ ÿßŸÑÿ£ÿØÿßÿ°...</span></div>';
   const today=new Date().toISOString().split('T')[0];
   const month=today.slice(0,7);
   let dailyData=[],monthlyData=[];
@@ -505,16 +505,16 @@ async function showPerformance(){
   monthlyData.forEach(d=>{totalSearches+=d.searches;totalImages+=d.images;totalCopies+=d.copies;totalMinutes+=d.minutes;});
 
   let h=`<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:18px;flex-wrap:wrap;gap:8px;">
-    <div style="font-size:20px;font-weight:900;">أداء المشرفين</div>
+    <div style="font-size:20px;font-weight:900;">ÿ£ÿØÿßÿ° ÿßŸÑŸÖÿ¥ÿ±ŸÅŸäŸÜ</div>
     <div style="font-size:11px;color:var(--muted);background:var(--card);padding:5px 12px;border-radius:6px;border:1px solid var(--border)">${month}</div></div>
     <div class="stats">
-      <div class="st"><div class="st-l">إجمالي البحث (الشهر)</div><div class="st-v gr">${totalSearches}</div></div>
-      <div class="st"><div class="st-l">صور مفتوحة</div><div class="st-v">${totalImages}</div></div>
-      <div class="st"><div class="st-l">أرقام منسوخة</div><div class="st-v">${totalCopies}</div></div>
-      <div class="st"><div class="st-l">ساعات العمل</div><div class="st-v">${Math.round(totalMinutes/60)}</div></div>
+      <div class="st"><div class="st-l">ÿ•ÿ¨ŸÖÿßŸÑŸä ÿßŸÑÿ®ÿ≠ÿ´ (ÿßŸÑÿ¥Ÿáÿ±)</div><div class="st-v gr">${totalSearches}</div></div>
+      <div class="st"><div class="st-l">ÿµŸàÿ± ŸÖŸÅÿ™Ÿàÿ≠ÿ©</div><div class="st-v">${totalImages}</div></div>
+      <div class="st"><div class="st-l">ÿ£ÿ±ŸÇÿßŸÖ ŸÖŸÜÿ≥ŸàÿÆÿ©</div><div class="st-v">${totalCopies}</div></div>
+      <div class="st"><div class="st-l">ÿ≥ÿßÿπÿßÿ™ ÿßŸÑÿπŸÖŸÑ</div><div class="st-v">${Math.round(totalMinutes/60)}</div></div>
     </div>
-    <div class="chart-wrap"><div class="chart-title">أداء المشرفين — الشهر الحالي</div><canvas id="perfChartCanvas" class="perf-chart"></canvas></div>
-    <div style="font-size:15px;font-weight:700;margin-bottom:12px;">اليوم — ${today}</div>
+    <div class="chart-wrap"><div class="chart-title">ÿ£ÿØÿßÿ° ÿßŸÑŸÖÿ¥ÿ±ŸÅŸäŸÜ ‚Äî ÿßŸÑÿ¥Ÿáÿ± ÿßŸÑÿ≠ÿßŸÑŸä</div><canvas id="perfChartCanvas" class="perf-chart"></canvas></div>
+    <div style="font-size:15px;font-weight:700;margin-bottom:12px;">ÿßŸÑŸäŸàŸÖ ‚Äî ${today}</div>
     <div class="sup-grid">`;
 
   supsConfig.forEach((s,i)=>{
@@ -523,12 +523,12 @@ async function showPerformance(){
     h+=`<div class="sup-card">
       <div class="sup-card-head"><div class="sup-num">${i+1}</div><div class="sup-name">${s.label}</div></div>
       <div class="sup-stats">
-        <div class="sup-st"><div class="sup-st-v gr">${d.total}</div><div class="sup-st-l">حركات اليوم</div></div>
-        <div class="sup-st"><div class="sup-st-v">${d.minutes||0} د</div><div class="sup-st-l">وقت اليوم</div></div>
-        <div class="sup-st"><div class="sup-st-v">${d.searches}</div><div class="sup-st-l">بحث</div></div>
-        <div class="sup-st"><div class="sup-st-v">${d.images}</div><div class="sup-st-l">صور</div></div>
-        <div class="sup-st"><div class="sup-st-v">${d.copies}</div><div class="sup-st-l">نسخ</div></div>
-        <div class="sup-st"><div class="sup-st-v">${m.total}</div><div class="sup-st-l">الشهر</div></div>
+        <div class="sup-st"><div class="sup-st-v gr">${d.total}</div><div class="sup-st-l">ÿ≠ÿ±ŸÉÿßÿ™ ÿßŸÑŸäŸàŸÖ</div></div>
+        <div class="sup-st"><div class="sup-st-v">${d.minutes||0} ÿØ</div><div class="sup-st-l">ŸàŸÇÿ™ ÿßŸÑŸäŸàŸÖ</div></div>
+        <div class="sup-st"><div class="sup-st-v">${d.searches}</div><div class="sup-st-l">ÿ®ÿ≠ÿ´</div></div>
+        <div class="sup-st"><div class="sup-st-v">${d.images}</div><div class="sup-st-l">ÿµŸàÿ±</div></div>
+        <div class="sup-st"><div class="sup-st-v">${d.copies}</div><div class="sup-st-l">ŸÜÿ≥ÿÆ</div></div>
+        <div class="sup-st"><div class="sup-st-v">${m.total}</div><div class="sup-st-l">ÿßŸÑÿ¥Ÿáÿ±</div></div>
       </div></div>`;
   });
   h+='</div>';
@@ -542,14 +542,14 @@ async function showPerformance(){
     const imageData=sups.map(s=>(monthMap[s]||{}).images||0);
     const copyData=sups.map(s=>(monthMap[s]||{}).copies||0);
     perfChart=new Chart(ctx,{type:'bar',data:{labels,datasets:[
-      {label:'بحث',data:searchData,backgroundColor:'rgba(0,200,83,.7)'},
-      {label:'صور',data:imageData,backgroundColor:'rgba(68,138,255,.7)'},
-      {label:'نسخ',data:copyData,backgroundColor:'rgba(255,179,0,.7)'},
+      {label:'ÿ®ÿ≠ÿ´',data:searchData,backgroundColor:'rgba(0,200,83,.7)'},
+      {label:'ÿµŸàÿ±',data:imageData,backgroundColor:'rgba(68,138,255,.7)'},
+      {label:'ŸÜÿ≥ÿÆ',data:copyData,backgroundColor:'rgba(255,179,0,.7)'},
     ]},options:{responsive:true,plugins:{legend:{labels:{color:'#6b6b78',font:{family:'Tajawal'}}}},scales:{x:{ticks:{color:'#6b6b78',font:{family:'Tajawal'}}},y:{ticks:{color:'#6b6b78'},grid:{color:'rgba(255,255,255,.05)'}}}}});
   }
 }
 
-// ══ SETTINGS (Admin) ═════════════════════════════════
+// ‚ïê‚ïê SETTINGS (Admin) ‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê
 let settingsTab='tracking';
 
 function showSettings(){
@@ -561,12 +561,12 @@ function showSettings(){
 function renderSettings(){
   const main=document.getElementById('mainContent');
   let h=`<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:18px;">
-    <div style="font-size:20px;font-weight:900;">الإعدادات</div></div>
+    <div style="font-size:20px;font-weight:900;">ÿßŸÑÿ•ÿπÿØÿßÿØÿßÿ™</div></div>
     <div class="sett-tabs">
-      <button class="sett-tab${settingsTab==='tracking'?' on':''}" onclick="settingsTab='tracking';renderSettings()">التتبع</button>
-      <button class="sett-tab${settingsTab==='brands'?' on':''}" onclick="settingsTab='brands';renderSettings()">البراندات</button>
-      <button class="sett-tab${settingsTab==='supervisors'?' on':''}" onclick="settingsTab='supervisors';renderSettings()">المشرفين</button>
-      <button class="sett-tab${settingsTab==='toggle'?' on':''}" onclick="settingsTab='toggle';renderSettings()">تفعيل/تعطيل</button>
+      <button class="sett-tab${settingsTab==='tracking'?' on':''}" onclick="settingsTab='tracking';renderSettings()">ÿßŸÑÿ™ÿ™ÿ®ÿπ</button>
+      <button class="sett-tab${settingsTab==='brands'?' on':''}" onclick="settingsTab='brands';renderSettings()">ÿßŸÑÿ®ÿ±ÿßŸÜÿØÿßÿ™</button>
+      <button class="sett-tab${settingsTab==='supervisors'?' on':''}" onclick="settingsTab='supervisors';renderSettings()">ÿßŸÑŸÖÿ¥ÿ±ŸÅŸäŸÜ</button>
+      <button class="sett-tab${settingsTab==='toggle'?' on':''}" onclick="settingsTab='toggle';renderSettings()">ÿ™ŸÅÿπŸäŸÑ/ÿ™ÿπÿ∑ŸäŸÑ</button>
     </div>`;
 
   if(settingsTab==='tracking') h+=renderSettingsTracking();
@@ -578,26 +578,26 @@ function renderSettings(){
 }
 
 function renderSettingsTracking(){
-  const savedUrl=localStorage.getItem('dlvr_tracking_url')||'';
-  const status=savedUrl?'مربوط':'غير مربوط';
-  const statusColor=savedUrl?'var(--g)':'var(--warn)';
+  const currentUrl=TRACKING_URL;
+  const status=currentUrl?'ŸÖÿ±ÿ®Ÿàÿ∑':'ÿ∫Ÿäÿ± ŸÖÿ±ÿ®Ÿàÿ∑';
+  const statusColor=currentUrl?'var(--g)':'var(--warn)';
   return `<div class="sett-card">
-    <div class="sett-title">رابط تتبع المشرفين</div>
-    <div class="sett-desc">رابط Apps Script اللي يحفظ بيانات أداء المشرفين</div>
+    <div class="sett-title">ÿ±ÿßÿ®ÿ∑ ÿ™ÿ™ÿ®ÿπ ÿßŸÑŸÖÿ¥ÿ±ŸÅŸäŸÜ</div>
+    <div class="sett-desc">ÿ±ÿßÿ®ÿ∑ Apps Script ÿßŸÑŸÑŸä Ÿäÿ≠ŸÅÿ∏ ÿ®ŸäÿßŸÜÿßÿ™ ÿ£ÿØÿßÿ° ÿßŸÑŸÖÿ¥ÿ±ŸÅŸäŸÜ</div>
     <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;">
       <div style="width:10px;height:10px;border-radius:50%;background:${statusColor};flex-shrink:0;"></div>
       <span style="font-size:12px;color:${statusColor};font-weight:600;">${status}</span>
     </div>
-    <input id="trackingUrlInput" type="text" value="${savedUrl}" placeholder="https://script.google.com/macros/s/.../exec" class="sett-input">
+    <input id="trackingUrlInput" type="text" value="${currentUrl}" placeholder="https://script.google.com/macros/s/.../exec" class="sett-input">
     <div style="display:flex;gap:8px;">
-      <button class="sett-btn" onclick="saveTrackingUrl()">حفظ</button>
-      <button class="sett-btn-o" onclick="testTrackingUrl()">اختبار الاتصال</button>
+      <button class="sett-btn" onclick="saveTrackingUrl()">ÿ≠ŸÅÿ∏</button>
+      <button class="sett-btn-o" onclick="testTrackingUrl()">ÿßÿÆÿ™ÿ®ÿßÿ± ÿßŸÑÿßÿ™ÿµÿßŸÑ</button>
     </div>
     <div id="trackingTestResult" style="margin-top:10px;font-size:12px;display:none;"></div>
   </div>
   <div class="sett-card">
-    <div class="sett-title">بيانات تسجيل الدخول</div>
-    <div class="sett-desc">بيانات المشرفين والبراندات</div>
+    <div class="sett-title">ÿ®ŸäÿßŸÜÿßÿ™ ÿ™ÿ≥ÿ¨ŸäŸÑ ÿßŸÑÿØÿÆŸàŸÑ</div>
+    <div class="sett-desc">ÿ®ŸäÿßŸÜÿßÿ™ ÿßŸÑŸÖÿ¥ÿ±ŸÅŸäŸÜ ŸàÿßŸÑÿ®ÿ±ÿßŸÜÿØÿßÿ™</div>
     <div style="background:var(--bg);border-radius:10px;padding:12px;font-size:12px;direction:ltr;text-align:left;line-height:2;max-height:300px;overflow-y:auto;">
       ${getSupervisorsConfig().map((s,i)=>`<div style="display:flex;justify-content:space-between;border-bottom:1px solid var(--border);padding:4px 0;"><span style="color:var(--g);font-weight:700;">${s.label}</span><span style="color:var(--muted);">${s.username} / ${s.password}</span></div>`).join('')}
     </div>
@@ -608,50 +608,50 @@ function renderSettingsBrands(){
   const brands=getBrands();
   let h='';
   brands.forEach((b,idx)=>{
-    const branches=(b.branches||[]).map(br=>`${br.name} (${br.code})`).join('، ')||'لا يوجد';
+    const branches=(b.branches||[]).map(br=>`${br.name} (${br.code})`).join('ÿå ')||'ŸÑÿß ŸäŸàÿ¨ÿØ';
     h+=`<div class="sett-card" id="brand-sett-${b.id}">
       <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px;">
         <div style="width:32px;height:32px;border-radius:8px;background:${b.color};display:flex;align-items:center;justify-content:center;font-weight:900;color:#000;font-size:13px;overflow:hidden;flex-shrink:0;">
           ${b.logo?`<img src="${b.logo}" style="width:100%;height:100%;object-fit:cover;">`:`${b.name.charAt(0)}`}
         </div>
         <div class="sett-title" style="margin-bottom:0">${b.name}</div>
-        <div style="font-size:10px;color:${b.enabled?'var(--g)':'var(--muted)'};margin-right:auto;">${b.enabled?'مفعّل':'معطّل'}</div>
+        <div style="font-size:10px;color:${b.enabled?'var(--g)':'var(--muted)'};margin-right:auto;">${b.enabled?'ŸÖŸÅÿπŸëŸÑ':'ŸÖÿπÿ∑ŸëŸÑ'}</div>
       </div>
 
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px;">
-        <div><div style="font-size:10px;color:var(--muted);margin-bottom:3px;">اسم البراند</div>
+        <div><div style="font-size:10px;color:var(--muted);margin-bottom:3px;">ÿßÿ≥ŸÖ ÿßŸÑÿ®ÿ±ÿßŸÜÿØ</div>
           <input class="sett-input rtl-input" style="margin-bottom:0" value="${b.name}" onchange="updateBrandField('${b.id}','name',this.value)"></div>
-        <div><div style="font-size:10px;color:var(--muted);margin-bottom:3px;">اللون</div>
+        <div><div style="font-size:10px;color:var(--muted);margin-bottom:3px;">ÿßŸÑŸÑŸàŸÜ</div>
           <input class="sett-input" type="color" style="margin-bottom:0;padding:4px;height:38px;" value="${b.color}" onchange="updateBrandField('${b.id}','color',this.value)"></div>
       </div>
 
       <div style="font-size:10px;color:var(--muted);margin-bottom:3px;">Google Sheet ID</div>
-      <input class="sett-input" value="${b.sheetId||''}" placeholder="أدخل Sheet ID" onchange="updateBrandField('${b.id}','sheetId',this.value)">
+      <input class="sett-input" value="${b.sheetId||''}" placeholder="ÿ£ÿØÿÆŸÑ Sheet ID" onchange="updateBrandField('${b.id}','sheetId',this.value)">
 
-      <div style="font-size:10px;color:var(--muted);margin-bottom:3px;">رابط Apps Script (للطلبات)</div>
+      <div style="font-size:10px;color:var(--muted);margin-bottom:3px;">ÿ±ÿßÿ®ÿ∑ Apps Script (ŸÑŸÑÿ∑ŸÑÿ®ÿßÿ™)</div>
       <input class="sett-input" value="${b.scriptUrl||''}" placeholder="https://script.google.com/macros/s/.../exec" onchange="updateBrandField('${b.id}','scriptUrl',this.value)">
 
-      <div style="font-size:10px;color:var(--muted);margin-bottom:3px;">رابط شعار البراند</div>
+      <div style="font-size:10px;color:var(--muted);margin-bottom:3px;">ÿ±ÿßÿ®ÿ∑ ÿ¥ÿπÿßÿ± ÿßŸÑÿ®ÿ±ÿßŸÜÿØ</div>
       <input class="sett-input" value="${b.logo||''}" placeholder="https://example.com/logo.png" onchange="updateBrandField('${b.id}','logo',this.value)">
 
       <div style="border-top:1px solid var(--border);margin:10px 0;padding-top:10px;">
-        <div style="font-size:12px;font-weight:700;margin-bottom:8px;">الفروع <span style="color:var(--muted);font-weight:400;">(${(b.branches||[]).length})</span></div>
+        <div style="font-size:12px;font-weight:700;margin-bottom:8px;">ÿßŸÑŸÅÿ±Ÿàÿπ <span style="color:var(--muted);font-weight:400;">(${(b.branches||[]).length})</span></div>
         <div id="branches-${b.id}">
           ${(b.branches||[]).map((br,bi)=>`<div class="brand-sett-row">
-            <input class="sett-input rtl-input" style="margin:0;flex:1;min-width:100px;" value="${br.name}" onchange="updateBranch('${b.id}',${bi},'name',this.value)" placeholder="اسم الفرع">
-            <input class="sett-input" style="margin:0;width:80px;text-align:center;" value="${br.code}" onchange="updateBranch('${b.id}',${bi},'code',this.value)" placeholder="رمز" maxlength="4">
-            <button onclick="removeBranch('${b.id}',${bi})" style="padding:5px 10px;border:1px solid var(--red);border-radius:6px;background:transparent;color:var(--red);font-size:11px;cursor:pointer;font-family:'Tajawal';">حذف</button>
+            <input class="sett-input rtl-input" style="margin:0;flex:1;min-width:100px;" value="${br.name}" onchange="updateBranch('${b.id}',${bi},'name',this.value)" placeholder="ÿßÿ≥ŸÖ ÿßŸÑŸÅÿ±ÿπ">
+            <input class="sett-input" style="margin:0;width:80px;text-align:center;" value="${br.code}" onchange="updateBranch('${b.id}',${bi},'code',this.value)" placeholder="ÿ±ŸÖÿ≤" maxlength="4">
+            <button onclick="removeBranch('${b.id}',${bi})" style="padding:5px 10px;border:1px solid var(--red);border-radius:6px;background:transparent;color:var(--red);font-size:11px;cursor:pointer;font-family:'Tajawal';">ÿ≠ÿ∞ŸÅ</button>
           </div>`).join('')}
         </div>
-        <button onclick="addBranch('${b.id}')" class="sett-btn-o" style="margin-top:6px;font-size:11px;padding:6px 14px;">+ فرع جديد</button>
+        <button onclick="addBranch('${b.id}')" class="sett-btn-o" style="margin-top:6px;font-size:11px;padding:6px 14px;">+ ŸÅÿ±ÿπ ÿ¨ÿØŸäÿØ</button>
       </div>
 
       <div style="border-top:1px solid var(--border);margin:10px 0;padding-top:10px;">
-        <div style="font-size:12px;font-weight:700;margin-bottom:8px;">شعارات تطبيقات التوصيل</div>
+        <div style="font-size:12px;font-weight:700;margin-bottom:8px;">ÿ¥ÿπÿßÿ±ÿßÿ™ ÿ™ÿ∑ÿ®ŸäŸÇÿßÿ™ ÿßŸÑÿ™ŸàÿµŸäŸÑ</div>
         <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:6px;">
           ${DELIVERY_APPS.map(app=>`<div>
             <div style="font-size:10px;color:var(--muted);margin-bottom:2px;">${app}</div>
-            <input class="sett-input" style="margin:0;font-size:11px;" value="${(b.deliveryLogos||{})[app]||''}" placeholder="رابط الشعار" onchange="updateDeliveryLogo('${b.id}','${app}',this.value)">
+            <input class="sett-input" style="margin:0;font-size:11px;" value="${(b.deliveryLogos||{})[app]||''}" placeholder="ÿ±ÿßÿ®ÿ∑ ÿßŸÑÿ¥ÿπÿßÿ±" onchange="updateDeliveryLogo('${b.id}','${app}',this.value)">
           </div>`).join('')}
         </div>
       </div>
@@ -663,17 +663,17 @@ function renderSettingsBrands(){
 function renderSettingsSupervisors(){
   const sups=getSupervisorsConfig();
   let h=`<div class="sett-card">
-    <div class="sett-title">إدارة المشرفين</div>
-    <div class="sett-desc">تعديل أسماء وكلمات مرور المشرفين</div>
+    <div class="sett-title">ÿ•ÿØÿßÿ±ÿ© ÿßŸÑŸÖÿ¥ÿ±ŸÅŸäŸÜ</div>
+    <div class="sett-desc">ÿ™ÿπÿØŸäŸÑ ÿ£ÿ≥ŸÖÿßÿ° ŸàŸÉŸÑŸÖÿßÿ™ ŸÖÿ±Ÿàÿ± ÿßŸÑŸÖÿ¥ÿ±ŸÅŸäŸÜ</div>
     <div style="display:flex;flex-direction:column;gap:8px;">
       ${sups.map((s,i)=>`<div class="brand-sett-row">
         <div style="width:28px;height:28px;border-radius:7px;background:var(--g);display:flex;align-items:center;justify-content:center;font-weight:900;color:#000;font-size:11px;flex-shrink:0;">${i+1}</div>
         <div style="flex:1;display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;align-items:center;">
-          <div><div style="font-size:9px;color:var(--muted);">الاسم</div>
+          <div><div style="font-size:9px;color:var(--muted);">ÿßŸÑÿßÿ≥ŸÖ</div>
             <input class="sett-input rtl-input" style="margin:0;font-size:12px;padding:6px 8px;" value="${s.label}" onchange="updateSup(${i},'label',this.value)"></div>
-          <div><div style="font-size:9px;color:var(--muted);">المستخدم</div>
+          <div><div style="font-size:9px;color:var(--muted);">ÿßŸÑŸÖÿ≥ÿ™ÿÆÿØŸÖ</div>
             <div style="font-size:12px;color:var(--muted);padding:6px 8px;">${s.username}</div></div>
-          <div><div style="font-size:9px;color:var(--muted);">كلمة المرور</div>
+          <div><div style="font-size:9px;color:var(--muted);">ŸÉŸÑŸÖÿ© ÿßŸÑŸÖÿ±Ÿàÿ±</div>
             <input class="sett-input" style="margin:0;font-size:12px;padding:6px 8px;" value="${s.password}" onchange="updateSup(${i},'password',this.value)"></div>
         </div>
       </div>`).join('')}
@@ -685,8 +685,8 @@ function renderSettingsSupervisors(){
 function renderSettingsToggle(){
   const brands=getBrands();
   let h=`<div class="sett-card">
-    <div class="sett-title">تفعيل / تعطيل البراندات</div>
-    <div class="sett-desc">البراند المعطّل لا يظهر للمشرفين والبراندات</div>
+    <div class="sett-title">ÿ™ŸÅÿπŸäŸÑ / ÿ™ÿπÿ∑ŸäŸÑ ÿßŸÑÿ®ÿ±ÿßŸÜÿØÿßÿ™</div>
+    <div class="sett-desc">ÿßŸÑÿ®ÿ±ÿßŸÜÿØ ÿßŸÑŸÖÿπÿ∑ŸëŸÑ ŸÑÿß Ÿäÿ∏Ÿáÿ± ŸÑŸÑŸÖÿ¥ÿ±ŸÅŸäŸÜ ŸàÿßŸÑÿ®ÿ±ÿßŸÜÿØÿßÿ™</div>
     <div style="display:flex;flex-direction:column;gap:6px;">
       ${brands.map(b=>`<div class="brand-sett-row" style="justify-content:space-between;">
         <div style="display:flex;align-items:center;gap:10px;">
@@ -695,7 +695,7 @@ function renderSettingsToggle(){
           </div>
           <div>
             <div style="font-size:13px;font-weight:700;">${b.name}</div>
-            <div style="font-size:10px;color:var(--muted);">${b.sheetId?'Sheet ID محدد':'بدون Sheet ID'}</div>
+            <div style="font-size:10px;color:var(--muted);">${b.sheetId?'Sheet ID ŸÖÿ≠ÿØÿØ':'ÿ®ÿØŸàŸÜ Sheet ID'}</div>
           </div>
         </div>
         <label class="toggle-wrap">
@@ -705,39 +705,39 @@ function renderSettingsToggle(){
       </div>`).join('')}
     </div>
     <div style="display:flex;gap:8px;margin-top:12px;">
-      <button class="sett-btn" onclick="toggleAllBrands(true)">تفعيل الكل</button>
-      <button class="sett-btn-o" onclick="toggleAllBrands(false)">تعطيل الكل</button>
+      <button class="sett-btn" onclick="toggleAllBrands(true)">ÿ™ŸÅÿπŸäŸÑ ÿßŸÑŸÉŸÑ</button>
+      <button class="sett-btn-o" onclick="toggleAllBrands(false)">ÿ™ÿπÿ∑ŸäŸÑ ÿßŸÑŸÉŸÑ</button>
     </div>
   </div>`;
   return h;
 }
 
-// ══ SETTINGS ACTIONS ═════════════════════════════════
+// ‚ïê‚ïê SETTINGS ACTIONS ‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê
 function saveTrackingUrl(){
   const url=document.getElementById('trackingUrlInput').value.trim();
-  if(url&&!url.startsWith('https://script.google.com')){toast('الرابط غير صحيح');return;}
+  if(url&&!url.startsWith('https://script.google.com')){toast('ÿßŸÑÿ±ÿßÿ®ÿ∑ ÿ∫Ÿäÿ± ÿµÿ≠Ÿäÿ≠');return;}
   TRACKING_URL=url;
   localStorage.setItem('dlvr_tracking_url',url);
-  toast(url?'تم حفظ الرابط':'تم مسح الرابط');
+  toast(url?'ÿ™ŸÖ ÿ≠ŸÅÿ∏ ÿßŸÑÿ±ÿßÿ®ÿ∑':'ÿ™ŸÖ ŸÖÿ≥ÿ≠ ÿßŸÑÿ±ÿßÿ®ÿ∑');
   renderSettings();
 }
 
 async function testTrackingUrl(){
   const url=document.getElementById('trackingUrlInput').value.trim();
   const result=document.getElementById('trackingTestResult');
-  if(!url){result.style.display='block';result.style.color='var(--warn)';result.textContent='أدخل الرابط أولاً';return;}
-  result.style.display='block';result.style.color='var(--muted)';result.textContent='جاري الاختبار...';
+  if(!url){result.style.display='block';result.style.color='var(--warn)';result.textContent='ÿ£ÿØÿÆŸÑ ÿßŸÑÿ±ÿßÿ®ÿ∑ ÿ£ŸàŸÑÿßŸã';return;}
+  result.style.display='block';result.style.color='var(--muted)';result.textContent='ÿ¨ÿßÿ±Ÿä ÿßŸÑÿßÿÆÿ™ÿ®ÿßÿ±...';
   try{
     const res=await fetch(url+'?action=daily&date=2000-01-01');
-    if(res.ok){result.style.color='var(--g)';result.textContent='الاتصال ناجح!';}
-    else{result.style.color='var(--red)';result.textContent='خطأ: '+res.status;}
-  }catch(e){result.style.color='var(--red)';result.textContent='تعذّر الاتصال — تأكد من الرابط';}
+    if(res.ok){result.style.color='var(--g)';result.textContent='ÿßŸÑÿßÿ™ÿµÿßŸÑ ŸÜÿßÿ¨ÿ≠!';}
+    else{result.style.color='var(--red)';result.textContent='ÿÆÿ∑ÿ£: '+res.status;}
+  }catch(e){result.style.color='var(--red)';result.textContent='ÿ™ÿπÿ∞Ÿëÿ± ÿßŸÑÿßÿ™ÿµÿßŸÑ ‚Äî ÿ™ÿ£ŸÉÿØ ŸÖŸÜ ÿßŸÑÿ±ÿßÿ®ÿ∑';}
 }
 
 function updateBrandField(id,field,val){
   const brands=getBrands();
   const b=brands.find(x=>x.id===id);
-  if(b){b[field]=val;saveBrandsConfig(brands);toast('تم الحفظ');buildNav();}
+  if(b){b[field]=val;saveBrandsConfig(brands);toast('ÿ™ŸÖ ÿßŸÑÿ≠ŸÅÿ∏');buildNav();}
 }
 
 function addBranch(brandId){
@@ -782,29 +782,29 @@ function updateDeliveryLogo(brandId,app,val){
 
 function updateSup(idx,field,val){
   const sups=getSupervisorsConfig();
-  if(sups[idx]){sups[idx][field]=val;saveSupervisorsConfig(sups);toast('تم الحفظ');buildNav();}
+  if(sups[idx]){sups[idx][field]=val;saveSupervisorsConfig(sups);toast('ÿ™ŸÖ ÿßŸÑÿ≠ŸÅÿ∏');buildNav();}
 }
 
 function toggleBrand(id,enabled){
   const brands=getBrands();
   const b=brands.find(x=>x.id===id);
-  if(b){b.enabled=enabled;saveBrandsConfig(brands);toast(enabled?'تم التفعيل':'تم التعطيل');buildNav();}
+  if(b){b.enabled=enabled;saveBrandsConfig(brands);toast(enabled?'ÿ™ŸÖ ÿßŸÑÿ™ŸÅÿπŸäŸÑ':'ÿ™ŸÖ ÿßŸÑÿ™ÿπÿ∑ŸäŸÑ');buildNav();}
 }
 
 function toggleAllBrands(enabled){
   const brands=getBrands();
   brands.forEach(b=>b.enabled=enabled);
   saveBrandsConfig(brands);
-  toast(enabled?'تم تفعيل الكل':'تم تعطيل الكل');
+  toast(enabled?'ÿ™ŸÖ ÿ™ŸÅÿπŸäŸÑ ÿßŸÑŸÉŸÑ':'ÿ™ŸÖ ÿ™ÿπÿ∑ŸäŸÑ ÿßŸÑŸÉŸÑ');
   buildNav();renderSettings();
 }
 
-// ══ ACTIONS WITH TRACKING ════════════════════════════
+// ‚ïê‚ïê ACTIONS WITH TRACKING ‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê
 function copyNum(el,num){
   track('copy_order',num,selectedBrand);
   navigator.clipboard.writeText(num).then(()=>{
-    const tip=document.createElement('span');tip.className='copied';tip.textContent='✓';el.appendChild(tip);setTimeout(()=>tip.remove(),1000);toast('تم نسخ '+num);
-  }).catch(()=>{const ta=document.createElement('textarea');ta.value=num;document.body.appendChild(ta);ta.select();document.execCommand('copy');ta.remove();toast('تم نسخ '+num);});
+    const tip=document.createElement('span');tip.className='copied';tip.textContent='‚úì';el.appendChild(tip);setTimeout(()=>tip.remove(),1000);toast('ÿ™ŸÖ ŸÜÿ≥ÿÆ '+num);
+  }).catch(()=>{const ta=document.createElement('textarea');ta.value=num;document.body.appendChild(ta);ta.select();document.execCommand('copy');ta.remove();toast('ÿ™ŸÖ ŸÜÿ≥ÿÆ '+num);});
 }
 
 function openImg(url){
@@ -816,7 +816,7 @@ function openImg(url){
 
 function getDriveThumb(url){const m=url.match(/\/d\/([a-zA-Z0-9_-]+)/);return m?`https://drive.google.com/thumbnail?id=${m[1]}&sz=w80`:'';}
 
-// ══ HELPERS ══════════════════════════════════════════
+// ‚ïê‚ïê HELPERS ‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê
 function platClass(p){if(!p)return'other';const l=p.toLowerCase();if(l.includes('hunger'))return'hs';if(l.includes('keeta'))return'keeta';if(l.includes('jahez'))return'jahez';if(l.includes('toyou'))return'toyou';return'other';}
 function setNav(id){document.querySelectorAll('.nav-i').forEach(n=>n.classList.remove('on'));const e=document.getElementById(id);if(e)e.classList.add('on');}
 function toggleSidebar(){document.getElementById('sidebar').classList.toggle('open');}
