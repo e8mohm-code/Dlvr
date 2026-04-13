@@ -389,15 +389,14 @@ async function capture(){
   beep();
 
   const vid=document.getElementById('vid'),cv=document.getElementById('cv');
-  const maxW=1200;
-  const ratio=Math.min(maxW/(vid.videoWidth||1280),1);
-  cv.width=Math.round((vid.videoWidth||1280)*ratio);
-  cv.height=Math.round((vid.videoHeight||720)*ratio);
+  // Full resolution — no downscaling for maximum OCR accuracy
+  cv.width=vid.videoWidth||1920;
+  cv.height=vid.videoHeight||1080;
   const ctx=cv.getContext('2d');
   ctx.drawImage(vid,0,0,cv.width,cv.height);
 
-  const b64=cv.toDataURL('image/jpeg',0.7).split(',')[1];
-  const b64Upload=cv.toDataURL('image/jpeg',0.85).split(',')[1];
+  const b64=cv.toDataURL('image/jpeg',0.92).split(',')[1];
+  const b64Upload=cv.toDataURL('image/jpeg',0.92).split(',')[1];
 
   document.getElementById('analyzing').classList.add('on');
   document.getElementById('shutter').disabled=true;
