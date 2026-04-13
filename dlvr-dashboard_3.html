@@ -159,7 +159,10 @@ canvas.perf-chart{width:100%!important;max-height:300px;}
     <div class="sb-logo"><div class="sb-logo-i"><svg viewBox="0 0 38 38" fill="none"><path d="M24 5L10 20.5H19L13 33L28 17.5H19L24 5Z" fill="#0d0d0d"/></svg></div><span class="sb-logo-t">DLVR</span></div>
     <div class="sb-user"><div class="sb-user-n" id="sbName">—</div><div class="sb-user-r" id="sbRole">—</div></div>
     <div class="sb-nav" id="sbNav"></div>
-    <div class="sb-bot"><button class="logout-btn" onclick="doLogout()">تسجيل خروج</button></div>
+    <div class="sb-bot">
+      <button class="logout-btn" id="sbSettingsBtn" onclick="showSettings()" style="display:none;margin-bottom:6px;border-color:var(--g);color:var(--g);">⚙️ الإعدادات</button>
+      <button class="logout-btn" onclick="doLogout()">تسجيل خروج</button>
+    </div>
   </div>
   <div class="main" id="mainContent"><div class="loading"><div class="ld-spin"></div><span class="ld-t">جاري التحميل...</span></div></div>
 </div>
@@ -169,8 +172,7 @@ canvas.perf-chart{width:100%!important;max-height:300px;}
 
 <script>
 // ══ CONFIG ═══════════════════════════════════════════
-// ⚠️ غيّر هذا الرابط لرابط Apps Script حق التتبع
-const TRACKING_URL='https://script.google.com/macros/s/YOUR_TRACKING_SCRIPT_ID/exec';
+let TRACKING_URL=localStorage.getItem('dlvr_tracking_url')||'';
 
 const BRANDS=[
   {id:'macarono',name:'مكرونو',color:'#FF6B00',sheetId:'1Engs0_WKiyYwVkOxqaZMGlo2H6SxJm45OOnDlC3z89A'},
@@ -234,6 +236,8 @@ function showDashboard(){
   document.getElementById('sbName').textContent=currentUser.label;
   const roleMap={admin:'مدير النظام',supervisor:'مشرف',brand:'حساب براند'};
   document.getElementById('sbRole').textContent=roleMap[currentUser.role]||'';
+  const settingsBtn=document.getElementById('sbSettingsBtn');
+  if(settingsBtn)settingsBtn.style.display=currentUser.role==='admin'?'block':'none';
   buildNav();loadAllData();
 }
 
@@ -243,6 +247,7 @@ function buildNav(){
     h+=`<div class="nav-lbl">الرئيسية</div>`;
     h+=navItem('nav-ov','نظرة عامة','<path stroke-linecap="round" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-4 0h4"/>',true);
     h+=navItem('nav-perf','أداء المشرفين','<path stroke-linecap="round" d="M16 8v8m-4-5v5m-4-2v2m-2 4h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/>');
+    h+=navItem('nav-settings','⚙️ الإعدادات','<path stroke-linecap="round" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.066 2.573c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.573 1.066c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.066-2.573c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><circle cx="12" cy="12" r="3"/>');
     h+=`<div class="nav-lbl">البراندات</div>`;
     BRANDS.forEach(b=>{h+=`<div class="nav-i" onclick="showBrand('${b.id}')" id="nav-${b.id}"><div class="nav-dot" style="background:${b.color}"></div>${b.name}</div>`;});
   }else if(currentUser.role==='supervisor'){
@@ -257,7 +262,7 @@ function buildNav(){
   nav.innerHTML=h;
 }
 function navItem(id,label,path,active=false){return `<div class="nav-i${active?' on':''}" onclick="navClick('${id}')" id="${id}"><svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">${path}</svg>${label}</div>`;}
-function navClick(id){if(id==='nav-ov')showOverview();else if(id==='nav-perf')showPerformance();}
+function navClick(id){if(id==='nav-ov')showOverview();else if(id==='nav-perf')showPerformance();else if(id==='nav-settings')showSettings();}
 
 // ══ LOAD DATA ════════════════════════════════════════
 async function loadAllData(){
@@ -453,6 +458,68 @@ function openImg(url){
 }
 
 function getDriveThumb(url){const m=url.match(/\/d\/([a-zA-Z0-9_-]+)/);return m?`https://drive.google.com/thumbnail?id=${m[1]}&sz=w80`:'';}
+
+// ══ SETTINGS (Admin) ═════════════════════════════════
+function showSettings(){
+  setNav('nav-settings');selectedBrand=null;
+  const main=document.getElementById('mainContent');
+  const savedUrl=localStorage.getItem('dlvr_tracking_url')||'';
+  const status=savedUrl?'✓ مربوط':'⚠️ غير مربوط';
+  const statusColor=savedUrl?'var(--g)':'var(--warn)';
+
+  main.innerHTML=`
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:18px;">
+      <div style="font-size:20px;font-weight:900;">⚙️ الإعدادات</div>
+    </div>
+
+    <div style="background:var(--card);border:1px solid var(--border);border-radius:14px;padding:20px;max-width:600px;">
+      <div style="font-size:15px;font-weight:700;margin-bottom:4px;">رابط تتبع المشرفين</div>
+      <div style="font-size:11px;color:var(--muted);margin-bottom:14px;">رابط Apps Script اللي يحفظ بيانات أداء المشرفين</div>
+      
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;">
+        <div style="width:10px;height:10px;border-radius:50%;background:${statusColor};flex-shrink:0;"></div>
+        <span style="font-size:12px;color:${statusColor};font-weight:600;">${status}</span>
+      </div>
+
+      <input id="trackingUrlInput" type="text" value="${savedUrl}" placeholder="https://script.google.com/macros/s/.../exec" 
+        style="width:100%;padding:12px 14px;background:var(--bg);border:1.5px solid var(--border);border-radius:10px;color:var(--text);font-family:'Tajawal';font-size:13px;outline:none;direction:ltr;text-align:left;margin-bottom:10px;">
+      
+      <div style="display:flex;gap:8px;">
+        <button onclick="saveTrackingUrl()" style="padding:10px 24px;border:none;border-radius:10px;background:var(--g);color:#000;font-family:'Tajawal';font-size:13px;font-weight:700;cursor:pointer;">حفظ</button>
+        <button onclick="testTrackingUrl()" style="padding:10px 24px;border:1px solid var(--border);border-radius:10px;background:transparent;color:var(--text);font-family:'Tajawal';font-size:13px;font-weight:600;cursor:pointer;">اختبار الاتصال</button>
+      </div>
+      <div id="trackingTestResult" style="margin-top:10px;font-size:12px;display:none;"></div>
+    </div>
+
+    <div style="background:var(--card);border:1px solid var(--border);border-radius:14px;padding:20px;max-width:600px;margin-top:14px;">
+      <div style="font-size:15px;font-weight:700;margin-bottom:4px;">بيانات تسجيل دخول المشرفين</div>
+      <div style="font-size:11px;color:var(--muted);margin-bottom:14px;">أرسل هذي البيانات لكل مشرف</div>
+      <div style="background:var(--bg);border-radius:10px;padding:12px;font-size:12px;direction:ltr;text-align:left;line-height:2;max-height:300px;overflow-y:auto;">
+        ${Array.from({length:18},(_,i)=>`<div style="display:flex;justify-content:space-between;border-bottom:1px solid var(--border);padding:4px 0;"><span style="color:var(--g);font-weight:700;">مشرف ${i+1}</span><span style="color:var(--muted);">sup${i+1} / sup${i+1}pass</span></div>`).join('')}
+      </div>
+    </div>`;
+}
+
+function saveTrackingUrl(){
+  const url=document.getElementById('trackingUrlInput').value.trim();
+  if(url&&!url.startsWith('https://script.google.com')){toast('الرابط غير صحيح');return;}
+  TRACKING_URL=url;
+  localStorage.setItem('dlvr_tracking_url',url);
+  toast(url?'✓ تم حفظ الرابط':'تم مسح الرابط');
+  showSettings(); // refresh the page to update status
+}
+
+async function testTrackingUrl(){
+  const url=document.getElementById('trackingUrlInput').value.trim();
+  const result=document.getElementById('trackingTestResult');
+  if(!url){result.style.display='block';result.style.color='var(--warn)';result.textContent='⚠️ أدخل الرابط أولاً';return;}
+  result.style.display='block';result.style.color='var(--muted)';result.textContent='جاري الاختبار...';
+  try{
+    const res=await fetch(url+'?action=daily&date=2000-01-01');
+    if(res.ok){result.style.color='var(--g)';result.textContent='✓ الاتصال ناجح!';}
+    else{result.style.color='var(--red)';result.textContent='❌ خطأ: '+res.status;}
+  }catch(e){result.style.color='var(--red)';result.textContent='❌ تعذّر الاتصال — تأكد من الرابط';}
+}
 
 // ══ HELPERS ══════════════════════════════════════════
 function platClass(p){if(!p)return'other';const l=p.toLowerCase();if(l.includes('hunger'))return'hs';if(l.includes('keeta'))return'keeta';if(l.includes('jahez'))return'jahez';if(l.includes('toyou'))return'toyou';return'other';}
