@@ -393,12 +393,20 @@ function setTheme(t){
 function track(type,details='',brand=''){
   if(!currentUser||currentUser.role!=='supervisor')return;
   if(!TRACKING_URL)return;
-  try{fetch(TRACKING_URL,{method:'POST',mode:'no-cors',headers:{'Content-Type':'application/json'},body:JSON.stringify({action:'log',supervisor:currentUser.username,type,details,brand})});}catch{}
+  try{
+    const payload={action:'log',supervisor:currentUser.username,type,details,brand};
+    navigator.sendBeacon?navigator.sendBeacon(TRACKING_URL,JSON.stringify(payload)):
+    fetch(TRACKING_URL,{method:'POST',body:JSON.stringify(payload),headers:{'Content-Type':'text/plain'}}).catch(()=>{});
+  }catch{}
 }
 function trackSessionEnd(){
   if(!currentUser||currentUser.role!=='supervisor'||!sessionStart||!TRACKING_URL)return;
   const dur=Math.round((Date.now()-sessionStart)/1000);
-  try{fetch(TRACKING_URL,{method:'POST',mode:'no-cors',headers:{'Content-Type':'application/json'},body:JSON.stringify({action:'session_end',supervisor:currentUser.username,duration:dur,startTime:new Date(sessionStart).toLocaleTimeString('en',{hour12:false})})});}catch{}
+  try{
+    const payload={action:'session_end',supervisor:currentUser.username,duration:dur,startTime:new Date(sessionStart).toLocaleTimeString('en',{hour12:false})};
+    navigator.sendBeacon?navigator.sendBeacon(TRACKING_URL,JSON.stringify(payload)):
+    fetch(TRACKING_URL,{method:'POST',body:JSON.stringify(payload),headers:{'Content-Type':'text/plain'}}).catch(()=>{});
+  }catch{}
 }
 
 // ══ LOGIN ════════════════════════════════════════════
