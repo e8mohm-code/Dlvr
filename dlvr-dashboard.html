@@ -331,14 +331,16 @@ function saveBrandsConfig(brands){
   localStorage.setItem('dlvr_brands_config',JSON.stringify(brands.map(b=>({id:b.id,name:b.name,color:b.color,sheetId:b.sheetId,scriptUrl:b.scriptUrl,logo:b.logo,branches:b.branches,enabled:b.enabled,deliveryLogos:b.deliveryLogos||{}}))));
 }
 function getSupervisorsConfig(){
+  // Passwords ALWAYS come from code defaults — localStorage only stores label & assignedBrands
   try{
     const s=localStorage.getItem('dlvr_supervisors');
     if(s){
       const saved=JSON.parse(s);
-      // If old passwords detected, clear and use defaults
-      if(saved[0]&&(saved[0].password==='sup1pass'||saved[0].password==='1111')){localStorage.removeItem('dlvr_supervisors');return DEFAULT_SUPERVISORS.map(d=>({...d}));}
-      // Merge with defaults to pick up new default passwords
-      return DEFAULT_SUPERVISORS.map(d=>{const o=saved.find(x=>x.username===d.username);return o?{...d,...o,password:d.password}:{...d};});
+      return DEFAULT_SUPERVISORS.map(d=>{
+        const o=saved.find(x=>x.username===d.username);
+        if(o)return{...d,label:o.label||d.label,assignedBrands:o.assignedBrands||d.assignedBrands};
+        return{...d};
+      });
     }
   }catch{}
   return DEFAULT_SUPERVISORS.map(d=>({...d}));
