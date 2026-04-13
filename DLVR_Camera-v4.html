@@ -473,7 +473,11 @@ CRITICAL RULES:
 
 3. "readable" — "yes" ONLY if you are 100% certain of EVERY digit in the order number AND the platform. Otherwise "no".
 
-Return: {"orderNumber":"...","platform":"...","readable":"yes/no"}`});
+4. "orderDate" — The date shown on the receipt (order date / arrival date). Format as YYYY-MM-DD (e.g. 2025-06-15). If not found → ""
+
+5. "orderTime" — The time shown on the receipt (order time / arrival time). Format as HH:MM:SS (e.g. 14:30:00). Use 24-hour format. If not found → ""
+
+Return: {"orderNumber":"...","platform":"...","readable":"yes/no","orderDate":"...","orderTime":"..."}`});
 
   const res=await fetch(WORKER_URL,{
     method:'POST',
@@ -505,7 +509,9 @@ async function saveSheet(r,b64Upload){
         branchName:r.branchLabel||'',
         orderNumber:(r.orderNumber||'').replace(/^#+/,'').trim()||'',
         platform:r.platform||'',
-        imageBase64:b64Upload||''
+        imageBase64:b64Upload||'',
+        orderDate:r.orderDate||'',
+        orderTime:r.orderTime||''
       })
     });
     return true;
@@ -588,6 +594,8 @@ function showResult(r,saved){
     {k:'رقم الطلب',v:r.orderNumber||'—',c:'big'},
     {k:'المنصة',v:r.platform||'—',c:''},
   ];
+  if(r.orderDate) rows.push({k:'التاريخ',v:r.orderDate,c:''});
+  if(r.orderTime) rows.push({k:'الوقت',v:r.orderTime,c:''});
   if(r.branchCode){const bname=BRANCHES[r.branchCode]||r.branchCode;rows.splice(1,0,{k:'الفرع',v:bname+' · '+r.branchCode,c:''});}
   rRows.innerHTML=rows.map(x=>`<div class="r-row"><span class="r-key">${x.k}</span><span class="r-val ${x.c}">${x.v}</span></div>`).join('');
   if(sentRow) sentRow.style.display=saved?'flex':'none';
