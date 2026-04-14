@@ -306,11 +306,9 @@ function formatDataRow(sheet, row) {
   sheet.getRange(row, 10).setNumberFormat('#,##0.00'); // الضريبة
   sheet.getRange(row, 11).setNumberFormat('#,##0.00'); // الإجمالي
 
-  // تحويل رابط الصورة إلى رابط قابل للنقر
+  // رابط الصورة — نخليه نص عادي عشان الداشبورد يقدر يقرأه
   const urlCell = sheet.getRange(row, 14);
-  const url = urlCell.getValue();
-  if (url && url.startsWith('http')) {
-    urlCell.setFormula(`=HYPERLINK("${url}","عرض الصورة")`);
+  if (urlCell.getValue()) {
     urlCell.setFontColor('#1a73e8');
   }
 }
