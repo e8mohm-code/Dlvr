@@ -283,7 +283,9 @@ function setupSheetHeaders(sheet) {
   // تجميد الصف الأول
   sheet.setFrozenRows(1);
 
-  // فلتر
+  // فلتر — شيل القديم إن وُجد ثم أنشئ جديد
+  const existingFilter = sheet.getFilter();
+  if (existingFilter) existingFilter.remove();
   sheet.getRange(1, 1, 1, COLUMNS.length).createFilter();
 }
 
