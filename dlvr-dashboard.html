@@ -983,9 +983,9 @@ function copyNum(el,num){
 
 function downloadImg(url,orderNum){
   track('download_image',orderNum+' | '+url,selectedBrand);
-  const m=url.match(/\/d\/([a-zA-Z0-9_-]+)/);
-  if(m){
-    const dlUrl=`https://drive.google.com/uc?export=download&id=${m[1]}`;
+  const id=getDriveId(url);
+  if(id){
+    const dlUrl=`https://drive.google.com/uc?export=download&id=${id}`;
     const a=document.createElement('a');a.href=dlUrl;a.target='_blank';a.download='order_'+orderNum+'.jpg';
     document.body.appendChild(a);a.click();a.remove();
     toast('جاري تحميل صورة الطلب '+orderNum);
@@ -994,12 +994,13 @@ function downloadImg(url,orderNum){
 
 function openImg(url){
   track('view_image',url,selectedBrand);
-  const m=url.match(/\/d\/([a-zA-Z0-9_-]+)/);
-  if(m){document.getElementById('imgModalSrc').src=`https://drive.google.com/thumbnail?id=${m[1]}&sz=w800`;document.getElementById('imgModal').classList.add('on');}
+  const id=getDriveId(url);
+  if(id){document.getElementById('imgModalSrc').src=`https://drive.google.com/thumbnail?id=${id}&sz=w800`;document.getElementById('imgModal').classList.add('on');}
   else window.open(url,'_blank');
 }
 
-function getDriveThumb(url){const m=url.match(/\/d\/([a-zA-Z0-9_-]+)/);return m?`https://drive.google.com/thumbnail?id=${m[1]}&sz=w80`:'';}
+function getDriveId(url){const m=url.match(/\/d\/([a-zA-Z0-9_-]+)/)||url.match(/[?&]id=([a-zA-Z0-9_-]+)/);return m?m[1]:'';}
+function getDriveThumb(url){const id=getDriveId(url);return id?`https://drive.google.com/thumbnail?id=${id}&sz=w80`:'';}
 
 // ══ HELPERS ══════════════════════════════════════════
 function platClass(p){if(!p)return'other';const l=p.toLowerCase();if(l.includes('hunger'))return'hs';if(l.includes('keeta'))return'keeta';if(l.includes('jahez'))return'jahez';if(l.includes('toyou'))return'toyou';if(l.includes('ninja'))return'ninja';if(l.includes('marsool')||l.includes('مرسول'))return'marsool';return'other';}
