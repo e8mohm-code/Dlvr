@@ -104,6 +104,13 @@ a{color:var(--g);text-decoration:none;}::selection{background:var(--g);color:#00
 .flt:focus{border-color:var(--g);}
 .flt-clear{padding:8px 14px;background:transparent;border:1.5px dashed var(--border);border-radius:10px;color:var(--muted);font-family:'Tajawal';font-size:11px;font-weight:600;cursor:pointer;transition:all .2s;}
 .flt-clear:hover{border-color:var(--red);color:var(--red);}
+.multi-flt{position:relative;}
+.multi-btn{display:flex;align-items:center;gap:6px;white-space:nowrap;max-width:200px;overflow:hidden;text-overflow:ellipsis;}
+.multi-drop{display:none;position:absolute;top:calc(100% + 4px);right:0;min-width:180px;max-height:250px;overflow-y:auto;background:var(--card);border:1.5px solid var(--border);border-radius:10px;padding:6px;z-index:50;box-shadow:0 8px 24px rgba(0,0,0,.3);}
+.multi-drop.open{display:block;}
+.multi-opt{display:flex;align-items:center;gap:8px;padding:7px 10px;border-radius:6px;cursor:pointer;font-size:12px;font-weight:500;color:var(--text);transition:background .15s;}
+.multi-opt:hover{background:var(--card2);}
+.multi-opt input[type=checkbox]{width:16px;height:16px;accent-color:var(--g);cursor:pointer;flex-shrink:0;}
 
 /* Orders table - new */
 .tbl-wrap{background:var(--card);border:1px solid var(--border);border-radius:14px;overflow:hidden;transition:background .3s,border-color .3s;}
@@ -545,8 +552,8 @@ function showBrand(bid){
         <div class="search-count" id="oCount">${data.length} طلب</div>
       </div>
       <div class="filters-row">
-        <select class="flt" id="fBranch" onchange="doFilter()"><option value="">كل الفروع</option>${branchesList.map(b=>`<option value="${b}">${b}</option>`).join('')}</select>
-        <select class="flt" id="fPlatform" onchange="doFilter()"><option value="">كل المنصات</option>${platList.map(p=>`<option value="${p}">${p}</option>`).join('')}</select>
+        <div class="multi-flt" id="fBranchWrap"><button class="flt multi-btn" onclick="toggleMulti('fBranchDrop')">كل الفروع <svg width="10" height="10" viewBox="0 0 10 10"><path d="M2 4l3 3 3-3" stroke="currentColor" stroke-width="1.5" fill="none"/></svg></button><div class="multi-drop" id="fBranchDrop">${branchesList.map(b=>`<label class="multi-opt"><input type="checkbox" value="${b}" onchange="doFilter()"><span>${b}</span></label>`).join('')}</div></div>
+        <div class="multi-flt" id="fPlatformWrap"><button class="flt multi-btn" onclick="toggleMulti('fPlatformDrop')">كل المنصات <svg width="10" height="10" viewBox="0 0 10 10"><path d="M2 4l3 3 3-3" stroke="currentColor" stroke-width="1.5" fill="none"/></svg></button><div class="multi-drop" id="fPlatformDrop">${platList.map(p=>`<label class="multi-opt"><input type="checkbox" value="${p}" onchange="doFilter()"><span>${p}</span></label>`).join('')}</div></div>
         <input class="flt" type="date" id="fDate" onchange="doFilter()" style="direction:ltr">
         <button class="flt-clear" onclick="clearFilters()">مسح الفلاتر</button>
       </div>
@@ -627,22 +634,32 @@ function renderPagination(total){
 }
 function goPage(p){const totalPages=Math.ceil(currentRenderData.length/PAGE_SIZE);if(p<1||p>totalPages)return;currentPage=p;renderPage();}
 
+function getCheckedValues(dropId){return[...document.querySelectorAll(`#${dropId} input:checked`)].map(x=>x.value);}
+function toggleMulti(id){const el=document.getElementById(id);document.querySelectorAll('.multi-drop.open').forEach(d=>{if(d.id!==id)d.classList.remove('open');});el.classList.toggle('open');}
+document.addEventListener('click',e=>{if(!e.target.closest('.multi-flt'))document.querySelectorAll('.multi-drop.open').forEach(d=>d.classList.remove('open'));});
+function updateMultiBtnLabel(wrapId,dropId,allLabel){const vals=getCheckedValues(dropId);const btn=document.querySelector(`#${wrapId} .multi-btn`);if(!btn)return;btn.innerHTML=vals.length?`${vals.slice(0,2).join('، ')}${vals.length>2?' +'+( vals.length-2):''} <svg width="10" height="10" viewBox="0 0 10 10"><path d="M2 4l3 3 3-3" stroke="currentColor" stroke-width="1.5" fill="none"/></svg>`:`${allLabel} <svg width="10" height="10" viewBox="0 0 10 10"><path d="M2 4l3 3 3-3" stroke="currentColor" stroke-width="1.5" fill="none"/></svg>`;}
+
 function clearFilters(){
-  const s=document.getElementById('searchInput'),b=document.getElementById('fBranch'),p=document.getElementById('fPlatform'),d=document.getElementById('fDate');
-  if(s)s.value='';if(b)b.value='';if(p)p.value='';if(d)d.value='';
+  const s=document.getElementById('searchInput'),d=document.getElementById('fDate');
+  if(s)s.value='';if(d)d.value='';
+  document.querySelectorAll('.multi-drop input:checked').forEach(x=>x.checked=false);
+  updateMultiBtnLabel('fBranchWrap','fBranchDrop','كل الفروع');
+  updateMultiBtnLabel('fPlatformWrap','fPlatformDrop','كل المنصات');
   doFilter();
 }
 
 function doFilter(){
   const data=allData[selectedBrand]||[];
   const q=(document.getElementById('searchInput')?.value||'').trim().toLowerCase();
-  const fb=document.getElementById('fBranch')?.value||'';
-  const fp=document.getElementById('fPlatform')?.value||'';
+  const fbs=getCheckedValues('fBranchDrop');
+  const fps=getCheckedValues('fPlatformDrop');
   const fd=document.getElementById('fDate')?.value||'';
   if(q)track('search',q,selectedBrand);
+  updateMultiBtnLabel('fBranchWrap','fBranchDrop','كل الفروع');
+  updateMultiBtnLabel('fPlatformWrap','fPlatformDrop','كل المنصات');
   const f=data.filter(r=>{
     if(q&&!(r.order||'').toLowerCase().includes(q)&&!(r.branchName||'').toLowerCase().includes(q)&&!(r.branch||'').toLowerCase().includes(q))return false;
-    if(fb&&(r.branchName||r.branch)!==fb)return false;if(fp&&r.platform!==fp)return false;if(fd&&!r.date?.includes(fd))return false;return true;});
+    if(fbs.length&&!fbs.includes(r.branchName||r.branch))return false;if(fps.length&&!fps.includes(r.platform))return false;if(fd&&!r.date?.includes(fd))return false;return true;});
   renderOrders(f);
 }
 
