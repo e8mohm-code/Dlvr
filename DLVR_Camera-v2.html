@@ -480,22 +480,25 @@ async function analyze(b64){
   const res=await fetch(WORKER_URL,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'claude-haiku-4-5-20251001',max_tokens:400,messages:[{role:'user',content:[{type:'image',source:{type:'base64',media_type:'image/jpeg',data:b64}},{type:'text',text:`أنت نظام توثيق طلبات مطاعم. حلّل صورة طلب التيك أواي وأعطني JSON فقط بدون أي نص إضافي:
 {"orderNumber":"...","platform":"...","readable":"...","confidence":"..."}
 
-قواعد تحديد رقم الطلب:
-- HungerStation فقط: يوجد رقمان في الفاتورة:
-  1) رقم قصير من 4 أرقام بعد علامة # (مثل #5350) ← تجاهل هذا تماماً
-  2) رقم طويل من 7-10 أرقام (مثل 588185171) ← هذا هو رقم الطلب الصحيح المطلوب
-  دائماً خذ الرقم الطويل فقط وتجاهل الرقم القصير بعد #
-- بقية المنصات (Keeta, Jahez, Ninja, ToYou, Marsool): خذ رقم الطلب المعتاد
+قواعد تحديد رقم الطلب (مهم جداً):
+- ابحث عن رقم الطلب الطويل (من 9 إلى 11 رقم) — هذا هو رقم المنصة المطلوب
+- تجاهل تماماً أي رقم من 3-4 أرقام (مثل #258 أو 2478 أو Order# 260) — هذي أرقام داخلية للمطعم
+- الرقم الصحيح عادةً يكون:
+  * بجانب اسم المنصة مباشرة (مثل: HUNGER STATION - 223648426)
+  * أو بعد "External Order Id:" (مثل: External Order Id: 659859511)
+  * أو بعد "Order Ref:" كرقم طويل
+- المنصات: HungerStation, Keeta, Jahez, Ninja, ToYou, Marsool, Careem, Shgardi
+- اسم المنصة ممكن يكون في "Channel Name:" أو مكتوب مباشرة
 - أزل أي علامة # أو رموز من الرقم
 
 مهم جداً — الدقة أهم من السرعة:
-- إذا أي رقم (digit) في رقم الطلب غير واضح أو مشوّش أو ممكن يكون رقم ثاني (مثلاً 0 أو 8 أو 6 أو 9)، اجعل readable = "no"
+- إذا أي رقم غير واضح أو مشوّش، اجعل readable = "no"
 - لا تخمّن أبداً — الرقم الغلط أسوأ بكثير من إعادة التصوير
-- أرقام HungerStation دائماً 9 أرقام بالضبط. إذا طلع أقل أو أكثر فالقراءة غالباً خاطئة واجعل readable = "no"
+- رقم الطلب لازم يكون من 9 إلى 11 رقم. أقل أو أكثر = readable: "no"
 
 confidence: high إذا كل الأرقام واضحة 100%، low إذا فيه أي شك
-platform: HungerStation أو Keeta أو Jahez أو Ninja أو ToYou أو Marsool أو غير واضح
-readable: yes فقط إذا كل رقم واضح تماماً بدون أي شك، no إذا فيه أي شك أو الصورة غير مقروءة أو لا تحتوي على فاتورة
+platform: HungerStation أو Keeta أو Jahez أو Ninja أو ToYou أو Marsool أو Careem أو Shgardi أو غير واضح
+readable: yes فقط إذا كل رقم واضح تماماً بدون أي شك، no إذا فيه أي شك
 لا تكتب أي شيء خارج JSON.`}]}]})});
   const data=await res.json();
   if(data.error)throw new Error(data.error.message||JSON.stringify(data.error));
@@ -504,10 +507,10 @@ readable: yes فقط إذا كل رقم واضح تماماً بدون أي شك
   if(!m)throw new Error('لم يتمكن AI من قراءة الطلب');
   const result = JSON.parse(m[0]);
 
-  // تحقق إضافي: أرقام HungerStation لازم 9 أرقام
-  if(result.readable === 'yes' && result.platform === 'HungerStation'){
+  // تحقق إضافي: رقم الطلب لازم يكون 9-11 رقم
+  if(result.readable === 'yes'){
     const digits = (result.orderNumber || '').replace(/\D/g, '');
-    if(digits.length !== 9){
+    if(digits.length < 9 || digits.length > 11){
       result.readable = 'no';
     }
   }
