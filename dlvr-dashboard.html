@@ -279,7 +279,7 @@ let TRACKING_URL=localStorage.getItem('dlvr_tracking_url')||'https://script.goog
 
 const DEFAULT_BRANDS=[
   {id:'macarono',name:'مكرونو',color:'#FF6B00',sheetId:'1Engs0_WKiyYwVkOxqaZMGlo2H6SxJm45OOnDlC3z89A',scriptUrl:'',logo:'',branches:[],enabled:true,deliveryLogos:{}},
-  {id:'namaq',name:'نمق',color:'#8E24AA',sheetId:'1tWqSfqyJpQXdatFLUyQMXXnpBu6Zfqgw4yoH30vL8c8',gid:'1441059214',scriptUrl:'',logo:'',branches:[],enabled:true,deliveryLogos:{}},
+  {id:'namaq',name:'نمق',color:'#8E24AA',sheetId:'1tWqSfqyJpQXdatFLUyQMXXnpBu6Zfqgw4yoH30vL8c8',gid:'1441059214',colPlatform:6,colImage:13,scriptUrl:'',logo:'',branches:[],enabled:true,deliveryLogos:{}},
   {id:'brand3',name:'براند 3',color:'#1E88E5',sheetId:'',scriptUrl:'',logo:'',branches:[],enabled:false,deliveryLogos:{}},
   {id:'brand4',name:'براند 4',color:'#43A047',sheetId:'',scriptUrl:'',logo:'',branches:[],enabled:false,deliveryLogos:{}},
   {id:'brand5',name:'براند 5',color:'#E53935',sheetId:'',scriptUrl:'',logo:'',branches:[],enabled:false,deliveryLogos:{}},
@@ -328,7 +328,7 @@ function getBrandsConfig(){
   return DEFAULT_BRANDS.map(d=>({...d}));
 }
 function saveBrandsConfig(brands){
-  localStorage.setItem('dlvr_brands_config',JSON.stringify(brands.map(b=>({id:b.id,name:b.name,color:b.color,sheetId:b.sheetId,gid:b.gid||'',scriptUrl:b.scriptUrl,logo:b.logo,branches:b.branches,enabled:b.enabled,deliveryLogos:b.deliveryLogos||{}}))));
+  localStorage.setItem('dlvr_brands_config',JSON.stringify(brands.map(b=>({id:b.id,name:b.name,color:b.color,sheetId:b.sheetId,gid:b.gid||'',colPlatform:b.colPlatform||0,colImage:b.colImage||0,scriptUrl:b.scriptUrl,logo:b.logo,branches:b.branches,enabled:b.enabled,deliveryLogos:b.deliveryLogos||{}}))));
 }
 function getSupervisorsConfig(){
   // Passwords ALWAYS come from code defaults — localStorage only stores label & assignedBrands
@@ -478,7 +478,7 @@ async function loadAllData(){
         if(!dateStr&&c[0]?.v){const dm=String(c[0].v).match(/Date\((\d+),(\d+),(\d+)\)/);if(dm)dateStr=`${dm[1]}-${String(+dm[2]+1).padStart(2,'0')}-${dm[3].padStart(2,'0')}`;}
         let timeStr=c[1]?.f||'';
         if(!timeStr&&c[1]?.v){const tm=String(c[1].v).match(/(\d+),(\d+),(\d+)/);if(tm)timeStr=`${tm[1].padStart(2,'0')}:${tm[2].padStart(2,'0')}:${tm[3].padStart(2,'0')}`;}
-        return{date:dateStr,time:timeStr,branch:c[2]?.v!=null?String(c[2].v):(c[2]?.f||''),branchName:c[3]?.v||c[3]?.f||'',order:c[4]?.v!=null?String(c[4].v):(c[4]?.f||''),platform:c[6]?.v||c[6]?.f||c[5]?.v||c[5]?.f||'',image:c[13]?.v||c[13]?.f||c[9]?.v||c[9]?.f||''};
+        const pi=b.colPlatform||5;const ii=b.colImage||9;return{date:dateStr,time:timeStr,branch:c[2]?.v!=null?String(c[2].v):(c[2]?.f||''),branchName:c[3]?.v||c[3]?.f||'',order:c[4]?.v!=null?String(c[4].v):(c[4]?.f||''),platform:c[pi]?.v||c[pi]?.f||'',image:c[ii]?.v||c[ii]?.f||''};
       }).filter(r=>r.order&&r.order!=='غير واضح');
     }catch(e){console.error(b.id,e);allData[b.id]=[];}
   }));
