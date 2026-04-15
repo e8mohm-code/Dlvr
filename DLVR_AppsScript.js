@@ -5,10 +5,10 @@
 
 // ── CONFIG (غيّر هذي القيم) ──────────────────────────────────
 const CONFIG = {
-  CLAUDE_API_KEY: 'sk-ant-XXXXXXXX',           // ← ضع مفتاح Claude API هنا
-  CLAUDE_MODEL:   'claude-haiku-4-5-20251001',  // موديل سريع ورخيص للتحليل
-  DRIVE_FOLDER:   'DLVR_Invoices',              // اسم المجلد في Google Drive
-  SHEET_NAME:     'الفواتير',                     // اسم الشيت
+  CLAUDE_API_KEY: 'YOUR_API_KEY_HERE',           // ← ضع مفتاح Claude API هنا (لا ترفعه على GitHub)
+  CLAUDE_MODEL:   'claude-haiku-4-5-20251001',
+  DRIVE_FOLDER:   'DLVR_Invoices',
+  SHEET_NAME:     'الفواتير',
 };
 
 // ── أسماء الأعمدة ────────────────────────────────────────────
@@ -104,14 +104,11 @@ function processInvoice(data) {
 //  UPLOAD IMAGE TO GOOGLE DRIVE
 // ══════════════════════════════════════════════════════════════
 function uploadImageToDrive(base64Data, branchCode) {
-  // البحث عن المجلد أو إنشائه
   const folder = getOrCreateFolder(CONFIG.DRIVE_FOLDER);
 
-  // إنشاء مجلد فرعي بتاريخ اليوم
   const today = Utilities.formatDate(new Date(), Session.getScriptTimeZone(), 'yyyy-MM-dd');
   const dayFolder = getOrCreateSubFolder(folder, today);
 
-  // حفظ الصورة
   const blob = Utilities.newBlob(
     Utilities.base64Decode(base64Data),
     'image/jpeg',
@@ -213,13 +210,10 @@ function analyzeInvoiceWithClaude(base64Data) {
     throw new Error('Claude API: ' + (result.error.message || JSON.stringify(result.error)));
   }
 
-  // استخراج JSON من الرد
   const text = result.content[0].text.trim();
   try {
-    // محاولة parse مباشرة
     return JSON.parse(text);
   } catch {
-    // محاولة استخراج JSON من بين النص
     const match = text.match(/\{[\s\S]*\}/);
     if (match) {
       return JSON.parse(match[0]);
@@ -235,22 +229,18 @@ function writeToSheet(rowData) {
   const ss = SpreadsheetApp.getActiveSpreadsheet();
   let sheet = ss.getSheetByName(CONFIG.SHEET_NAME);
 
-  // إنشاء الشيت إذا غير موجود
   if (!sheet) {
     sheet = ss.insertSheet(CONFIG.SHEET_NAME);
     setupSheetHeaders(sheet);
   }
 
-  // التأكد من وجود الهيدر
   const firstCell = sheet.getRange(1, 1).getValue();
   if (!firstCell) {
     setupSheetHeaders(sheet);
   }
 
-  // إضافة الصف
   sheet.appendRow(rowData);
 
-  // تنسيق الصف الجديد
   const lastRow = sheet.getLastRow();
   formatDataRow(sheet, lastRow);
 }
@@ -259,11 +249,9 @@ function writeToSheet(rowData) {
 //  SETUP SHEET — Headers + Formatting
 // ══════════════════════════════════════════════════════════════
 function setupSheetHeaders(sheet) {
-  // كتابة الهيدر
   const headerRange = sheet.getRange(1, 1, 1, COLUMNS.length);
   headerRange.setValues([COLUMNS]);
 
-  // تنسيق الهيدر
   headerRange
     .setBackground('#1a73e8')
     .setFontColor('#ffffff')
@@ -273,17 +261,13 @@ function setupSheetHeaders(sheet) {
     .setVerticalAlignment('middle')
     .setWrap(true);
 
-  // ارتفاع صف الهيدر
   sheet.setRowHeight(1, 40);
 
-  // عرض الأعمدة
   const widths = [100, 70, 80, 100, 110, 120, 100, 80, 90, 80, 90, 90, 80, 200];
   widths.forEach((w, i) => sheet.setColumnWidth(i + 1, w));
 
-  // تجميد الصف الأول
   sheet.setFrozenRows(1);
 
-  // فلتر — شيل القديم إن وُجد ثم أنشئ جديد
   const existingFilter = sheet.getFilter();
   if (existingFilter) existingFilter.remove();
   sheet.getRange(1, 1, 1, COLUMNS.length).createFilter();
@@ -296,17 +280,15 @@ function formatDataRow(sheet, row) {
     .setVerticalAlignment('middle')
     .setFontSize(10);
 
-  // تلوين متبادل للصفوف
   if (row % 2 === 0) {
     range.setBackground('#f8f9fa');
   }
 
-  // تنسيق الأرقام
-  sheet.getRange(row, 9).setNumberFormat('#,##0.00');  // المبلغ
-  sheet.getRange(row, 10).setNumberFormat('#,##0.00'); // الضريبة
-  sheet.getRange(row, 11).setNumberFormat('#,##0.00'); // الإجمالي
+  sheet.getRange(row, 9).setNumberFormat('#,##0.00');
+  sheet.getRange(row, 10).setNumberFormat('#,##0.00');
+  sheet.getRange(row, 11).setNumberFormat('#,##0.00');
 
-  // رابط الصورة — نخليه نص عادي عشان الداشبورد يقدر يقرأه
+  // رابط الصورة — نص عادي بدون HYPERLINK عشان الداشبورد يقدر يقرأه
   const urlCell = sheet.getRange(row, 14);
   if (urlCell.getValue()) {
     urlCell.setFontColor('#1a73e8');
@@ -321,7 +303,6 @@ function setupDLVR() {
   let sheet = ss.getSheetByName(CONFIG.SHEET_NAME);
 
   if (sheet) {
-    // مسح البيانات القديمة (مع الاحتفاظ بالهيدر)
     if (sheet.getLastRow() > 1) {
       sheet.getRange(2, 1, sheet.getLastRow() - 1, sheet.getLastColumn()).clearContent();
     }
@@ -331,7 +312,6 @@ function setupDLVR() {
     setupSheetHeaders(sheet);
   }
 
-  // إنشاء مجلد الصور
   getOrCreateFolder(CONFIG.DRIVE_FOLDER);
 
   SpreadsheetApp.getUi().alert(
